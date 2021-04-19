@@ -23,18 +23,25 @@ commands:
             SET NUGET_KEY=${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
 
 jobs:
-  publish-package: 
+  dotnet-pack: 
     executor: docker-dotnet
     steps:
       - run:
-          name: Push to NuGet
+          name: Release the Package
           command: |
             dotnet pack --output Hackney.Core --configuration Release
+  publish-package:
+    executor: docker-dotnet
+    steps:
+      - run:
+          name: Publish to NuGet
+          command: |
             dotnet nuget push  ${NUGET_FEED_URL} --api-key ${NUGET_KEY} --source GitHub
 
 workflows:
-  publish-package:
+  nuget-package:
     jobs:
+      - dotnet-pack
       - publish-package
       
           
