@@ -11,6 +11,12 @@ executors:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
+references:
+  workspace_root: &workspace_root "~"
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 commands:
   publish-package:
     parameters:
@@ -26,6 +32,7 @@ jobs:
   dotnet-pack: 
     executor: docker-dotnet
     steps:
+      - *attach_workspace
       - run:
           name: Release the Package
           working_directory: ./Hackney.Core
