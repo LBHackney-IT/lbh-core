@@ -30,7 +30,7 @@ jobs:
           name: Push to NuGet
           command: |
             dotnet pack --output Hackney.Core --configuration Release
-            dotnet nuget push --source bin/Release/OctocatApp.1.0.0.nupkg --api-key NUGET_KEY Hackney.Core/*.nupkg
+            dotnet nuget push --source NUGET_FEED_URL --api-key NUGET_KEY Hackney.Core/*.nupkg
 
 workflows:
   publish-package:
