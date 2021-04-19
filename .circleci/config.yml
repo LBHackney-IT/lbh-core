@@ -28,6 +28,7 @@ jobs:
     steps:
       - run:
           name: Release the Package
+          working_directory: ./Hackney.Core
           command: |
             dotnet pack --output Hackney.Core --configuration Release
   publish-package:
@@ -36,7 +37,7 @@ jobs:
       - run:
           name: Publish to NuGet
           command: |
-            dotnet nuget push  ${NUGET_FEED_URL} --api-key ${NUGET_KEY} --source GitHub
+            dotnet nuget push --source "${NUGET_FEED_URL}" --api-key "${NUGET_KEY}" Hackney.Core/*.nupkg
 
 workflows:
   nuget-package:
