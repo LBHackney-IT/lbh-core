@@ -48,7 +48,7 @@ jobs:
       - run:
           name: Publish to NuGet
           command: |
-            dotnet nuget push "${NUGET_FEED_URL}" --api-key "${NUGET_KEY}" --source 
+            dotnet nuget push "${NUGET_FEED_URL}" --api-key "${NUGET_KEY}" --source "https://nuget.pkg.github.com/LBHackney-IT/"
 
 workflows:
   nuget-package:
