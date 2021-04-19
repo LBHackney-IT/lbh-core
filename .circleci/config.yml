@@ -18,16 +18,16 @@ references:
     attach_workspace:
       at: *workspace_root     
 
-commands:
-  publish-package:
-    parameters:
-      aws-account:
-        type: string
-    steps:
-      - run: 
-          environment: 
-            NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
-            NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
+# commands:
+#   publish-package:
+#     parameters:
+#       aws-account:
+#         type: string
+#     steps:
+#       - run: 
+#           environment: 
+#             NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
+#             NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
 jobs:
   dotnet-pack: 
     executor: docker-dotnet
@@ -42,6 +42,9 @@ jobs:
             dotnet pack --configuration Release
   publish-package:
     executor: docker-dotnet
+    parameters:
+      aws-account:
+        type: string
     environment: 
       NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
       NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
