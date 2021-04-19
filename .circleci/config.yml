@@ -43,7 +43,6 @@ jobs:
   publish-package:
     executor: docker-dotnet
     steps:
-      - aws-parameter-store/load
       - checkout      
       - *attach_workspace
       - run:
