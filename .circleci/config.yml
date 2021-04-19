@@ -25,8 +25,8 @@ commands:
     steps:
       - run: 
           command: |
-            NUGET_FEED_URL=${aws-parameter-store/nuget/<<parameters.environment>>/NUGET_FEED_URL} 
-            NUGET_KEY=${aws-parameter-store/nuget/<<parameters.environment>>/NUGET_KEY}            
+            NUGET_FEED_URL=123
+            NUGET_KEY=456        
 
 jobs:
   dotnet-pack: 
