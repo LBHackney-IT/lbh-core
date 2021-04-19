@@ -30,6 +30,7 @@ jobs:
           name: Release the Package
           working_directory: ./Hackney.Core
           command: |
+            cd ./Hackney.Core 
             dotnet pack --output Hackney.Core --configuration Release
   publish-package:
     executor: docker-dotnet
