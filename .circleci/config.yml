@@ -30,6 +30,7 @@ jobs:
           name: Release the Package
           working_directory: ./Hackney.Core
           command: |
+            ls 
             cd ./Hackney.Core 
             dotnet pack --configuration Release
   publish-package:
