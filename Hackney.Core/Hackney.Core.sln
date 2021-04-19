@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core", "Hackney.Core.csproj", "{80E95461-42B3-4719-B820-DF96B45D43D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "circleci", "circleci", "{0A55072D-69E0-4564-ABB5-98D0F015B2B1}"
+	ProjectSection(SolutionItems) = preProject
+		..\.circleci\config.yml = ..\.circleci\config.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80E95461-42B3-4719-B820-DF96B45D43D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E95461-42B3-4719-B820-DF96B45D43D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E95461-42B3-4719-B820-DF96B45D43D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E95461-42B3-4719-B820-DF96B45D43D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCCBF31A-6CF1-4F17-B2FB-BFC803B3155D}
+	EndGlobalSection
+EndGlobal

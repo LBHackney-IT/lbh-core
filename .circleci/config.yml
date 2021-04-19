@@ -34,9 +34,10 @@ jobs:
     steps:
       - *attach_workspace
       - run:
-          name: Release the Package
-          working_directory: ./Hackney.Core
+          name: Release the Package          
           command: | 
+            dir
+            cd ./Hackney.Core
             dotnet pack --configuration Release
   publish-package:
     executor: docker-dotnet
