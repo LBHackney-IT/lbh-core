@@ -42,6 +42,9 @@ jobs:
             dotnet pack --configuration Release
   publish-package:
     executor: docker-dotnet
+    environment: 
+      NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
+      NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
     steps:
       - checkout      
       - *attach_workspace
