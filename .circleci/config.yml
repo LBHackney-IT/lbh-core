@@ -32,6 +32,7 @@ jobs:
   dotnet-pack: 
     executor: docker-dotnet
     steps:
+      - checkout
       - *attach_workspace
       - run:
           name: Release the Package          
