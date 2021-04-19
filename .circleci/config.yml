@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Push to NuGet
           command: |
-            dotnet pack --output --configuration Release
+            dotnet pack Hackney.Core --output --configuration Release
             dotnet nuget push  ${NUGET_FEED_URL} --api-key ${NUGET_KEY} --source GitHub
 
 workflows:
