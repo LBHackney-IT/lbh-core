@@ -16,16 +16,7 @@ references:
   workspace_root: &workspace_root "~"
   attach_workspace: &attach_workspace
     attach_workspace:
-      at: *workspace_root
-
-commands:
-  publish-package:
-    parameters:
-      aws-account:
-        type: string
-    steps:
-      - run: 
-          command: |                            
+      at: *workspace_root       
 
 jobs:
   dotnet-pack: 
