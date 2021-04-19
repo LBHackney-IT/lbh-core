@@ -25,6 +25,8 @@ commands:
     steps:
       - run: 
           command: |              
+              NUGET_FEED_URL="123"
+              NUGET_KEY="456"
 
 jobs:
   dotnet-pack: 
@@ -45,9 +47,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Publish to NuGet
-          command: |
-            NUGET_FEED_URL="123"
-            NUGET_KEY="456"
+          command: |            
             echo $NUGET_FEED_URL
             echo $NUGET_KEY
             dotnet nuget push "${NUGET_FEED_URL}" --api-key "${NUGET_KEY}" --source "https://nuget.pkg.github.com/LBHackney-IT/"
