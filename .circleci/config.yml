@@ -24,14 +24,12 @@ commands:
         type: string
     steps:
       - run: 
-          command: |              
-              NUGET_FEED_URL="123"
-              NUGET_KEY="456"
+          command: |                            
 
 jobs:
   dotnet-pack: 
     executor: docker-dotnet
-    steps:
+    steps:      
       - checkout
       - *attach_workspace
       - run:
@@ -43,7 +41,8 @@ jobs:
   publish-package:
     executor: docker-dotnet
     steps:
-      - checkout
+      - aws-parameter-store/load
+      - checkout      
       - *attach_workspace
       - run:
           name: Publish to NuGet
