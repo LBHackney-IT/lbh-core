@@ -19,8 +19,8 @@ commands:
     steps:
       - run: 
           command: |
-          NUGET_FEED_URL=${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL} 
-          NUGET_KEY=${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
+          SET NUGET_FEED_URL=${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL} 
+          SET NUGET_KEY=${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
 
 jobs:
   publish-package: 
