@@ -43,6 +43,8 @@ jobs:
   publish-package:
     executor: docker-dotnet
     steps:
+      - checkout
+      - *attach_workspace
       - run:
           name: Publish to NuGet
           command: |
