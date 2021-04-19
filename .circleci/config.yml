@@ -46,8 +46,8 @@ jobs:
       aws-account:
         type: string
     environment: 
-      NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
-      NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
+      NUGET_FEED_URL: ${aws-parameter-store/<<parameters.aws-account>>/NUGET_FEED_URL}
+      NUGET_KEY: ${aws-parameter-store/<<parameters.aws-account>>/NUGET_KEY}
     steps:
       - checkout      
       - *attach_workspace
