@@ -20,7 +20,7 @@ commands:
       - run: 
           command: |
           NUGET_FEED_URL="${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}" 
-          NUGET_KEY="${{aws-parameter-store/<<parameters.environment>>/NUGET_KEY}" 
+          NUGET_KEY="${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}" 
 
 jobs:
   publish-package: 
