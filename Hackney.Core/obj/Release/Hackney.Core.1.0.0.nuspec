@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Hackney.Core</id>
+    <version>1.0.0</version>
+    <authors>Hackney.Core</authors>
+    <owners>Hackney.Core</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package Description</description>
+    <repository url="https://github.com/LBHackney-IT/Hackney.Core" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\humulla\Desktop\MTFH Tenancy &amp; Leasehold\Hackney.Core\Hackney.Core\bin\Release\netcoreapp3.1\Hackney.Core.runtimeconfig.json" target="lib\netcoreapp3.1\Hackney.Core.runtimeconfig.json" />
+    <file src="C:\Users\humulla\Desktop\MTFH Tenancy &amp; Leasehold\Hackney.Core\Hackney.Core\bin\Release\netcoreapp3.1\Hackney.Core.dll" target="lib\netcoreapp3.1\Hackney.Core.dll" />
+  </files>
+</package>
