@@ -25,7 +25,7 @@ commands:
         type: string
     steps:
       - run: 
-          command: |
+          environment: |
             NUGET_FEED_URL=${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
             NUGET_KEY=${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
 jobs:
@@ -48,9 +48,7 @@ jobs:
       - run:
           name: Publish to NuGet
           command: |            
-            echo $NUGET_FEED_URL
-            echo $NUGET_KEY
-            dotnet nuget push "${NUGET_FEED_URL}" --api-key "${NUGET_KEY}" --source "https://nuget.pkg.github.com/LBHackney-IT/"
+            dotnet nuget push  echo ${NUGET_FEED_URL} --api-key echo ${NUGET_KEY} --source "https://nuget.pkg.github.com/LBHackney-IT/"
 
 workflows:
   nuget-package:
