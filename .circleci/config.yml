@@ -42,7 +42,9 @@ workflows:
   nuget-package:
     jobs:
       - dotnet-pack
-      - publish-package
+      - publish-package:
+          requires:   
+            - dotnet-pack
       
           
 
