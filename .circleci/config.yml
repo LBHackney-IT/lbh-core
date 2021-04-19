@@ -29,8 +29,8 @@ jobs:
       - run:
           name: Push to NuGet
           command: |
-            dotnet pack --output Hackney.Core --configuration Release
-            dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} Hackney.Core/*.nupkg
+            dotnet pack --output --configuration Release
+            dotnet nuget push  ${NUGET_FEED_URL} --api-key ${NUGET_KEY} --source GitHub
 
 workflows:
   publish-package:
