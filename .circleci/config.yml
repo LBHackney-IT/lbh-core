@@ -6,6 +6,7 @@ executors:
   docker-dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+
 references:
   workspace_root: &workspace_root "~"
   attach_workspace: &attach_workspace
@@ -26,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - Hackney.Core\Hackney.Core.1.0.0.nupkg
+            - .Hackney.Core.1.0.0.nupkg
   publish-package:
     executor: docker-dotnet
     steps:
