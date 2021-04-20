@@ -1,11 +1,11 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@2.0.0
+  # aws-cli: circleci/aws-cli@2.0.0
   nuget-cache: guitarrapc/nuget-cache@0.1.1
-  aws-parameter-store: circleci/aws-parameter-store@1.0.0
+  # aws-parameter-store: circleci/aws-parameter-store@1.0.0
   aws-ecr: circleci/aws-ecr@3.0.0
-  aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
+  # aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
 
 executors:
   docker-dotnet:
@@ -18,19 +18,9 @@ references:
     attach_workspace:
       at: *workspace_root     
 
-# commands:
-#   publish-package:
-#     parameters:
-#       aws-account:
-#         type: string
-#     steps:
-#       - run: 
-#           environment: 
-#             NUGET_FEED_URL: ${aws-parameter-store/<<parameters.environment>>/NUGET_FEED_URL}
-#             NUGET_KEY: ${aws-parameter-store/<<parameters.environment>>/NUGET_KEY}
 jobs:
-  dotnet-pack: 
-    executor: docker-dotnet
+  dotnet-pack:
+    description: Creates the Package in the output directory provided
     steps:      
       - checkout
       - *attach_workspace
@@ -41,20 +31,44 @@ jobs:
             cd ./Hackney.Core
             dotnet pack --configuration Release
   publish-package:
-    executor: docker-dotnet
+    description: Publishes the package to Github
     parameters:
-      aws-account:
+      stage:
         type: string
-    environment: 
-      NUGET_FEED_URL: ${aws-parameter-store/<<parameters.aws-account>>/NUGET_FEED_URL}
-      NUGET_KEY: ${aws-parameter-store/<<parameters.aws-account>>/NUGET_KEY}
     steps:
       - checkout      
       - *attach_workspace
-      - run:
-          name: Publish to NuGet
-          command: |            
-            dotnet nuget push  echo ${NUGET_FEED_URL} --api-key echo ${NUGET_KEY} --source "https://nuget.pkg.github.com/LBHackney-IT/"
+      - run: 
+          name: get values from Parameter store
+          commmand: |
+           NUGET_FEED_URL= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_FEED_URL --query Parameter.Value)
+           NUGET_KEY= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_KEY --query Parameter.Value)
+           dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} */.nupkg 
+
+# jobs:
+#   nuget-publish:
+
+#   dotnet-pack: 
+#     executor: docker-dotnet
+#     steps:      
+#       - checkout
+#       - *attach_workspace
+#       - run:
+#           name: Release the Package          
+#           command: | 
+#             dir
+#             cd ./Hackney.Core
+#             dotnet pack --configuration Release
+#   publish-package:
+#     executor: docker-dotnet
+#     steps:
+#       - checkout      
+#       - *attach_workspace
+
+#       - run:
+#           name: Publish to NuGet
+#           command: |            
+#             dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} */.nupkg 
 
 workflows:
   nuget-package:
