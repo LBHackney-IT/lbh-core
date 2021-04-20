@@ -1,11 +1,8 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@2.0.0
   nuget-cache: guitarrapc/nuget-cache@0.1.1
-  aws-parameter-store: circleci/aws-parameter-store@1.0.0
   aws-ecr: circleci/aws-ecr@3.0.0
-  aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
 
 executors:
   docker-dotnet:
@@ -18,9 +15,25 @@ references:
     attach_workspace:
       at: *workspace_root     
 
+commands:
+  publish-package:
+    description: Publishes the Package to GitHub
+    parameters:
+      stage:
+        type: string
+    steps:
+      - checkout      
+      - *attach_workspace
+      - run: 
+          name: get values from Parameter store
+          commmand: |
+           NUGET_FEED_URL= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_FEED_URL --query Parameter.Value)
+           NUGET_KEY= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_KEY --query Parameter.Value)
+           dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} */.nupkg 
+
 jobs:
   dotnet-pack:
-    description: Creates the Package in the output directory provided
+    executor: docker-dotnet
     steps:      
       - checkout
       - *attach_workspace
@@ -30,25 +43,32 @@ jobs:
             dir
             cd ./Hackney.Core
             dotnet pack --configuration Release
-  publish-package:
-    description: Publishes the package to Github
-    parameters:
-      stage:
-        type: string
+  publish-package-development:
+    executor: docker-dotnet
     steps:
-      # - checkout      
-      # - *attach_workspace
-      - run: 
-          name: get values from Parameter store
-          commmand: |
-           NUGET_FEED_URL= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_FEED_URL --query Parameter.Value)
-           NUGET_KEY= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_KEY --query Parameter.Value)
-           dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} */.nupkg 
+      - checkout      
+      - *attach_workspace
+      - publish-package:
+          stage: "development"
+  publish-package-staging:
+    executor: docker-dotnet
+    steps:
+      - checkout      
+      - *attach_workspace
+      - publish-package:
+          stage: "staging"
+  publish-package-production:
+    executor: docker-dotnet
+    steps:
+      - checkout      
+      - *attach_workspace
+      - publish-package:
+          stage: "production"
 
 workflows:
-  nuget-package:
+  nuget-package-development:
     jobs:
       - dotnet-pack
-      - publish-package:
+      - publish-package-development:
           requires:   
             - dotnet-pack
