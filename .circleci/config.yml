@@ -28,7 +28,7 @@ commands:
       - run: 
           name: Get values from Parameter store
           command: |
-            dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY */.nupkg 
+            dotnet nuget push  $NUGET_FEED_URL --api-key $NUGET_KEY */.nupkg --source github
 
 jobs:
   dotnet-pack:
@@ -43,32 +43,18 @@ jobs:
             cd ./Hackney.Core
             dotnet pack --configuration Release
   
-  publish-package-development:
+  publish-package:
     executor: docker-dotnet
     steps:
       - checkout      
       - *attach_workspace
-      - publish-package:
-          stage: "development"
-  publish-package-staging:
-    executor: docker-dotnet
-    steps:
-      - checkout      
-      - *attach_workspace
-      - publish-package:
-          stage: "staging"
-  publish-package-production:
-    executor: docker-dotnet
-    steps:
-      - checkout      
-      - *attach_workspace
-      - publish-package:
-          stage: "production"
+      - publish-package
+  
 
 workflows:
   nuget-package-development:
     jobs:
       - dotnet-pack
-      - publish-package-development:
+      - publish-package:
           requires:   
             - dotnet-pack
