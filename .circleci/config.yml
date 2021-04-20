@@ -32,7 +32,7 @@ commands:
             ./aws/install  
       - run: 
           name: Get values from Parameter store
-          commmand: |
+          command: |
             NUGET_FEED_URL=$(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_FEED_URL --query Parameter.Value)
             NUGET_KEY=$(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_KEY --query Parameter.Value)
             dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} */.nupkg 
