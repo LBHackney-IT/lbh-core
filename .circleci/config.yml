@@ -19,9 +19,6 @@ commands:
   
   publish-package:
     description: "Publishes the Package to GitHub"
-    parameters:
-      stage:
-        type: string
     steps:
       - *attach_workspace
       - checkout    
@@ -46,9 +43,13 @@ jobs:
   publish-package-development:
     executor: docker-dotnet
     steps:
-      - checkout      
+     steps:
       - *attach_workspace
-      - publish-package
+      - checkout    
+      - run: 
+          name: Get values from Parameter store
+          command: |
+            dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY */.nupkg
   publish-package-staging:
     executor: docker-dotnet
     steps:
