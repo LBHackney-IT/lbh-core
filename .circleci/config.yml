@@ -49,7 +49,7 @@ jobs:
           command: |
             dir
             cd ./Hackney.Core
-            dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY /*.nupkg
+            dotnet nuget push --api-key $NUGET_KEY /*.nupkg
 
 workflows:
   nuget-package:
