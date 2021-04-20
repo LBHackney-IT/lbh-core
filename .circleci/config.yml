@@ -17,15 +17,15 @@ references:
 
 commands:
   publish-package:
-    description: Publishes the Package to GitHub
+    description: "Publishes the Package to GitHub"
     parameters:
       stage:
         type: string
     steps:
-      - checkout      
       - *attach_workspace
+      - checkout      
       - run: 
-          name: get values from Parameter store
+          name: Get values from Parameter store
           commmand: |
            NUGET_FEED_URL= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_FEED_URL --query Parameter.Value)
            NUGET_KEY= $(aws ssm get-parameter --name /nuget/<<parameters.stage>>/NUGET_KEY --query Parameter.Value)
