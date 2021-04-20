@@ -1,32 +1,16 @@
 version: 2.1
-
 orbs:
   nuget-cache: guitarrapc/nuget-cache@0.1.1
   aws-ecr: circleci/aws-ecr@3.0.0
-
 executors:
   docker-dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
-
 references:
   workspace_root: &workspace_root "~"
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root     
-
-# commands:
-  
-#   publish-package:
-#     description: "Publishes the Package to GitHub"
-#     steps:
-#       - *attach_workspace
-#       - checkout    
-#       - run: 
-#           name: Get values from Parameter store
-#           command: |
-#             dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY */.nupkg 
-
 jobs:
   dotnet-pack:
     executor: docker-dotnet
@@ -39,6 +23,10 @@ jobs:
             dir
             cd ./Hackney.Core
             dotnet pack --configuration Release
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - package 
   publish-package:
     executor: docker-dotnet
     steps:
@@ -47,10 +35,7 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            dir
-            cd ./Hackney.Core
-            dotnet nuget push --source ${NUGET_FEED_URL} --api-key ${NUGET_KEY} /*.nupkg
-
+            dotnet nuget push --source package/Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} /*.nupkg
 workflows:
   nuget-package:
     jobs:
