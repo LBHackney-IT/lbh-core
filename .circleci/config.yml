@@ -47,7 +47,9 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY
+            dir
+            cd ./Hackney.Core
+            dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY /*.nupkg
 
 workflows:
   nuget-package:
