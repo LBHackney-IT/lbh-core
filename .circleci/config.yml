@@ -36,8 +36,8 @@ jobs:
       stage:
         type: string
     steps:
-      - checkout      
-      - *attach_workspace
+      # - checkout      
+      # - *attach_workspace
       - run: 
           name: get values from Parameter store
           commmand: |
