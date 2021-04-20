@@ -28,7 +28,7 @@ references:
 #             dotnet nuget push --source $NUGET_FEED_URL --api-key $NUGET_KEY */.nupkg 
 
 jobs:
-  publish-package:
+  dotnet-pack:
     executor: docker-dotnet
     steps:      
       - checkout
@@ -38,7 +38,12 @@ jobs:
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release  
+            dotnet pack --configuration Release
+  publish-package:
+    executor: docker-dotnet
+    steps:
+      - *attach_workspace
+      - checkout    
       - run: 
           name: Publish to GitHub
           command: |
@@ -49,4 +54,7 @@ jobs:
 workflows:
   nuget-package:
     jobs:
-      - publish-package
+      - dotnet-pack
+      - publish-package:
+          requires:   
+            - dotnet-pack
