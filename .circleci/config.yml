@@ -43,7 +43,7 @@ jobs:
             cd ./Hackney.Core
             dotnet pack --configuration Release
   
-  publish-package:
+  publish-package-job:
     executor: docker-dotnet
     steps:
       - checkout      
@@ -52,9 +52,9 @@ jobs:
   
 
 workflows:
-  nuget-package-development:
+  nuget-package:
     jobs:
       - dotnet-pack
-      - publish-package:
+      - publish-package-job:
           requires:   
             - dotnet-pack
