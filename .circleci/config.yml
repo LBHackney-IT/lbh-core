@@ -31,7 +31,6 @@ jobs:
     executor: docker-dotnet
     steps:
       - *attach_workspace
-      - checkout    
       - run: 
           name: Publish to GitHub
           command: |
