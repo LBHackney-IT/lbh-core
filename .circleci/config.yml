@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   nuget-cache: guitarrapc/nuget-cache@0.1.1
   aws-ecr: circleci/aws-ecr@3.0.0
-  nugetpublish: storytel/nugetpublish@4.0.0
 executors:
   docker-dotnet:
     docker:
@@ -34,12 +33,6 @@ jobs:
           root: *workspace_root
           paths:
             - project/Hackney.Core
-  nuget:
-    executor: docker-dotnet
-    steps:
-      - *attach_workspace
-      - nuget-publish:
-          projectfilepath: Hackney.Core/Hackney.Core.1.0.0.nupkg
   publish-package:
     executor: docker-dotnet
     steps:
@@ -47,17 +40,12 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            packandpublish
-      # - run: 
-      #     name: Publish to GitHub
-      #     command: |
-      #       cd ./Hackney.Core
-      #       dotnet nuget push --source Hackney.Core/Hackney.Core/Hackney.Core/bin/Release/Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
+            cd ./Hackney.Core
+            dotnet nuget push --source /Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
     jobs:
       - dotnet-pack
-      - nuget
       - publish-package:
           requires:   
             - dotnet-pack
