@@ -34,7 +34,7 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            cd ./Hackney.Core
+            cd ./Hackney.Core/
             dotnet nuget push --source Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
