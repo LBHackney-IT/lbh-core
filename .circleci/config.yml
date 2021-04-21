@@ -17,21 +17,21 @@ jobs:
     executor: docker-dotnet
     steps:      
       - checkout
-      # - *attach_workspace
+      - *attach_workspace
       - run:
           name: Release the Package          
           command: | 
             dir
             cd ./Hackney.Core
             dotnet pack --configuration Release
-      # - persist_to_workspace:
-      #     root: Hackney.Core/
-      #     paths:
-      #       - Hackney.Core.1.0.0.nupkg
+      - persist_to_workspace:
+          root: Hackney.Core/
+          paths:
+            - Hackney.Core.1.0.0.nupkg
   publish-package:
     executor: docker-dotnet
     steps:
-      # - *attach_workspace
+      - *attach_workspace
       - checkout    
       - run: 
           name: Publish to GitHub
