@@ -25,9 +25,9 @@ jobs:
             cd ./Hackney.Core
             dotnet pack --configuration Release
       - persist_to_workspace:
-          root: *workspace_root
+          root: Hackney.Core
           paths:
-            - ./Hackney.Core
+            - .Hackney.Core.1.0.0.nupkg
   publish-package:
     executor: docker-dotnet
     steps:
