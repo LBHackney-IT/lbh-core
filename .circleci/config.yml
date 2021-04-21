@@ -6,7 +6,6 @@ executors:
   docker-dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
-
 references:
   workspace_root: &workspace_root "~"
   attach_workspace: &attach_workspace
@@ -21,13 +20,11 @@ jobs:
       - run:
           name: Release the Package          
           command: | 
-            dir
-            cd ./Hackney.Core
-            dotnet pack --configuration Release
+            dotnet pack --output ~/Hackney.Core --configuration Release
       - persist_to_workspace:
-          root: Hackney.Core/
+          root: *workspace_root
           paths:
-            - Hackney.Core.1.0.0.nupkg
+            - Hackney.Core
   publish-package:
     executor: docker-dotnet
     steps:
@@ -36,7 +33,7 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            dotnet nuget push --source ./Hackney.Core/Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push --source Hackney.Core/Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
     jobs:
