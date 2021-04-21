@@ -12,6 +12,12 @@ references:
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root     
+
+commands:
+  nuget-publish:
+    parameters:
+      projectfilepath:
+        type: string 
 jobs:
   dotnet-pack:
     executor: docker-dotnet
@@ -32,7 +38,12 @@ jobs:
     executor: docker-dotnet
     steps:
       - *attach_workspace
-      - nugetpublish
+      - nuget-publish:
+          projectfilepath: Hackney.Core/Hackney.Core.1.0.0.nupkg
+      - run: 
+          name: Publish to GitHub
+          command: |
+            packandpublish
       # - run: 
       #     name: Publish to GitHub
       #     command: |
