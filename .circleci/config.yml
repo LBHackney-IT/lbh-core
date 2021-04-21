@@ -27,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - .Hackney.Core.1.0.0.nupkg
+            - ./Hackney.Core.1.0.0.nupkg
   publish-package:
     executor: docker-dotnet
     steps:
