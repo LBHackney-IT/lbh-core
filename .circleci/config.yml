@@ -34,12 +34,16 @@ jobs:
           root: *workspace_root
           paths:
             - project/Hackney.Core
-  publish-package:
+  nuget:
     executor: docker-dotnet
     steps:
       - *attach_workspace
       - nuget-publish:
           projectfilepath: Hackney.Core/Hackney.Core.1.0.0.nupkg
+  publish-package:
+    executor: docker-dotnet
+    steps:
+      - *attach_workspace
       - run: 
           name: Publish to GitHub
           command: |
@@ -53,6 +57,7 @@ workflows:
   nuget-package:
     jobs:
       - dotnet-pack
+      - nuget
       - publish-package:
           requires:   
             - dotnet-pack
