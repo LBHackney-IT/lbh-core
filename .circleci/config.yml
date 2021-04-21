@@ -17,7 +17,7 @@ jobs:
     executor: docker-dotnet
     steps:      
       - checkout
-      - *attach_workspace
+      # - *attach_workspace
       - run:
           name: Release the Package          
           command: | 
