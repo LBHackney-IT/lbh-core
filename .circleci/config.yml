@@ -12,11 +12,6 @@ references:
     attach_workspace:
       at: *workspace_root     
 
-commands:
-  nuget-publish:
-    parameters:
-      projectfilepath:
-        type: string 
 jobs:
   dotnet-pack:
     executor: docker-dotnet
