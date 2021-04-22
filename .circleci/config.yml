@@ -33,6 +33,9 @@ jobs:
     steps:
       - *attach_workspace
       - run: 
+          command:
+            echo dir 
+      - run: 
           name: Publish to GitHub
           command: |
             cd ./Hackney.Core
