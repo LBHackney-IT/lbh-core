@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Version value
           command: |
-            echo "Version=/v[0-9]+.[0-9]+.[0-9]+\/v/ "
+            echo "Version=/"v[0-9]+.[0-9]+.[0-9]+"\/v/ "
       - run:
           name: Release the Package          
           command: | 
