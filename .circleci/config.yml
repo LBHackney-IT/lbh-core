@@ -48,15 +48,11 @@ jobs:
       - checkout
       - *attach_workspace
       - run:
-          name: Version value
-          command: |
-            echo "Version=/${CIRCLE_TAG}\/v/"
-      - run:
           name: Release the Package          
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release /p:Version= ${CIRCLE_TAG}
+            dotnet pack --configuration Release /p:NuGetVersion= ${CIRCLE_TAG}
       - run: 
           name: Publish to GitHub
           command: |
