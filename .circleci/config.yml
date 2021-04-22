@@ -50,13 +50,13 @@ jobs:
       - run:
           name: Version value
           command: |
-            echo "Version=/"v[0-9]+.[0-9]+.[0-9]+"\/v/ "
+            echo "Version= ${VERSION}"
       - run:
           name: Release the Package          
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release /p:Version=/tags\/v/
+            dotnet pack --configuration Release /p:Version=${VERSION}
       - run: 
           name: Publish to GitHub
           command: |
