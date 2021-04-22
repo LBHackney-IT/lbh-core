@@ -48,6 +48,10 @@ jobs:
       - checkout
       - *attach_workspace
       - run:
+          name: Version value
+          command: |
+            echo "Version=/tags\/v/ "
+      - run:
           name: Release the Package          
           command: | 
             dir
