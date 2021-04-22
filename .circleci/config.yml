@@ -43,7 +43,7 @@ jobs:
             dotnet nuget push Hackney.Core.1.0.0.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 
   version-package:
-    executor: docher-dotnet
+    executor: docker-dotnet
     steps:
       - checkout
       - *attach_workspace
