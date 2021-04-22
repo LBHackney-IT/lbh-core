@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Version value
           command: |
-            echo "Version=/${CIRCLE_TAG}\/v/
+            echo "Version=/${CIRCLE_TAG}\/v/"
       - run:
           name: Release the Package          
           command: | 
