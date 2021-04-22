@@ -53,16 +53,18 @@ jobs:
             dir
             cd ./Hackney.Core
             dotnet pack --configuration Release /p:NuGetVersion= ${CIRCLE_TAG}
+            echo NuGetVersion
       - persist_to_workspace:
           root: *workspace_root
           paths:
             - project/Hackney.Core/
+            - NuGetVersion
       - run: 
           name: Publish to GitHub
           command: |
             cd ./Hackney.Core/
             dir
-            dotnet nuget push Hackney.Core.${CIRCLE_TAG}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push Hackney.Core.${NuGetVersion}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 
 workflows:
   nuget-package:
