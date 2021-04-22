@@ -27,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - project/Hackney.Core
+            - project/Hackney.Core/
   publish-package:
     executor: docker-dotnet
     steps:
@@ -35,8 +35,7 @@ jobs:
       - run: 
           name: Publish to GitHub
           command: |
-            cd ./Hackney.Core
-            dotnet nuget push --source /Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push --source Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core/Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
     jobs:
@@ -44,3 +43,6 @@ workflows:
       - publish-package:
           requires:   
             - dotnet-pack
+
+            # cd ./Hackney.Core
+
