@@ -51,8 +51,8 @@ jobs:
           command: | 
             dir
             cd ./Hackney.Core
-            echo $CIRCLE_TAG
-            dotnet pack --configuration Release -p:PackageVersion=${CIRCLE_TAG}
+            echo TAG $CIRCLE_TAG
+            dotnet pack --configuration Release -p:PackageVersion=1.0.1
       - persist_to_workspace:
           root: *workspace_root
           paths:
