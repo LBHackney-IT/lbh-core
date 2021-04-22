@@ -11,7 +11,13 @@ references:
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root     
-
+commands:
+  version:
+    parameters:
+      NuGetVersion:
+        type: string
+      steps: 
+        command: echo NuGetVersion
 jobs:
   dotnet-pack:
     executor: docker-dotnet
@@ -47,6 +53,7 @@ jobs:
     steps:
       - checkout
       - *attach_workspace
+      - version
       - run:
           name: Release the Package          
           command: | 
