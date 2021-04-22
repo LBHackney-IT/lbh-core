@@ -41,7 +41,7 @@ jobs:
             cd ./Hackney.Core/
             dir
             dotnet nuget push Hackney.Core.1.0.0.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
-# '/tags\/v/'
+# /tags\/v/
   version-package:
     executor: docker-dotnet
     steps:
@@ -50,13 +50,13 @@ jobs:
       - run:
           name: Version value
           command: |
-            echo "Version=${VERSION}
+            echo "Version=/${CIRCLE_TAG}\/v/
       - run:
           name: Release the Package          
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release /p:Version=${VERSION}
+            dotnet pack --configuration Release /p:Version=/${CIRCLE_TAG}\/v/
       - run: 
           name: Publish to GitHub
           command: |
