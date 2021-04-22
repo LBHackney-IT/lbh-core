@@ -30,20 +30,49 @@ jobs:
             - project/Hackney.Core/
   publish-package:
     executor: docker-dotnet
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
     steps:
       - *attach_workspace
+      - run:
+          name: Set Version Variable
+          command: echo "VERSION"
       - run: 
           name: Publish to GitHub
           command: |
             cd ./Hackney.Core/
             dir
             dotnet nuget push Hackney.Core.1.0.0.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+
+  version-package:
+    executor: docher-dotnet
+    steps:
+      - checkout
+      - *attach_workspace
+      - run:
+          name: Release the Package          
+          command: | 
+            dir
+            cd ./Hackney.Core
+            dotnet pack --configuration Release /p:Version=${VERSION}
+      - run: 
+          name: Publish to GitHub
+          command: |
+            cd ./Hackney.Core/
+            dir
+            dotnet nuget push Hackney.Core.${VERSION}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+
 workflows:
   nuget-package:
     jobs:
-      - dotnet-pack
-      - publish-package:
-          requires:   
-            - dotnet-pack
+      # - dotnet-pack
+      # - publish-package:
+      #     requires:   
+      #       - dotnet-pack
+      #     filters:
+      #       branches:
+      #         only: release
+      - version-package
+          
 
 
