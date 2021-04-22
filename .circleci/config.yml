@@ -13,13 +13,6 @@ references:
       at: *workspace_root     
 
 jobs:
-  build:
-    executor: docker-dotnet
-    steps:
-      - run:
-          name: dotnet restore
-          command: |
-            dotnet build --configuration Release --no-restore
   dotnet-pack:
     executor: docker-dotnet
     steps:      
@@ -44,12 +37,11 @@ jobs:
           command: |
             cd ./Hackney.Core/
             dir
-            dotnet nuget push --source Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push Hackney.Core.1.0.0.nupkg --s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
     jobs:
-      - build
-      - dotnet-pack:
+      - dotnet-pack
       - publish-package:
           requires:   
             - dotnet-pack
