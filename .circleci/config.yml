@@ -39,7 +39,7 @@ jobs:
           command: |
             cd ./Hackney.Core/
             dir
-            dotnet nuget push Hackney.Core.1.0.0.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push Hackney.Core.1.0.1.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 # /tags\/v/
   version-package:
     executor: docker-dotnet
@@ -64,7 +64,7 @@ jobs:
             echo ${CIRCLE_TAG}
             cd ./Hackney.Core/
             dir
-            dotnet nuget push Hackney.Core.1.0.0.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push Hackney.Core.1.0.1.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.1/*.nupkg
 
 workflows:
   nuget-package:
