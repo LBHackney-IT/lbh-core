@@ -30,8 +30,6 @@ jobs:
             - project/Hackney.Core/
   publish-package:
     executor: docker-dotnet
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
     steps:
       - *attach_workspace
       - run:
@@ -54,13 +52,13 @@ jobs:
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release /p:Version=${VERSION}
+            dotnet pack --configuration Release /p:Version=/tags\/v/
       - run: 
           name: Publish to GitHub
           command: |
             cd ./Hackney.Core/
             dir
-            dotnet nuget push Hackney.Core.${VERSION}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push Hackney.Core./tags\/v/.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 
 workflows:
   nuget-package:
@@ -72,7 +70,11 @@ workflows:
       #     filters:
       #       branches:
       #         only: release
-      - version-package
+      - version-package:
+          filters:
+            tags:
+              only: "v[0-9]+.[0-9]+.[0-9]+"
+    
           
 
 
