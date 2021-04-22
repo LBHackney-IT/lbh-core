@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RepositoryUrl>https://github.com/LBHackney-IT/Hackney.Core</RepositoryUrl>
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
   </PropertyGroup>
-
 </Project>
