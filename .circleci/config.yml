@@ -37,7 +37,7 @@ jobs:
           command: |
             cd ./Hackney.Core/
             dir
-            dotnet nuget push --source Hackney.Core.1.0.0.nupkg --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
+            dotnet nuget push --source "Hackney.Core.1.0.0.nupkg" --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
 workflows:
   nuget-package:
     jobs:
