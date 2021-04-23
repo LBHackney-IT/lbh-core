@@ -12,70 +12,29 @@ references:
     attach_workspace:
       at: *workspace_root     
 jobs:
-  dotnet-pack:
-    executor: docker-dotnet
-    steps:      
-      - checkout
-      - *attach_workspace
-      - run:
-          name: Release the Package          
-          command: | 
-            dir
-            cd ./Hackney.Core
-            dotnet pack --configuration Release
-      - persist_to_workspace:
-          root: *workspace_root
-          paths:
-            - project/Hackney.Core/
   publish-package:
     executor: docker-dotnet
     steps:
-      - *attach_workspace
-      - run:
-          name: Set Version Variable
-          command: echo "VERSION"
-      - run: 
-          name: Publish to GitHub
-          command: |
-            cd ./Hackney.Core/
-            dir
-            dotnet nuget push Hackney.Core.1.0.1.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.0/*.nupkg
-# /tags\/v/
-  version-package:
-    executor: docker-dotnet
-    steps:
       - checkout
       - *attach_workspace
       - run:
           name: Release the Package          
           command: | 
-            dir
             cd ./Hackney.Core
             dotnet pack --configuration Release
-            echo TAG ${CIRCLE_TAG}
-            dir
       - run: 
           name: Publish to GitHub
           command: |
-            echo ${CIRCLE_TAG}
             cd /root/project/Hackney.Core/bin/Release
-            dir
             dotnet nuget push Hackney.Core.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.*/*.nupkg
 
 workflows:
   nuget-package:
     jobs:
-      # - dotnet-pack
-      # - publish-package:
-      #     requires:   
-      #       - dotnet-pack
-      #     filters:
-      #       branches:
-      #         only: release
-      - version-package:
+      - publish-package:
           filters:
-            tags:
-              only: "v[0-9]+.[0-9]+.[0-9]+"
+            branches:
+              only: release
     
           
 
