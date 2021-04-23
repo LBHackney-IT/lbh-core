@@ -51,8 +51,8 @@ jobs:
           command: | 
             dir
             cd ./Hackney.Core
-            echo TAG $CIRCLE_TAG
-            dotnet pack --configuration Release -p:PackageVersion=1.0.1
+            dotnet pack --configuration Release -p:PackageVersion=v[0-9]+.[0-9]+.[0-9]+
+            echo TAG PackageVersion
             dir
       - run: 
           name: Publish to GitHub
