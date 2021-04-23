@@ -1,13 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>    
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <PackageId>Hackney.Core</PackageId>
-    <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
-  </PropertyGroup>
-  <PropertyGroup>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 </Project>

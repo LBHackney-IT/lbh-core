@@ -51,7 +51,7 @@ jobs:
           command: | 
             dir
             cd ./Hackney.Core
-            dotnet pack --configuration Release -p:NuGetVersion=${CIRCLE_TAG}
+            dotnet pack --configuration Release
             echo TAG ${CIRCLE_TAG}
             dir
       - run: 
@@ -60,7 +60,7 @@ jobs:
             echo ${CIRCLE_TAG}
             cd /root/project/Hackney.Core/bin/Release
             dir
-            dotnet nuget push Hackney.Core.${CIRCLE_TAG}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.${CIRCLE_TAG}/*.nupkg
+            dotnet nuget push Hackney.Core.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.*/*.nupkg
 
 workflows:
   nuget-package:
