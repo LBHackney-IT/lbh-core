@@ -60,7 +60,7 @@ jobs:
             echo ${CIRCLE_TAG}
             cd /root/project/Hackney.Core/bin/Release
             dir
-            dotnet nuget push Hackney.Core.1.0.1.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.1.0.1/*.nupkg
+            dotnet nuget push Hackney.Core.${CIRCLE_TAG}.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${NUGET_KEY} Hackney.Core.${CIRCLE_TAG}/*.nupkg
 
 workflows:
   nuget-package:
