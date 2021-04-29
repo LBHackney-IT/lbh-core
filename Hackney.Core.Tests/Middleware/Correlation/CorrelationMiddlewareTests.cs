@@ -11,7 +11,7 @@ namespace Hackney.Core.Tests.Middleware.Correlation
 {
     public class CorrelationMiddlewareTests
     {
-        private CorrelationMiddleware _sut; 
+        private CorrelationMiddleware _sut;
 
         public CorrelationMiddlewareTests()
         {
@@ -73,7 +73,8 @@ namespace Hackney.Core.Tests.Middleware.Correlation
             var feature = new DummyResponseFeature();
             var httpContext = new DefaultHttpContext();
             httpContext.Features.Set<IHttpResponseFeature>(feature);
-            RequestDelegate next = async (ctx) => {
+            RequestDelegate next = async (ctx) =>
+            {
                 await feature.InvokeCallBack().ConfigureAwait(false);
             };
             _sut = new CorrelationMiddleware(next);
