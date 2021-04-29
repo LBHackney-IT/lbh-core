@@ -1,0 +1,9 @@
+version: "3.2"
+
+services:
+
+  hackney-core-test:
+    image: hackney-core-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Dockerfile
