@@ -3,13 +3,13 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Threading.Tasks;
 
-namespace Hackney.Core.Middleware.Correlation
+namespace Hackney.Core.Middleware.CorrelationId
 {
-    public class CorrelationMiddleware
+    public class CorrelationIdMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public CorrelationMiddleware(RequestDelegate next)
+        public CorrelationIdMiddleware(RequestDelegate next)
         {
             _next = next;
         }

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Hackney.Core.Middleware;
-using Hackney.Core.Middleware.Correlation;
+using Hackney.Core.Middleware.CorrelationId;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System.Threading.Tasks;
@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Hackney.Core.Tests.Middleware.Correlation
 {
-    public class CorrelationMiddlewareTests
+    public class CorrelationIdMiddlewareTests
     {
         [Fact]
         public async Task DoesNotReplaceCorrelationIdIfOneExists()
         {
             // Arrange
-            var sut = new CorrelationMiddleware(null);
+            var sut = new CorrelationIdMiddleware(null);
             var httpContext = new DefaultHttpContext();
             var headerValue = "123";
 
@@ -31,7 +31,7 @@ namespace Hackney.Core.Tests.Middleware.Correlation
         public async Task AddsCorrelationIdIfOneDoesNotExist()
         {
             // Arrange
-            var sut = new CorrelationMiddleware(null);
+            var sut = new CorrelationIdMiddleware(null);
             var httpContext = new DefaultHttpContext();
 
             // Act
@@ -50,7 +50,7 @@ namespace Hackney.Core.Tests.Middleware.Correlation
                 requestDelegateCalled = true;
                 return Task.CompletedTask;
             };
-            var sut = new CorrelationMiddleware(next);
+            var sut = new CorrelationIdMiddleware(next);
             var httpContext = new DefaultHttpContext();
 
             // Act
@@ -71,7 +71,7 @@ namespace Hackney.Core.Tests.Middleware.Correlation
             {
                 await feature.InvokeCallBack().ConfigureAwait(false);
             };
-            var sut = new CorrelationMiddleware(next);
+            var sut = new CorrelationIdMiddleware(next);
 
             // Act
             await sut.InvokeAsync(httpContext).ConfigureAwait(false);
