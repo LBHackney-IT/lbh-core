@@ -18,13 +18,13 @@ namespace Hackney.Core.Tests.Middleware.Correlation
             var httpContext = new DefaultHttpContext();
             var headerValue = "123";
 
-            httpContext.HttpContext.Request.Headers.Add(HeaderConstants.CorrelationId, headerValue);
+            httpContext.Request.Headers.Add(HeaderConstants.CorrelationId, headerValue);
 
             // Act
             await sut.InvokeAsync(httpContext).ConfigureAwait(false);
 
             // Assert
-            httpContext.HttpContext.Request.Headers[HeaderConstants.CorrelationId].Should().BeEquivalentTo(headerValue);
+            httpContext.Request.Headers[HeaderConstants.CorrelationId].Should().BeEquivalentTo(headerValue);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Hackney.Core.Tests.Middleware.Correlation
             await sut.InvokeAsync(httpContext).ConfigureAwait(false);
 
             // Assert
-            httpContext.HttpContext.Request.Headers[HeaderConstants.CorrelationId].Should().HaveCountGreaterThan(0);
+            httpContext.Request.Headers[HeaderConstants.CorrelationId].Should().HaveCountGreaterThan(0);
         }
 
         [Fact]
@@ -75,7 +75,6 @@ namespace Hackney.Core.Tests.Middleware.Correlation
 
             // Act
             await sut.InvokeAsync(httpContext).ConfigureAwait(false);
-            await httpContext.Response.StartAsync().ConfigureAwait(false);
 
             // Assert
             var response = httpContext.Response;
