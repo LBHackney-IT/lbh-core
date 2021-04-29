@@ -17,18 +17,18 @@ namespace Hackney.Core.Middleware.Correlation
         public async Task InvokeAsync(HttpContext context)
         {
             var correlationIdProvided =
-                context.Request.Headers.TryGetValue(Constants.CorrelationId, out var correlationId);
+                context.Request.Headers.TryGetValue(HeaderConstants.CorrelationId, out var correlationId);
             if (!correlationIdProvided)
             {
                 correlationId = new StringValues(Guid.NewGuid().ToString());
-                context.Request.Headers.Add(Constants.CorrelationId, correlationId);
+                context.Request.Headers.Add(HeaderConstants.CorrelationId, correlationId);
             }
 
             context.Response.OnStarting(() =>
             {
-                if (!context.Response.Headers.ContainsKey(Constants.CorrelationId))
+                if (!context.Response.Headers.ContainsKey(HeaderConstants.CorrelationId))
                 {
-                    context.Response.Headers.Add(Constants.CorrelationId, correlationId);
+                    context.Response.Headers.Add(HeaderConstants.CorrelationId, correlationId);
                 }
 
                 return Task.CompletedTask;
