@@ -1,17 +1,45 @@
 version: 2.1
+
 orbs:
   nuget-cache: guitarrapc/nuget-cache@0.1.1
   aws-ecr: circleci/aws-ecr@3.0.0
+
 executors:
   docker-dotnet:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  docker-python:
+    docker:
+      - image: circleci/python:3.7
+
 references:
   workspace_root: &workspace_root "~"
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root     
+
 jobs:
+  check-code-formatting:
+    executor: docker-dotnet
+    steps:
+      - checkout
+      - run:
+          name: Install dotnet format
+          command: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+      - run:
+          name: Run formatter check
+          command: ./dotnet-format-local/dotnet-format --check
+  build-and-test:
+    executor: docker-python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build
+          command: docker-compose build hackney-core-test
+      - run:
+          name: Run tests
+          command: docker-compose run hackney-core-test
   publish-package:
     executor: docker-dotnet
     steps:
@@ -31,6 +59,8 @@ jobs:
 workflows:
   nuget-package:
     jobs:
+      - check-code-formatting
+      - build-and-test
       - publish-package:
           filters:
             branches:
