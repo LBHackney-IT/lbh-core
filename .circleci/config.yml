@@ -62,6 +62,8 @@ workflows:
       - check-code-formatting
       - build-and-test
       - publish-package:
+          requires:
+            - build-and-test
           filters:
             branches:
               only: release

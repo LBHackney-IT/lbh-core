@@ -23,6 +23,7 @@ The new version number should use the following format.
 The following features are implemented within this package.
 * [MVC Middleware]
   * [Correlation middleware]
+  * [Exception middleware]
 
 
 ### MVC Middleware
@@ -52,7 +53,50 @@ namespace SomeApi
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             ...
-            app.UseCorrelation();
+            app.UseCorrelationId();
+            ...
+        }
+    }
+}
+
+```
+
+#### Exception middleware
+
+The exception middleware can be used to set up a custom exception hanlder that will be used in the event of any unhandled exception.
+It will log the exception and then return a standard error response that looks like the following.
+```json
+{
+    "message": "String '2020-09-0 17:33:44' was not recognized as a valid DateTime.",
+    "traceId": "0HM8BQ8L7EAEO:00000001",
+    "correlationId": "3fbf8755-eb41-4c03-be9f-d0ccae470e39",
+    "statusCode": 500
+}
+```
+
+| Property       | Description |
+| :---           | :---        |
+| message        | The message property from the unhandled exception. |
+| traceId        | The traceId from the original HttpRequest. |
+| correlationId  | The correlationId for the request. |
+| statusCode     | The HttpResponse status code. |
+
+##### Usage
+
+If required, the [Correlation Middleware] call should go before the exception handler to ensure that any error logged will also include the correlation id
+
+```csharp
+using Hackney.Core.Middleware.Correlation;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ...
+            app.UseCustomExceptionHandler();
             ...
         }
     }
