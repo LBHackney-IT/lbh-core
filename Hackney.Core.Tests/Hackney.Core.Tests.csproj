@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
-	  <NoWarn>CA1303;CA1001</NoWarn>
+	  <NoWarn>CA1303;CA1305;CA1001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.0.3">
         <PrivateAssets>all</PrivateAssets>
