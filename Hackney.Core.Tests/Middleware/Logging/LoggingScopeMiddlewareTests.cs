@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.Logging;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +36,25 @@ namespace Hackney.Core.Tests.Middleware.Logging
 
             var expectedState = $"CorrelationId: {_correlationId}; UserId: {_userId}";
             _mockLogger.Verify(x => x.BeginScope(It.Is<object>(y => y.ToString() == expectedState)), Times.Once());
+        }
+
+        [Fact]
+        public async Task RequestDelegateCalled()
+        {
+            var requestDelegateCalled = false;
+            RequestDelegate next = (httpContext) =>
+            {
+                requestDelegateCalled = true;
+                return Task.CompletedTask;
+            };
+            var sut = new LoggingScopeMiddleware(next);
+            var httpContext = new DefaultHttpContext();
+
+            // Act
+            await sut.InvokeAsync(httpContext, _mockLogger.Object).ConfigureAwait(false);
+
+            // Assert
+            requestDelegateCalled.Should().BeTrue();
         }
     }
 }
