@@ -32,7 +32,7 @@ namespace Hackney.Core.Tests.Logging
         [InlineData(true)]
         public void ConfigureLambdaLoggingTest(bool isDebug)
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", isDebug ? Environments.Development : null);
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", isDebug ? EnvironmentName.Development : null);
 
             var mockConfig = new Mock<IConfiguration>();
             var mockLoggingSection = new Mock<IConfigurationSection>();
