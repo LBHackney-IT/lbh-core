@@ -3,14 +3,13 @@ using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.Exception;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
-
 
 namespace Hackney.Core.Tests.Middleware.Exception
 {
@@ -23,7 +22,7 @@ namespace Hackney.Core.Tests.Middleware.Exception
 
         private readonly HttpContext _httpContext;
         private readonly Mock<IExceptionHandlerFeature> _mockExHandlerFeature;
-        private readonly InMemoryTraceListener _traceListener = new InMemoryTraceListener();
+        private readonly Mock<ILogger> _mockLogger;
 
         public ExceptionMiddlewareTests()
         {
@@ -36,8 +35,7 @@ namespace Hackney.Core.Tests.Middleware.Exception
             _mockExHandlerFeature = new Mock<IExceptionHandlerFeature>();
             _httpContext.Features.Set(_mockExHandlerFeature.Object);
 
-            _traceListener.Reset();
-            Trace.Listeners.Add(_traceListener);
+            _mockLogger = new Mock<ILogger>();
         }
 
         private async Task VerifyResponse(string resultMessage = DEFAULTERRORMESSAGE, int statusCode = DEFAULTERRORCODE)
@@ -60,7 +58,7 @@ namespace Hackney.Core.Tests.Middleware.Exception
             _httpContext.Features.Set<IExceptionHandlerFeature>(null);
 
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
@@ -71,12 +69,12 @@ namespace Hackney.Core.Tests.Middleware.Exception
         public async Task HandleExceptionsTestWithHandlerButNoExceptionWritesResponse()
         {
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
             await VerifyResponse().ConfigureAwait(false);
-            _traceListener.ContainsTrace("Request failed. ").Should().BeTrue();
+            _mockLogger.VerifyExact(LogLevel.Error, "Request failed.", Times.Once());
         }
 
         [Fact]
@@ -88,12 +86,12 @@ namespace Hackney.Core.Tests.Middleware.Exception
             _mockExHandlerFeature.SetupGet(x => x.Error).Returns(exception);
 
             // Act
-            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext)
+            await ExceptionMiddlewareExtensions.HandleExceptions(_httpContext, _mockLogger.Object)
                                                .ConfigureAwait(false);
 
             // Assert
             await VerifyResponse(exMessage).ConfigureAwait(false);
-            _traceListener.ContainsTrace($"Request failed. {exMessage}").Should().BeTrue();
+            _mockLogger.VerifyContains(LogLevel.Error, "Request failed.", Times.Once());
         }
     }
 }

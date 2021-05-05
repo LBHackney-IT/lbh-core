@@ -26,6 +26,8 @@ The following features are implemented within this package.
   * [Exception middleware](#Exception%20middleware)
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
+* [Logging](#Logging)
+  * [Lambda logging](#Lambda%20logging)
 
 
 ### MVC Middleware
@@ -65,7 +67,7 @@ namespace SomeApi
 
 #### Exception middleware
 
-The exception middleware can be used to set up a custom exception hanlder that will be used in the event of any unhandled exception.
+The exception middleware can be used to set up a custom exception handler that will be used in the event of any unhandled exception.
 It will log the exception and then return a standard error response that looks like the following.
 ```json
 {
@@ -85,10 +87,10 @@ It will log the exception and then return a standard error response that looks l
 
 ##### Usage
 
-If required, the [Correlation Middleware] call should go before the exception handler to ensure that any error logged will also include the correlation id
+If required, the [correlation middleware](#Correlation%20middleware]) call should go before the exception handler to ensure that any error logged will also include the correlation id
 
 ```csharp
-using Hackney.Core.Middleware.Correlation;
+using Hackney.Core.Middleware.Exception;
 
 namespace SomeApi
 {
@@ -99,6 +101,36 @@ namespace SomeApi
         {
             ...
             app.UseCustomExceptionHandler();
+            ...
+        }
+    }
+}
+
+```
+
+#### Logging scope middleware
+The logging scope middleware sets up a logging scope for every incoming HTTP request. 
+This means that every log statement made within that scope (i.e. during the HTTP request processing) 
+will include an addition string that contains both the correlation id (and user id, if available 
+in the headers) of the caller.
+This means that all other logging need not concern itself without having to add this data as it is already included.
+
+###### Usage
+When used in conjunction with the [correlation middleware](#Correlation%20middleware]), the call to 
+`UseLoggingScope()` should come _after_ the call to `UseCorrelationId()`.
+
+```csharp
+using Hackney.Core.Middleware.Logging;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ...
+            app.UseLoggingScope();
             ...
         }
     }
@@ -124,6 +156,26 @@ This means that, at the very least, your application must have a region specifie
   }
 ```
 
+###### Usage
+```csharp
+using Hackney.Core.DynamoDb;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ...
+            services.ConfigureDynamoDB();
+            ...
+        }
+    }
+}
+
+```
+
 ##### Local mode
 If there is a local DynamoDb instance available then this can be used by amending the application settings as shown below:
 ```json
@@ -137,7 +189,6 @@ If there is a local DynamoDb instance available then this can be used by amendin
 ```
 The `LocalMode` flag must be set to `true` and the `LocalServiceUrl` should point to the local DynamoDb instance. 
 These 2 values can also be set as environment variables.
-
 
 #### Converters
 
@@ -182,7 +233,7 @@ Internally it operates in the same way as the `DynamoDbEnumConverter`.
 
 This should be used on properties that are a custom object.
 The coverter works by simply serialising the object to and from the database using Json.
-It does this because the native ASWS for nested objects is very simplistic and does not honour the `LowerCamelCaseProperties` value set on the root class.
+It does this because the native AWS functionality for nested objects is very simplistic and does not honour the `LowerCamelCaseProperties` value set on the root class.
 By simply converting the entire sub-object using Json we bypass these limitations.
 
 ###### Usage
@@ -200,4 +251,112 @@ Internally it operates in the same way as the `DynamoDbObjectConverter`.
 ```csharp
     [DynamoDBProperty(Converter = typeof(DynamoDbEnumListConverter<PersonType>))]
     public List<PersonType> PersonTypes { get; set; } = new List<PersonType>();
+```
+
+### Logging
+
+#### Lambda logging
+
+There is a helper method that can be used durung application startup to configure the generic Microsoft `ILogger`
+framework to log to the AWS Lambda logger. By making use of the standard Microsoft implementation, it will also 
+make use of the any [standard logging configuration](#https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1#configure-logging) 
+in the appsettings.json configuration file.
+
+The `ConfigureLambdaLogging()` extension method will set up logging so to use the Lambda logger 
+(as well as logging to debug output, and the console if the application is running in the development environment).
+
+###### Usage
+```csharp
+using Hackney.Core.Logging;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ...
+            services.ConfigureLambdaLogging(Configuration);
+            ...
+        }
+    }
+}
+
+```
+
+#### Log call aspect
+By making use of the [Aspect Injector](#https://github.com/pamidur/aspect-injector) library it is possible 
+to easily add method logging with a single line of code.
+This method logging generates simple log statements for the start and end of the decorated method. 
+It does this be generating (at compile time) a proxy around the class and then calling a custom aspect 
+before and after a decorated method. It is this custom aspect that will perform the logging.
+
+In this way it is possible to easily add method logging without polluting methods with code that would 
+have to be continually replicated.
+
+**Note:**
+Because the aspect proxy is generated at compile time, this **will** affect how unit tests are written. 
+Any unit tests that are on a class that uses the `[LogCall]` (regardless of whether or not they are testing 
+a decorated method) must also ensure that the DI container used by the aspect is configured appropriately.
+
+##### Usage
+
+###### Setup
+The first call adds the necessary DI container registrations, and the second call ensures that the DI
+container used to inject the `ILogger` into the custom aspect is the same one that is created in 
+the application startup.
+
+```csharp
+
+using Hackney.Core.Middleware.Logging;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ...
+            services.AddLogCallAspect();
+            ...
+        }
+
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ...
+            app.UseLogCall();
+            ...
+        }
+    }
+}
+
+```
+
+###### Decorate a method
+To add method logging to a method simply decorate the method with the `[LogCall]` attribute.
+```csharp
+using Hackney.Core.Logging;
+
+namespace SomeApi
+{
+    public class SomeClass
+    {
+        // The default log level is Trace.
+        [LogCall]
+        public void SomeMethod()
+        {
+            ...
+        }
+
+        // It is possible specify the log level required on the attribute.
+        [LogCall(LogLevel.Information)]
+        public void SomeOtherMethod()
+        {
+            ...
+        }
+    }
+}
+
 ```

@@ -5,7 +5,6 @@ using Newtonsoft.Json.Serialization;
 using System;
 using Xunit;
 
-
 namespace Hackney.Core.Tests.Middleware.Exception
 {
     public class ExceptionResultTests
