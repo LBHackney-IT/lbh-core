@@ -297,13 +297,13 @@ have to be continually replicated.
 
 **Note:**
 Because the aspect proxy is generated at compile time, this **will** affect how unit tests are written. 
-Any unit tests that are on a class that uses the `[LogCall]` (regardless of whether or not they are testing 
+Any unit tests that are on a class that uses the `[LogCall]` attribute (regardless of whether or not they are testing 
 a decorated method) must also ensure that the DI container used by the aspect is configured appropriately.
 
 ##### Usage
 
 ###### Setup
-The first call adds the necessary DI container registrations, and the second call ensures that the DI
+The first call adds the necessary DI container registrations and the second call ensures that the DI
 container used to inject the `ILogger` into the custom aspect is the same one that is created in 
 the application startup.
 
