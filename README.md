@@ -289,7 +289,7 @@ namespace SomeApi
 By making use of the [Aspect Injector](#https://github.com/pamidur/aspect-injector) library it is possible 
 to easily add method logging with a single line of code.
 This method logging generates simple log statements for the start and end of the decorated method. 
-It does this be generating (at compile time) a proxy around the class and then calling a custom aspect 
+It does this by generating (at compile time) a proxy around the class and then calling a custom aspect 
 before and after a decorated method. It is this custom aspect that will perform the logging.
 
 In this way it is possible to easily add method logging without polluting methods with code that would 
