@@ -23,8 +23,37 @@ namespace Hackney.Core.Tests.DynamoDb
             services.ConfigureDynamoDB();
 
             services.Any(x => x.ServiceType == typeof(IAmazonDynamoDB)).Should().BeTrue();
-            services.Any(x => x.ServiceType == typeof(IDynamoDBContext)).Should().BeTrue();
+            var sd = services.First(x => x.ServiceType == typeof(IAmazonDynamoDB));
+            sd.Lifetime.Should().Be(ServiceLifetime.Singleton);
+            sd.ImplementationFactory.Should().NotBeNull();
 
+            services.Any(x => x.ServiceType == typeof(IDynamoDBContext)).Should().BeTrue();
+            sd = services.First(x => x.ServiceType == typeof(IDynamoDBContext));
+            sd.Lifetime.Should().Be(ServiceLifetime.Scoped);
+            sd.ImplementationFactory.Should().NotBeNull();
+
+            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
+        }
+
+        [Fact]
+        public void ConfigureDynamoDBTestRegistersServices()
+        {
+            string url = "http://localhost:8000";
+            Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", url);
+            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", "true");
+
+            ServiceCollection services = new ServiceCollection();
+            services.ConfigureDynamoDB();
+            var serviceProvider = services.BuildServiceProvider();
+
+            var amazonDynamoDB = serviceProvider.GetService<IAmazonDynamoDB>();
+            amazonDynamoDB.Should().NotBeNull();
+            amazonDynamoDB.Config.ServiceURL.Should().Be(url);
+
+            var dynamoDBContext = serviceProvider.GetService<IDynamoDBContext>();
+            dynamoDBContext.Should().NotBeNull();
+
+            Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", null);
             Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
         }
     }
