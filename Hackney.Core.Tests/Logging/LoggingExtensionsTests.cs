@@ -28,11 +28,15 @@ namespace Hackney.Core.Tests.Logging
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public void ConfigureLambdaLoggingTest(bool isDebug)
+        [InlineData(null)]
+        [InlineData("Development")]
+        [InlineData("Staging")]
+        [InlineData("Production")]
+        [InlineData("SomeOtherName")]
+        public void ConfigureLambdaLoggingTest(string envName)
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", isDebug ? EnvironmentName.Development : null);
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", envName);
+            bool shouldHaveConsoleLogger = (envName != EnvironmentName.Production) && (envName != EnvironmentName.Staging);
 
             var mockConfig = new Mock<IConfiguration>();
             var mockLoggingSection = new Mock<IConfigurationSection>();
@@ -44,7 +48,7 @@ namespace Hackney.Core.Tests.Logging
             services.Any(x => IsServiceRegistered<ILoggerProvider>(x, nameof(DebugLoggerProvider))).Should().BeTrue();
             services.Any(x => IsServiceRegistered<ILoggerProvider>(x, "LambdaILoggerProvider")).Should().BeTrue();
             services.Any(x => IsServiceRegistered<ILoggerProvider>(x, "EventSourceLoggerProvider")).Should().BeTrue();
-            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, nameof(ConsoleLoggerProvider))).Should().Be(isDebug);
+            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, nameof(ConsoleLoggerProvider))).Should().Be(shouldHaveConsoleLogger);
         }
     }
 }

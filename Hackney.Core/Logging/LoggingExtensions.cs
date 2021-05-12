@@ -33,7 +33,9 @@ namespace Hackney.Core.Logging
                 };
                 config.AddLambdaLogger(loggerOptions);
 
-                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == EnvironmentName.Development)
+                var aspNetcoreEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if ((aspNetcoreEnvironment != EnvironmentName.Production)
+                    && (aspNetcoreEnvironment != EnvironmentName.Staging))
                 {
                     config.AddConsole();
                 }
