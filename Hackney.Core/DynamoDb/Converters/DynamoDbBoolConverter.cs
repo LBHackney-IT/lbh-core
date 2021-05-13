@@ -13,7 +13,7 @@ namespace Hackney.Core.DynamoDb.Converters
         {
             if (null == value) return new DynamoDBNull();
 
-            return new DynamoDBBool((bool) value);
+            return new DynamoDBBool((bool)value);
         }
 
         public object FromEntry(DynamoDBEntry entry)

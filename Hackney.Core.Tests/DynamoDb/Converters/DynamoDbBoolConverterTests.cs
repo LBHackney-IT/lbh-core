@@ -49,7 +49,7 @@ namespace Hackney.Core.Tests.DynamoDb.Converters
         {
             DynamoDBEntry dbEntry = new DynamoDBBool(input);
 
-            ((bool) _sut.FromEntry(dbEntry)).Should().Be(input);
+            ((bool)_sut.FromEntry(dbEntry)).Should().Be(input);
         }
 
         [Fact]
