@@ -31,6 +31,11 @@ namespace Hackney.Core.Middleware.Logging
     [ExcludeFromCodeCoverage]
     public static class LoggingScopeMiddlewareExtensions
     {
+        /// <summary>
+        /// Adds the LoggingScope middleware to the MVC request pipeline
+        /// </summary>
+        /// <param name="builder">The application builder</param>
+        /// <returns>The application builder</returns>
         public static IApplicationBuilder UseLoggingScope(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<LoggingScopeMiddleware>();

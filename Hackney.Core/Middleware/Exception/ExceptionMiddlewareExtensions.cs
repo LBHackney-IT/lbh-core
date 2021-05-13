@@ -12,10 +12,16 @@ namespace Hackney.Core.Middleware.Exception
 {
     public static class ExceptionMiddlewareExtensions
     {
+        /// <summary>
+        /// Adds a custom exception handler middleware to the MVC request pipeline.
+        /// This handler will log the exception and then return a standard exception response to the caller.
+        /// </summary>
+        /// <param name="builder">The application builder</param>
+        /// <returns>The application builder</returns>
         [ExcludeFromCodeCoverage]
-        public static void UseCustomExceptionHandler(this IApplicationBuilder app, ILogger logger)
+        public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
-            app.UseExceptionHandler(appError =>
+            return app.UseExceptionHandler(appError =>
             {
                 appError.Run(async context =>
                 {

@@ -9,7 +9,9 @@ using System.Text.Json.Serialization;
 namespace Hackney.Core.DynamoDb.Converters
 {
     /// <summary>
-    /// Converter for enum lists where the value stored should be the enum value name (not the numeric value)
+    /// Converter for a list of sub-objects.
+    /// Treats a custom sub-objects as straight Json, meaning any DynamoDb attributes it may have are not applied
+    /// Will (de)serialise any enum properties as the name value (not the numeric value)
     /// </summary>
     public class DynamoDbObjectListConverter<T> : IPropertyConverter
     {

@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Hackney.Core.Logging
 {
+    /// <summary>
+    /// LogCall aspect that performs the logging at the start and end of a method.
+    /// </summary>
     [Aspect(Scope.PerInstance, Factory = typeof(LogCallAspectServices))]
     public class LogCallAspect
     {
