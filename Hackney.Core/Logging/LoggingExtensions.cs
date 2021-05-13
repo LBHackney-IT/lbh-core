@@ -8,7 +8,15 @@ namespace Hackney.Core.Logging
 {
     public static class LoggingExtensions
     {
-        public static void ConfigureLambdaLogging(this IServiceCollection services, IConfiguration configuration)
+        /// <summary>
+        /// Configures the logging stack to use the AWS LambdaLogger.
+        /// Console output wioll only be included if the ASPNETCORE_ENVIRONMENT environment variable
+        /// value is not "Staging" or "Production".
+        /// </summary>
+        /// <param name="services">The service collection</param>
+        /// <param name="configuration">A Configuration instance</param>
+        /// <returns>The service collection</returns>
+        public static IServiceCollection ConfigureLambdaLogging(this IServiceCollection services, IConfiguration configuration)
         {
             // We rebuild the logging stack so as to ensure the console logger is not used in production.
             // See here: https://weblog.west-wind.com/posts/2018/Dec/31/Dont-let-ASPNET-Core-Default-Console-Logging-Slow-your-App-down
@@ -40,6 +48,8 @@ namespace Hackney.Core.Logging
                     config.AddConsole();
                 }
             });
+
+            return services;
         }
     }
 }

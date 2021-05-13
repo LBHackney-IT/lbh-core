@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace Hackney.Core.DynamoDb.Converters
 {
+    /// <summary>
+    /// Converter for a list of enums where the value stored should be the enum value name (not the numeric value)
+    /// </summary>
     public class DynamoDbEnumListConverter<TEnum> : IPropertyConverter where TEnum : Enum
     {
         public DynamoDBEntry ToEntry(object value)

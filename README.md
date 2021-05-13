@@ -195,6 +195,19 @@ These 2 values can also be set as environment variables.
 There are a number of different converters provided to make using the `IDynamoDBContext` easier.
 They are used against a property on a model class to tell the underlying AWS libraries how to marshal the property into and out of the database.
 
+##### DynamoDbBoolConverter
+
+This should be used on `bool` properties.
+The default AWS `bool` processing converts the bool value to an integer of 0 or 1, which may or may not be a problem in itself depending on your specific data requirements.
+However if you need to filter your database query on a bool property, this attribute will need to be decorating it. 
+This will mean that the bool value will get serialsed into and out of the database properly (as "true" or "false") and it will also mean that the property can be used as needed in any filter.
+
+###### Usage
+```csharp
+    [DynamoDBProperty(Converter = typeof(DynamoDbBoolConverter))]
+    public bool IsActive { get; set; }
+```
+
 ##### DynamoDbDateTimeConverter
 
 This should be used on `DateTime` properties.
@@ -235,6 +248,7 @@ This should be used on properties that are a custom object.
 The coverter works by simply serialising the object to and from the database using Json.
 It does this because the native AWS functionality for nested objects is very simplistic and does not honour the `LowerCamelCaseProperties` value set on the root class.
 By simply converting the entire sub-object using Json we bypass these limitations.
+However this will mean that any DynamoDb converters set against properties on nested objects will not be used.
 
 ###### Usage
 ```csharp
