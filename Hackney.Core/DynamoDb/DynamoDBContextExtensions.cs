@@ -28,7 +28,7 @@ namespace Hackney.Core.DynamoDb
                 dbResults.AddRange(dynamoDbContext.FromDocuments<TEntity>(resultsSet));
 
                 // Look ahead for any more
-                if (!string.IsNullOrEmpty(paginationToken))
+                if (!string.IsNullOrEmpty(PaginationDetails.EncodeToken(paginationToken)))
                 {
                     queryConfig.PaginationToken = paginationToken;
                     queryConfig.Limit = 1;
