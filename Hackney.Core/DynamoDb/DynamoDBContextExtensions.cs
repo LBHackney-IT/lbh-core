@@ -28,12 +28,15 @@ namespace Hackney.Core.DynamoDb
                 dbResults.AddRange(dynamoDbContext.FromDocuments<TEntity>(resultsSet));
 
                 // Look ahead for any more
-                queryConfig.PaginationToken = paginationToken;
-                queryConfig.Limit = 1;
-                search = table.Query(queryConfig);
-                resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
-                if (!resultsSet.Any())
-                    paginationToken = null;
+                if (!string.IsNullOrEmpty(paginationToken))
+                {
+                    queryConfig.PaginationToken = paginationToken;
+                    queryConfig.Limit = 1;
+                    search = table.Query(queryConfig);
+                    resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
+                    if (!resultsSet.Any())
+                        paginationToken = null;
+                }
             }
 
             return new PagedResult<TEntity>(dbResults, new PaginationDetails(paginationToken));
