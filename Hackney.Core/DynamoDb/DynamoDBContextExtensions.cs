@@ -27,7 +27,7 @@ namespace Hackney.Core.DynamoDb
             {
                 dbResults.AddRange(dynamoDbContext.FromDocuments<TEntity>(resultsSet));
 
-                // Look ahead for any more
+                // Look ahead for any more, but only if we have a token
                 if (!string.IsNullOrEmpty(PaginationDetails.EncodeToken(paginationToken)))
                 {
                     queryConfig.PaginationToken = paginationToken;
