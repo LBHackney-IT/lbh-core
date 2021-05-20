@@ -20,14 +20,14 @@ The new version number should use the following format.
 ## Using the package
 The GitHub Nuget Package Repository cannot be accessed anonymously, meaning that to use it in your projects you must add or update the 
 NuGet.Config file to include an authorisation token.
-* If there isn't one there already, create a file in the root of the repository called (exactly) "NuGet.Config" - the casing here is important.
-* In the NuGet.Config file, add a package source for `github-hackney` that uses the endpoint https://nuget.pkg.github.com/LBHackney-IT/index.json
-* Add or update the `packageSourceCredentials` section to include the credentials for the `github-hackney` source.
+* If there isn't one there already, create a file in the root of the repository called NuGet.Config.
+* In the NuGet.Config file, add a package source for `github-hackney` that uses the endpoint https://nuget.pkg.github.com/LBHackney-IT/index.json Add or update the `packageSourceCredentials` section to include the credentials for the `github-hackney` source. 
+The token value specified here is a public token whose only permissions are read-only access to the Github Nuget Package Repository.
 ```xml
   <packageSourceCredentials>
     <github-hackney>
       <add key="Username" value="PublicToken" />
-      <add key="ClearTextPassword" value="PUT THE ENCODED TOKEN HERE" />
+      <add key="ClearTextPassword" value="&#103;hp_H1gYc0BCfSXMlf3vRuhHa3lJrxi4Kn4HhR4o" />
     </github-hackney>
   </packageSourceCredentials>
 ```
@@ -45,7 +45,7 @@ In the end the NuGet.Config file should look like this (less any other package s
   <packageSourceCredentials>
     <github-hackney>
       <add key="Username" value="PublicToken" />
-      <add key="ClearTextPassword" value="PUT THE ENCODED TOKEN HERE" />
+      <add key="ClearTextPassword" value="&#103;hp_H1gYc0BCfSXMlf3vRuhHa3lJrxi4Kn4HhR4o" />
     </github-hackney>
   </packageSourceCredentials>
 
@@ -53,6 +53,17 @@ In the end the NuGet.Config file should look like this (less any other package s
 ```
 
 Once the NuGet.Config has been updated, (re)start Visual Studio and use the Package Manager to install the Hackney.Core NuGet package.
+
+### Docker files
+In order to ensure that the NuGet.Config file gets honoured when building the project(s) within a docker container, the docker file needs 
+to be updated to copy the NuGet.Config file to the appropriate root folder.
+
+To do this, add the following line to any relevant docker files _**before**_ any package restore or build commands are used:
+```bash
+COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
+```
+**Note:** The casing of the copied filename (i.e. "NuGet.Config") is critical because if the docker container is linux one then the 
+file will not get recognised if the filename casing is not correct.
 
 ## Features
 
