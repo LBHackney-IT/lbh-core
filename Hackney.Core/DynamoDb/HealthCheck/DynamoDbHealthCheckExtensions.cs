@@ -7,25 +7,28 @@ namespace Hackney.Core.DynamoDb.HealthCheck
     {
         private const string Name = "DynamoDb";
 
-        /// <returns>The <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection RegisterDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
+        internal static IServiceCollection RegisterDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
         {
             return services.AddSingleton<IHealthCheck, DynamoDbHealthCheck<T>>();
         }
 
-        /// <returns>The <see cref="IHealthChecksBuilder"/>.</returns>
-        public static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
-        {
-            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
-        }
-
-        /// <returns>The <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
+        internal static IServiceCollection AddDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
         {
             services.RegisterDynamoDbHealthCheck<T>();
             services.AddHealthChecks()
                     .AddDynamoDbHealthCheck<T>();
             return services;
+        }
+
+        /// <summary>
+        /// Adds a health check to verify connectivity to a DynamoDb table.
+        /// </summary>
+        /// <typeparam name="T">The database model class used to determine the DynamoDb table name.</typeparam>
+        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
+        /// <returns>The <see cref="IHealthChecksBuilder"/>.</returns>
+        public static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
+        {
+            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
         }
     }
 }

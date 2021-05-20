@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace Hackney.Core.DynamoDb.HealthCheck
 {
+    /// <summary>
+    /// <see cref="IHealthCheck"/> implementation to verify access to a DynamoDb instance by performing 
+    /// a DescribeTable call the table associate with the supplied model class.
+    /// </summary>
+    /// <typeparam name="T">The database model class</typeparam>
     public class DynamoDbHealthCheck<T> : IHealthCheck where T : class
     {
         private readonly IAmazonDynamoDB _client;
