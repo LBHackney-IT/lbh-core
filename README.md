@@ -2,7 +2,7 @@
 At Hackney, we have created the NuGet Package to prevent the duplication of common code when implementing our APIs.
 Hence this NuGet package will store the common code that can then be used in the relevant projects. 
 
-### CircleCI Pipeline - Versioning
+#### CircleCI Pipeline - Versioning
 At present the pipeline does not automatically update the package version number.
 
 **This means that for the NuGet Push command to work when code is merged to the release branch 
@@ -17,6 +17,42 @@ The new version number should use the following format.
     Patch: Backwards compatible bug fixes only
     Suffix (optional): a hyphen followed by a string denoting a pre-release version
 
+## Using the package
+The GitHub Nuget Package Repository cannot be accessed anonymously, meaning that to use it in your projects you must add or update the 
+NuGet.Config file to include an authorisation token.
+* If there isn't one there already, create a file in the root of the repository called (exactly) "NuGet.Config" - the casing here is important.
+* In the NuGet.Config file, add a package source for `github-hackney` that uses the endpoint https://nuget.pkg.github.com/LBHackney-IT/index.json
+* Add or update the `packageSourceCredentials` section to include the credentials for the `github-hackney` source.
+```xml
+  <packageSourceCredentials>
+    <github-hackney>
+      <add key="Username" value="PublicToken" />
+      <add key="ClearTextPassword" value="PUT THE ENCODED TOKEN HERE" />
+    </github-hackney>
+  </packageSourceCredentials>
+```
+
+In the end the NuGet.Config file should look like this (less any other package sources you may already have):
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    
+  <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+    <add key="github-hackney" value="https://nuget.pkg.github.com/LBHackney-IT/index.json" />
+  </packageSources>
+
+  <packageSourceCredentials>
+    <github-hackney>
+      <add key="Username" value="PublicToken" />
+      <add key="ClearTextPassword" value="PUT THE ENCODED TOKEN HERE" />
+    </github-hackney>
+  </packageSourceCredentials>
+
+</configuration>
+```
+
+Once the NuGet.Config has been updated, (re)start Visual Studio and use the Package Manager to install the Hackney.Core NuGet package.
 
 ## Features
 
