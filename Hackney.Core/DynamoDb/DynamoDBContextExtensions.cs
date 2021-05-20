@@ -13,6 +13,13 @@ namespace Hackney.Core.DynamoDb
         // This method cannot be unit tested because IDynamoDBContext.GetTargetTable returns and object that cannot be mocked.
         // See here: https://github.com/aws/aws-sdk-net/issues/1310
 
+        /// <summary>
+        /// Executes a paged query against DyanmoDb for the specified entity
+        /// </summary>
+        /// <typeparam name="TEntity">The database model class</typeparam>
+        /// <param name="dynamoDbContext">The IDynamoDBContext context</param>
+        /// <param name="queryConfig">The query config used for the query</param>
+        /// <returns>The paged results</returns>
         [ExcludeFromCodeCoverage]
         public static async Task<PagedResult<TEntity>> GetPagedQueryResultsAsync<TEntity>(
             this IDynamoDBContext dynamoDbContext, QueryOperationConfig queryConfig) where TEntity : class
