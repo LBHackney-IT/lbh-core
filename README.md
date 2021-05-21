@@ -29,6 +29,8 @@ The following features are implemented within this package.
   * [Paged results](#Paged%20results)
 * [Logging](#Logging)
   * [Lambda logging](#Lambda%20logging)
+* [Validation](#Validation)
+  * [XssValidator](#XssValidator)
 
 
 ### MVC Middleware
@@ -427,4 +429,32 @@ namespace SomeApi
     }
 }
 
+```
+
+### Validation
+
+#### XssValidator
+The XssValidator class is [Fluent Validation](https://docs.fluentvalidation.net/en/latest/index.html#) `PropertyValidator` implementation that will check if a property has potentially dangerous content.
+
+##### Usage
+Applications using this validator will need to have already configured their application to use Fluent Validation.
+The validator is used through the `RuleBuilder` extension method `NotXssString()` that can be used when defining a validation rule.
+
+In the example, the `NotXssString` rule is applied to all 3 string properties on the object.
+```csharp
+using FluentValidation;
+using Hackney.Core.Validation;
+
+namespace SomeApi.Domain.Validation
+{
+    public class CategorisationValidator : AbstractValidator<Categorisation>
+    {
+        public CategorisationValidator()
+        {
+            RuleFor(x => x.Category).NotXssString();
+            RuleFor(x => x.SubCategory).NotXssString();
+            RuleFor(x => x.Description).NotXssString();
+        }
+    }
+}
 ```
