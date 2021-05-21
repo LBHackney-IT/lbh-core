@@ -26,6 +26,7 @@ The following features are implemented within this package.
   * [Exception middleware](#Exception%20middleware)
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
+  * [Paged results](#Paged%20results)
   * [Health check](#Health%20check)
 * [Health check helpers](#Health%20check%20helpers)
 * [Logging](#Logging)
@@ -267,6 +268,59 @@ Internally it operates in the same way as the `DynamoDbObjectConverter`.
 ```csharp
     [DynamoDBProperty(Converter = typeof(DynamoDbEnumListConverter<PersonType>))]
     public List<PersonType> PersonTypes { get; set; } = new List<PersonType>();
+```
+
+#### Paged results
+The implementation of querying for paged results within DynamoDb is limited compared to other database technologies.
+In essence if you query a table with a specific page size, if there are potentially more results beyond that page size limit
+then a token will be returned along with the results. This token (it is a json object) indicates where in the full results list 
+the current set of results ended. If this token is supplied in the next query then the list of results will start from where the 
+last set finished.
+
+##### PagedResult
+This is a template class used to encapsulate the results of a paged query.
+
+|Property|Description|
+|:---|:---|
+|Results|The list of result objects from the query.|
+|PaginationDetails|A `PaginationDetails` object that may or may not contain a token.|
+
+##### PaginationDetails
+This class encapsulates the results of a paged query.
+It contains static methods to encode or decode a token value as needed.
+
+|Property|Description|
+|:---|:---|
+|HasNext|Boolen value indicating whether or not there is a next token.|
+|NextToken|The token returned by the call to the AWS SDK encoded as a Base64 string.</br>`null` if there is no token.|
+
+##### GetPagedQueryResultsAsync
+This is an extension method on the `IDynamoDBContext` interface that is used to make a paged query against the database 
+and returns a `PagedResult` object.
+
+If there are no more results after the query has been made (regardless of the specified page size) then the 
+`PaginationDetails.NextToken` will be null.
+
+###### Usage
+```csharp
+public async Task<PagedResult<NoteDb>> GetNotesByTargetIdAsync(GetNotesByTargetIdQuery query)
+
+{
+    _logger.LogDebug($"Querying DynamoDB for notes for TargetId {query.TargetId}");
+
+    int pageSize = query.PageSize.HasValue ? query.PageSize.Value : MAX_RESULTS;
+    var queryConfig = new QueryOperationConfig
+    {
+        IndexName = GETNOTESBYTARGETIDINDEX,
+        BackwardSearch = true,
+        ConsistentRead = true,
+        Limit = pageSize,
+        PaginationToken = PaginationDetails.DecodeToken(query.PaginationToken),
+        Filter = new QueryFilter(TARGETID, QueryOperator.Equal, query.TargetId)
+    };
+
+    return await _dynamoDbContext.GetPagedQueryResultsAsync<NoteDb>(queryConfig).ConfigureAwait(false);
+}
 ```
 
 #### Health check
