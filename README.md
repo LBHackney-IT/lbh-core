@@ -301,7 +301,8 @@ If there are no more results after the query has been made (regardless of the sp
 
 ###### Usage
 ```csharp
-public async Task<PagedResult<NoteDb>> GeNotestByTargetIdAsync(GetNotesByTargetIdQuery query)
+public async Task<PagedResult<NoteDb>> GetNotesByTargetIdAsync(GetNotesByTargetIdQuery query)
+
 {
     _logger.LogDebug($"Querying DynamoDB for notes for TargetId {query.TargetId}");
 
