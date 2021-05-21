@@ -26,6 +26,8 @@ The following features are implemented within this package.
   * [Exception middleware](#Exception%20middleware)
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
+  * [Health check](#Health%20check)
+* [Health check helpers](#Health%20check%20helpers)
 * [Logging](#Logging)
   * [Lambda logging](#Lambda%20logging)
 
@@ -306,7 +308,7 @@ namespace SomeApi
 
 ```
 
-### Health check
+### Health check helpers
 The default HTTP response from the Microsoft Health check framework is simply a headline `HealthStatus` value with the appropriate Http status code.
 
 In order to provide more meaningful response information a custom response writer, the `HealthCheckResponseWriter.WriteResponse` static method,  
