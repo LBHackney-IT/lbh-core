@@ -62,7 +62,7 @@ To do this, add the following line to any relevant docker files _**before**_ any
 ```bash
 COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
 ```
-**Note:** The casing of the copied filename (i.e. "NuGet.Config") is critical because if the docker container is linux one then the 
+**Note:** The casing of the copied filename (i.e. "NuGet.Config") is critical because if the docker container is a linux one then the 
 file will not get recognised if the filename casing is not correct.
 
 ## Features
