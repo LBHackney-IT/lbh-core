@@ -27,6 +27,8 @@ The following features are implemented within this package.
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
   * [Paged results](#Paged%20results)
+  * [Health check](#Health%20check)
+* [Health check helpers](#Health%20check%20helpers)
 * [Logging](#Logging)
   * [Lambda logging](#Lambda%20logging)
 * [Validation](#Validation)
@@ -321,6 +323,81 @@ public async Task<PagedResult<NoteDb>> GetNotesByTargetIdAsync(GetNotesByTargetI
 
     return await _dynamoDbContext.GetPagedQueryResultsAsync<NoteDb>(queryConfig).ConfigureAwait(false);
 }
+```
+
+#### Health check
+There is a `DynamoDbHealthCheck` class implemented that uses the 
+[Microsoft Health check framework](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-2.2).
+The check verifies that the required DynamoDb table is accessible by performing a `DescribeTable` call.
+
+##### Usage
+The template argument supplied to the `AddDynamoDbHealthCheck()` call is the name of a database model class that has the `DynamoDbTable` 
+attribute applied to it. The method uses this attribute to determine the table name to use to query the database.
+
+```csharp
+using Hackney.Core.DynamoDb.HealthCheck;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ...
+            services.AddDynamoDbHealthCheck<NoteDb>();
+            ...
+        }
+
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ...
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+            });
+            ...
+        }
+    }
+}
+
+```
+
+### Health check helpers
+The default HTTP response from the Microsoft Health check framework is simply a headline `HealthStatus` value with the appropriate Http status code.
+
+In order to provide more meaningful response information a custom response writer, the `HealthCheckResponseWriter.WriteResponse` static method,  
+has been implemented to serialise the entire `HealthReport` as json. 
+
+The only differences between the framework `HealthReport` class and the serialised response are:
+* Durations are given in milliseconds only
+* Any exception object has been replaced with just the exception message.
+
+#### Usage
+```csharp
+using Hackney.Core.DynamoDb.HealthCheck;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ...
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResponseWriter = HealthCheckResponseWriter.WriteResponse
+                });
+            });
+            ...
+        }
+    }
+}
+
 ```
 
 ### Logging
