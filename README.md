@@ -21,49 +21,11 @@ The new version number should use the following format.
 The GitHub Nuget Package Repository cannot be accessed anonymously, meaning that to use it in your projects you must add or update the 
 NuGet.Config file to include an authorisation token.
 * If there isn't one there already, create a file in the root of the repository called NuGet.Config.
-* In the NuGet.Config file, add a package source for `github-hackney` that uses the endpoint https://nuget.pkg.github.com/LBHackney-IT/index.json Add or update the `packageSourceCredentials` section to include the credentials for the `github-hackney` source. 
-The token value specified here is a public token whose only permissions are read-only access to the Github Nuget Package Repository.
-```xml
-  <packageSourceCredentials>
-    <github-hackney>
-      <add key="Username" value="PublicToken" />
-      <add key="ClearTextPassword" value="&#103;hp_H1gYc0BCfSXMlf3vRuhHa3lJrxi4Kn4HhR4o" />
-    </github-hackney>
-  </packageSourceCredentials>
-```
-
-In the end the NuGet.Config file should look like this (less any other package sources you may already have):
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-    
-  <packageSources>
-    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-    <add key="github-hackney" value="https://nuget.pkg.github.com/LBHackney-IT/index.json" />
-  </packageSources>
-
-  <packageSourceCredentials>
-    <github-hackney>
-      <add key="Username" value="PublicToken" />
-      <add key="ClearTextPassword" value="&#103;hp_H1gYc0BCfSXMlf3vRuhHa3lJrxi4Kn4HhR4o" />
-    </github-hackney>
-  </packageSourceCredentials>
-
-</configuration>
-```
-
-Once the NuGet.Config has been updated, (re)start Visual Studio and use the Package Manager to install the Hackney.Core NuGet package.
-
-### Docker files
-In order to ensure that the NuGet.Config file gets honoured when building the project(s) within a docker container, the docker file needs 
-to be updated to copy the NuGet.Config file to the appropriate root folder.
-
-To do this, add the following line to any relevant docker files _**before**_ any package restore or build commands are used:
-```bash
-COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
-```
-**Note:** The casing of the copied filename (i.e. "NuGet.Config") is critical because if the docker container is a linux one then the 
-file will not get recognised if the filename casing is not correct.
+* In the NuGet.Config file, add a package source for `github-hackney` that uses the endpoint https://nuget.pkg.github.com/LBHackney-IT/index.json 
+* Add or update the `packageSourceCredentials` section to include the credentials for the `github-hackney` source. 
+Details of the required token can be found [here](), 
+along with instruction on how to amend dockerfiles and the CicleCi pipeline to avoid including the 
+token value in files stored in public-facing source control.
 
 ## Features
 
