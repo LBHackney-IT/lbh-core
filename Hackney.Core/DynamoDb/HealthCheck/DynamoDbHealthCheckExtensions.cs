@@ -18,7 +18,7 @@ namespace Hackney.Core.DynamoDb.HealthCheck
         }
 
         /// <summary>
-        /// Adds a health check to verify connectivity to a DynamoDb table.
+        /// Adds a health check to verify connectivity to the DynamoDb table used by T.
         /// </summary>
         /// <typeparam name="T">The database model class used to determine the DynamoDb table name.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/>.</param>
