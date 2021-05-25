@@ -12,23 +12,23 @@ namespace Hackney.Core.DynamoDb.HealthCheck
             return services.AddSingleton<IHealthCheck, DynamoDbHealthCheck<T>>();
         }
 
-        internal static IServiceCollection AddDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
+        internal static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
         {
-            services.RegisterDynamoDbHealthCheck<T>();
-            services.AddHealthChecks()
-                    .AddDynamoDbHealthCheck<T>();
-            return services;
+            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
         }
 
         /// <summary>
         /// Adds a health check to verify connectivity to a DynamoDb table.
         /// </summary>
         /// <typeparam name="T">The database model class used to determine the DynamoDb table name.</typeparam>
-        /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
-        /// <returns>The <see cref="IHealthChecksBuilder"/>.</returns>
-        public static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
+        /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+        /// <returns>The <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
         {
-            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
+            services.RegisterDynamoDbHealthCheck<T>();
+            services.AddHealthChecks()
+                    .AddDynamoDbHealthCheck<T>();
+            return services;
         }
     }
 }
