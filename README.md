@@ -2,7 +2,7 @@
 At Hackney, we have created the NuGet Package to prevent the duplication of common code when implementing our APIs.
 Hence this NuGet package will store the common code that can then be used in the relevant projects. 
 
-### CircleCI Pipeline - Versioning
+#### CircleCI Pipeline - Versioning
 At present the pipeline does not automatically update the package version number.
 
 **This means that for the NuGet Push command to work when code is merged to the release branch 
@@ -17,20 +17,23 @@ The new version number should use the following format.
     Patch: Backwards compatible bug fixes only
     Suffix (optional): a hyphen followed by a string denoting a pre-release version
 
+## Using the package
+For full details on how to use the package(s) within this repository please read 
+[this wiki page](https://github.com/LBHackney-IT/lbh-core/wiki/Using-the-package(s)-from-the-Hackney.Core-repository).
 
 ## Features
 
 The following features are implemented within this package.
-* [MVC Middleware](#MVC%20Middleware)
-  * [Correlation middleware](#Correlation%20middleware])
-  * [Exception middleware](#Exception%20middleware)
+* [MVC Middleware](#MVC-Middleware)
+  * [Correlation middleware](#Correlation-middleware])
+  * [Exception middleware](#Exception-middleware)
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
-  * [Paged results](#Paged%20results)
-  * [Health check](#Health%20check)
-* [Health check helpers](#Health%20check%20helpers)
+  * [Paged results](#Paged-results)
+  * [Health check](#Health-check)
+* [Health check helpers](#Health-check-helpers)
 * [Logging](#Logging)
-  * [Lambda logging](#Lambda%20logging)
+  * [Lambda logging](#Lambda-logging)
 * [Validation](#Validation)
   * [XssValidator](#XssValidator)
 
@@ -92,7 +95,7 @@ It will log the exception and then return a standard error response that looks l
 
 ##### Usage
 
-If required, the [correlation middleware](#Correlation%20middleware]) call should go before the exception handler to ensure that any error logged will also include the correlation id
+If required, the [correlation middleware](#Correlation-middleware]) call should go before the exception handler to ensure that any error logged will also include the correlation id
 
 ```csharp
 using Hackney.Core.Middleware.Exception;
@@ -121,7 +124,7 @@ in the headers) of the caller.
 This means that all other logging need not concern itself without having to add this data as it is already included.
 
 ###### Usage
-When used in conjunction with the [correlation middleware](#Correlation%20middleware]), the call to 
+When used in conjunction with the [correlation middleware](#Correlation-middleware]), the call to 
 `UseLoggingScope()` should come _after_ the call to `UseCorrelationId()`.
 
 ```csharp
