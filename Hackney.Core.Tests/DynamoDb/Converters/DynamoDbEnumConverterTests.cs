@@ -50,6 +50,13 @@ namespace Hackney.Core.Tests.DynamoDb.Converters
         }
 
         [Fact]
+        public void FromEntryTestEmptyStringValueReturnsEnumDefault()
+        {
+            DynamoDBEntry dbEntry = new Primitive { Value = string.Empty };
+            _sut.FromEntry(dbEntry).Should().BeEquivalentTo(default(Number));
+        }
+
+        [Fact]
         public void FromEntryTestEnumValueReturnsConvertedValue()
         {
             var stringValue = "Three";
