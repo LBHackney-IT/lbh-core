@@ -19,9 +19,10 @@ namespace Hackney.Core.DynamoDb.Converters
         public object FromEntry(DynamoDBEntry entry)
         {
             Primitive primitive = entry as Primitive;
-            if (null == primitive) return default(TEnum);
+            var entryStringValue = primitive?.AsString();
+            if (string.IsNullOrEmpty(entryStringValue)) return default(TEnum);
 
-            TEnum valueAsEnum = (TEnum)Enum.Parse(typeof(TEnum), primitive.AsString());
+            TEnum valueAsEnum = (TEnum)Enum.Parse(typeof(TEnum), entryStringValue);
             return valueAsEnum;
         }
     }
