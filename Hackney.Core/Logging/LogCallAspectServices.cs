@@ -21,6 +21,18 @@ namespace Hackney.Core.Logging
         }
 
         /// <summary>
+        /// Helper method to ensure that the application's DI container is used to inject 
+        /// a logger instance into the LogCallAspect.
+        /// </summary>
+        /// <param name="serviceProvider">The service provider</param>
+        /// <returns>The service provider</returns>
+        public static IServiceProvider UseLogCall(this IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+            return serviceProvider;
+        }
+
+        /// <summary>
         /// Helper method to add the LogCallAspect to the DI container.
         /// </summary>
         /// <param name="services">The service collection</param>
