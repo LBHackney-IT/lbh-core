@@ -25,7 +25,7 @@ namespace Hackney.Core.Logging
         /// a logger instance into the LogCallAspect.
         /// </summary>
         /// <param name="serviceProvider">The service provider</param>
-        /// <returns>The application builder</returns>
+        /// <returns>The service provider</returns>
         public static IServiceProvider UseLogCall(this IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
