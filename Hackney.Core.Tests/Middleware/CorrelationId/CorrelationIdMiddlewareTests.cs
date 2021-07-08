@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.CorrelationId;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Hackney.Core.Tests.Middleware.Correlation
+namespace Hackney.Core.Tests.Middleware.CorrelationId
 {
     public class CorrelationIdMiddlewareTests
     {
