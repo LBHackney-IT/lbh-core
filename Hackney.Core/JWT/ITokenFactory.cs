@@ -4,6 +4,8 @@ namespace Hackney.Core.JWT
 {
     public interface ITokenFactory
     {
-        Token Create(IHeaderDictionary headerDictionary);
+        public const string DefaultHeaderName = "Authorization";
+
+        Token Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
     }
 }

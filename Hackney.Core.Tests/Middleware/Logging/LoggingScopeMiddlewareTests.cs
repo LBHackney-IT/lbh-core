@@ -29,7 +29,7 @@ namespace Hackney.Core.Tests.Middleware.Logging
 
             _mockTokenFactory = new Mock<ITokenFactory>();
             _token = new Token() { Email = Email };
-            _mockTokenFactory.Setup(x => x.Create(_httpContext.Request.Headers)).Returns(_token);
+            _mockTokenFactory.Setup(x => x.Create(_httpContext.Request.Headers, ITokenFactory.DefaultHeaderName)).Returns(_token);
 
             _mockLogger = new Mock<ILogger<LoggingScopeMiddleware>>();
         }
@@ -50,7 +50,7 @@ namespace Hackney.Core.Tests.Middleware.Logging
         [Fact]
         public async Task InvokeAsyncTestBeginsLoggingScopeWithNoToken()
         {
-            _mockTokenFactory.Setup(x => x.Create(_httpContext.Request.Headers)).Returns((Token)null);
+            _mockTokenFactory.Setup(x => x.Create(_httpContext.Request.Headers, ITokenFactory.DefaultHeaderName)).Returns((Token)null);
             var sut = new LoggingScopeMiddleware(null);
             await sut.InvokeAsync(_httpContext, _mockTokenFactory.Object, _mockLogger.Object).ConfigureAwait(false);
 

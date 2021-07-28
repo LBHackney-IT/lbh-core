@@ -31,6 +31,13 @@ namespace Hackney.Core.Tests.JWT
         }
 
         [Fact]
+        public void TokenFactoryCreateTestEmptyHeaderNameThrows()
+        {
+            Action act = () => _sut.Create(_mockHeaders.Object, "");
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void TokenFactoryCreateTestReturnsNullWhenNoAuthorizationHeader()
         {
             _mockHeaders.Reset();
@@ -38,9 +45,14 @@ namespace Hackney.Core.Tests.JWT
             _sut.Create(_mockHeaders.Object).Should().BeNull();
         }
 
-        [Fact]
-        public void TokenFactoryCreateTestReturnsToken()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("some-header")]
+        public void TokenFactoryCreateTestReturnsToken(string headerName)
         {
+            var actualHeader = headerName ?? ITokenFactory.DefaultHeaderName;
+            _mockHeaders.Setup(x => x[actualHeader]).Returns(_tokenString);
+
             var token = _sut.Create(_mockHeaders.Object);
             token.Email.Should().Be("e2e-testing@development.com");
             token.Exp.Should().Be(0);
