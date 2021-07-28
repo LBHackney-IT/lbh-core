@@ -5,8 +5,8 @@ namespace Hackney.Core.Http
     public class HttpContextWrapper : IHttpContextWrapper
     {
         public IHeaderDictionary GetContextRequestHeaders(HttpContext context)
-        {
-            return context.Request.Headers;
+        { 
+            return context?.Request?.Headers;
         }
     }
 }

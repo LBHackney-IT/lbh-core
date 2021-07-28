@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Hackney.Core.Sns
 {
     public interface ISnsGateway
     {
-        Task Publish<T>(T SnsMessage, string topicArn, string messageGroupId = "fake");
+        Task Publish<T>(T snsMessage, string topicArn, string messageGroupId = "fake") where T : class;
     }
 }

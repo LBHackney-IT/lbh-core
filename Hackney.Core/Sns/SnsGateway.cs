@@ -1,24 +1,40 @@
-﻿using System;
-using System.Threading.Tasks;
-using Amazon.SimpleNotificationService;
+﻿using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Newtonsoft.Json;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Hackney.Core.Sns
 {
     public class SnsGateway : ISnsGateway
     {
         private readonly IAmazonSimpleNotificationService _amazonSimpleNotificationService;
+        private readonly JsonSerializerOptions _jsonOptions;
 
         public SnsGateway(IAmazonSimpleNotificationService amazonSimpleNotificationService)
         {
             _amazonSimpleNotificationService = amazonSimpleNotificationService;
+            _jsonOptions = CreateJsonOptions();
         }
 
-        public async Task Publish<T>(T contactDetailsSns, string topicArn, string messageGroupId = "fake")
+        private static JsonSerializerOptions CreateJsonOptions()
         {
-            string message = JsonConvert.SerializeObject(contactDetailsSns);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
 
+        public async Task Publish<T>(T snsMessage, string topicArn, string messageGroupId = "fake") where T : class
+        {
+            if (snsMessage is null) throw new ArgumentNullException(nameof(snsMessage));
+            if (string.IsNullOrEmpty(topicArn)) throw new ArgumentNullException(nameof(topicArn));
+
+            string message = JsonSerializer.Serialize(snsMessage, _jsonOptions);
             var request = new PublishRequest
             {
                 Message = message,

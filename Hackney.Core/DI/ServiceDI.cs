@@ -3,6 +3,7 @@ using Hackney.Core.JWT;
 using Hackney.Core.Sns;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 
 namespace Hackney.Core.DI
 {
@@ -10,22 +11,25 @@ namespace Hackney.Core.DI
     {
         public static IServiceCollection AddSnsGateway(this IServiceCollection serviceCollection)
         {
-            serviceCollection.TryAddScoped<ISnsGateway, SnsGateway>();
+            if (serviceCollection is null) throw new ArgumentNullException(nameof(serviceCollection));
 
+            serviceCollection.TryAddScoped<ISnsGateway, SnsGateway>();
             return serviceCollection;
         }
 
         public static IServiceCollection AddHttpContextWrapper(this IServiceCollection serviceCollection)
         {
-            serviceCollection.TryAddScoped<IHttpContextWrapper, HttpContextWrapper>();
+            if (serviceCollection is null) throw new ArgumentNullException(nameof(serviceCollection));
 
+            serviceCollection.TryAddScoped<IHttpContextWrapper, HttpContextWrapper>();
             return serviceCollection;
         }
 
         public static IServiceCollection AddTokenFactory(this IServiceCollection serviceCollection)
         {
-            serviceCollection.TryAddScoped<ITokenFactory, TokenFactory>();
+            if (serviceCollection is null) throw new ArgumentNullException(nameof(serviceCollection));
 
+            serviceCollection.TryAddScoped<ITokenFactory, TokenFactory>();
             return serviceCollection;
         }
     }

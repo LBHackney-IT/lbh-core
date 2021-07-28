@@ -2,6 +2,8 @@
 {
     public class Token
     {
+        public string Sub { get; set; }
+
         public string[] Groups { get; set; }
 
         public string Email { get; set; }

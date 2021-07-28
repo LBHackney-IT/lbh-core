@@ -8,25 +8,12 @@ using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.Debug;
 using Moq;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace Hackney.Core.Tests.Logging
 {
     public class LoggingExtensionsTests
     {
-        private static bool IsServiceRegistered<T>(ServiceDescriptor sd, string typeName)
-        {
-            if (null != sd.ImplementationInstance)
-            {
-                return sd.ServiceType == typeof(T)
-                    && sd.ImplementationInstance.GetType().Name == typeName;
-            }
-
-            return sd.ServiceType == typeof(T)
-                && sd.ImplementationType?.Name == typeName;
-        }
-
         [Theory]
         [InlineData(null)]
         [InlineData("Development")]
@@ -45,10 +32,10 @@ namespace Hackney.Core.Tests.Logging
             var services = new ServiceCollection();
             services.ConfigureLambdaLogging(mockConfig.Object);
 
-            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, nameof(DebugLoggerProvider))).Should().BeTrue();
-            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, "LambdaILoggerProvider")).Should().BeTrue();
-            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, "EventSourceLoggerProvider")).Should().BeTrue();
-            services.Any(x => IsServiceRegistered<ILoggerProvider>(x, nameof(ConsoleLoggerProvider))).Should().Be(shouldHaveConsoleLogger);
+            services.IsServiceRegistered<ILoggerProvider, DebugLoggerProvider>().Should().BeTrue();
+            services.IsServiceRegistered<ILoggerProvider>("LambdaILoggerProvider").Should().BeTrue();
+            services.IsServiceRegistered<ILoggerProvider>("EventSourceLoggerProvider").Should().BeTrue();
+            services.IsServiceRegistered<ILoggerProvider, ConsoleLoggerProvider>().Should().Be(shouldHaveConsoleLogger);
         }
     }
 }
