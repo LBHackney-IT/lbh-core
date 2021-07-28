@@ -10,7 +10,7 @@ namespace Hackney.Core.Logging
     {
         /// <summary>
         /// Configures the logging stack to use the AWS LambdaLogger.
-        /// Console output wioll only be included if the ASPNETCORE_ENVIRONMENT environment variable
+        /// Console output will only be included if the ASPNETCORE_ENVIRONMENT environment variable
         /// value is not "Staging" or "Production".
         /// </summary>
         /// <param name="services">The service collection</param>
