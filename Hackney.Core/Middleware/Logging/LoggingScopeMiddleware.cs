@@ -1,3 +1,4 @@
+using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -15,12 +16,13 @@ namespace Hackney.Core.Middleware.Logging
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, ILogger<LoggingScopeMiddleware> logger)
+        public async Task InvokeAsync(HttpContext context, ITokenFactory tokenFactory, ILogger<LoggingScopeMiddleware> logger)
         {
             var correlationId = context.Request.Headers.GetHeaderValue(HeaderConstants.CorrelationId);
-            var userId = context.Request.Headers.GetHeaderValue(HeaderConstants.UserId);
+            var token = tokenFactory.Create(context.Request.Headers);
+            var userEmail = token?.Email;
 
-            using (logger.BeginScope("CorrelationId: {CorrelationId}; UserId: {UserId}", correlationId, userId))
+            using (logger.BeginScope("CorrelationId: {CorrelationId}; UserEmail: {UserEmail}", correlationId, userEmail))
             {
                 if (_next != null)
                     await _next(context).ConfigureAwait(false);
