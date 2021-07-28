@@ -10,8 +10,7 @@ namespace Hackney.Core.Tests.JWT
     public class TokenFactoryTests
     {
         private readonly Mock<IHeaderDictionary> _mockHeaders;
-        private readonly string _tokenString 
-            = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
+        private readonly string _tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
 
         private readonly TokenFactory _sut;
 
@@ -26,7 +25,7 @@ namespace Hackney.Core.Tests.JWT
         [Fact]
         public void TokenFactoryCreateTestNullHeadersThrows()
         {
-            Action act = () =>_sut.Create(null);
+            Action act = () => _sut.Create(null);
             act.Should().Throw<ArgumentNullException>();
         }
 

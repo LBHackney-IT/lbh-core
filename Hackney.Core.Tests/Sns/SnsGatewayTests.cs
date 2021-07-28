@@ -75,8 +75,7 @@ namespace Hackney.Core.Tests.Sns
             var msgJson = JsonSerializer.Serialize(_message, _jsonOptions);
             await _sut.Publish<SnsTestMessage>(_message, _topic, group).ConfigureAwait(false);
 
-            _mockAwsSns.Verify(x => x.PublishAsync(It.Is<PublishRequest>(y => VerifyPublishRequest(y, msgJson, _topic, group)), default), 
-                               Times.Once);
+            _mockAwsSns.Verify(x => x.PublishAsync(It.Is<PublishRequest>(y => VerifyPublishRequest(y, msgJson, _topic, group)), default), Times.Once);
         }
     }
 

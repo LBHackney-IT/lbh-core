@@ -31,7 +31,7 @@ namespace Hackney.Core.Tests.DynamoDb
 
             services.Any(x => x.ServiceType == typeof(IAmazonSimpleNotificationService)).Should().BeTrue();
             var sd = services.First(x => x.ServiceType == typeof(IAmazonSimpleNotificationService));
-            sd.Lifetime.Should().Be((localModeEnvVar == "true")? ServiceLifetime.Singleton : ServiceLifetime.Scoped);
+            sd.Lifetime.Should().Be((localModeEnvVar == "true") ? ServiceLifetime.Singleton : ServiceLifetime.Scoped);
             (sd.ImplementationFactory is null).Should().Be((localModeEnvVar != "true"));
 
             Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);

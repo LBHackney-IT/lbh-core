@@ -13,7 +13,7 @@ namespace Hackney.Core.Http
         /// <param name="context">The HttpContext</param>
         /// <returns>the request header dictionary or null</returns>
         public IHeaderDictionary GetContextRequestHeaders(HttpContext context)
-        { 
+        {
             return context?.Request?.Headers;
         }
     }

@@ -43,7 +43,7 @@ namespace Hackney.Core.Tests.Middleware.Logging
             var sut = new LoggingScopeMiddleware(null);
             await sut.InvokeAsync(_httpContext, _mockTokenFactory.Object, _mockLogger.Object).ConfigureAwait(false);
 
-            var expectedState = $"CorrelationId: {_correlationId}; UserEmail: {email?? "(null)"}";
+            var expectedState = $"CorrelationId: {_correlationId}; UserEmail: {email ?? "(null)"}";
             _mockLogger.Verify(x => x.BeginScope(It.Is<object>(y => y.ToString() == expectedState)), Times.Once());
         }
 
