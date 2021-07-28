@@ -410,7 +410,7 @@ namespace SomeApi
 ### JWT
 #### Token Factory
 The `TokenFactory` implementation of the `ITokenFactory` interface is designed to easily retrieve a JWT token sent in the headers of an Http request.
-The `ITokenFactory` interface is made available by using the `ServiceDI.AddSnsGateway()` extension method during your application start-up.
+The `ITokenFactory` interface is made available by using the `AddSnsGateway()` extension method during your application start-up.
 
 ### Logging
 
@@ -523,7 +523,7 @@ namespace SomeApi
 ### Sns
 #### Sns Gateway
 The `SnsGateway` implementation of the `ISnsGateway` interface allows the easy publishing of an event message to an Sns topic.
-The `ISnsGateway` interface is made available by using the `ServiceDI.AddTokenFactory()` extension method during your application start-up.
+The `ISnsGateway` interface is made available by using the `AddTokenFactory()` extension method during your application start-up.
 
 ### Validation
 
