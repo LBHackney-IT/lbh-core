@@ -17,8 +17,7 @@ namespace Hackney.Core.Tests.DynamoDb.HealthCheck
             var services = new ServiceCollection();
             _ = services.RegisterDynamoDbHealthCheck<TestModelDb>();
 
-            services.Any(x => (x.ServiceType == typeof(IHealthCheck))
-                           && (x.ImplementationType == typeof(DynamoDbHealthCheck<TestModelDb>))).Should().BeTrue();
+            services.IsServiceRegistered<IHealthCheck, DynamoDbHealthCheck<TestModelDb>>().Should().BeTrue();
         }
 
         [Fact]
@@ -27,8 +26,7 @@ namespace Hackney.Core.Tests.DynamoDb.HealthCheck
             var services = new ServiceCollection();
             _ = services.AddDynamoDbHealthCheck<TestModelDb>();
 
-            services.Any(x => (x.ServiceType == typeof(IHealthCheck))
-                           && (x.ImplementationType == typeof(DynamoDbHealthCheck<TestModelDb>))).Should().BeTrue();
+            services.IsServiceRegistered<IHealthCheck, DynamoDbHealthCheck<TestModelDb>>().Should().BeTrue();
 
             // We can't explicitly verify the Healthcheck builder reigstration here as it is not accessible.
             // We have to reply on the test below to do that for us.

@@ -32,8 +32,12 @@ The following features are implemented within this package.
   * [Paged results](#Paged-results)
   * [Health check](#Health-check)
 * [Health check helpers](#Health-check-helpers)
+* [JWT](#JWT)
+  * [Token Factory](#Token-Factory)
 * [Logging](#Logging)
   * [Lambda logging](#Lambda-logging)
+* [Sns](#Sns)
+  * [Sns Gateway](#Sns-Gateway)
 * [Validation](#Validation)
   * [XssValidator](#XssValidator)
 
@@ -119,7 +123,7 @@ namespace SomeApi
 #### Logging scope middleware
 The logging scope middleware sets up a logging scope for every incoming HTTP request. 
 This means that every log statement made within that scope (i.e. during the HTTP request processing) 
-will include an addition string that contains both the correlation id (and user id, if available 
+will include an addition string that contains both the correlation id (and user email, if available 
 in the headers) of the caller.
 This means that all other logging need not concern itself without having to add this data as it is already included.
 
@@ -403,6 +407,11 @@ namespace SomeApi
 
 ```
 
+### JWT
+#### Token Factory
+The `TokenFactory` implementation of the `ITokenFactory` interface is designed to easily retrieve a JWT token sent in the headers of an Http request.
+The `ITokenFactory` interface is made available by using the `AddTokenFactory()` extension method during your application start-up.
+
 ### Logging
 
 #### Lambda logging
@@ -510,6 +519,11 @@ namespace SomeApi
 }
 
 ```
+
+### Sns
+#### Sns Gateway
+The `SnsGateway` implementation of the `ISnsGateway` interface allows the easy publishing of an event message to an Sns topic.
+The `ISnsGateway` interface is made available by using the `AddSnsGateway()` extension method during your application start-up.
 
 ### Validation
 

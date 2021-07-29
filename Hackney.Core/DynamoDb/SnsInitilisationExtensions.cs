@@ -14,6 +14,8 @@ namespace Hackney.Core.DynamoDb
         /// <returns>The service collection</returns>
         public static IServiceCollection ConfigureSns(this IServiceCollection services)
         {
+            if (services is null) throw new ArgumentNullException(nameof(services));
+
             bool localMode = false;
             _ = bool.TryParse(Environment.GetEnvironmentVariable("DynamoDb_LocalMode"), out localMode);
 
