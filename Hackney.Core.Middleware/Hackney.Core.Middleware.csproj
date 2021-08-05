@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
-    <Version>1.0.22</Version>
     <Authors>Hackney London Borough Council</Authors>
     <Company>Hackney London Borough Council</Company>
     <Copyright>2021</Copyright>
