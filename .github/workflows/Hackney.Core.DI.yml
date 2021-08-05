@@ -1,4 +1,4 @@
-name: publish-nuget-package
+name: Hackney.Core.DI-publish
 on:
   push:
     branches:

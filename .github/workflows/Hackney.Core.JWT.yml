@@ -1,4 +1,4 @@
-name: publish-nuget-package
+name: Hackney.Core.JWT-publish
 on:
   push:
     branches:

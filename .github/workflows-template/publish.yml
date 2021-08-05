@@ -1,4 +1,4 @@
-name: publish-nuget-package
+name: <PACKAGE_NAME>-publish
 on:
   push:
     branches:
