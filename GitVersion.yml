@@ -1,0 +1,22 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: Mainline
+branches:
+  release:
+    tag: ''
+    increment: Minor
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-source-branch-for: ['feature']
+    is-release-branch: false
+  feature:
+    tag: preview
+    increment: Inherit
+    source-branches: ['release']
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+ignore:
+  sha: []
+merge-message-formats: {}
