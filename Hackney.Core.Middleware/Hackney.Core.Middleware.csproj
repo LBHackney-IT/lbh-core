@@ -13,7 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-     <PackageReference Include="Hackney.Core.JWT" Version="1.0.22" />
+    <PackageReference Include="Hackney.Core.JWT" Version="0.1.1-preview-0001" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
