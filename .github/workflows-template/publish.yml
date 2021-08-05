@@ -38,7 +38,7 @@ jobs:
       - name: Install dotnet format
         run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./dotnet-format-local/dotnet-format --check
+        run: ./dotnet-format-local//dotnet-format --check Hackney.Core. <PACKAGE_NAME>
 
   build-and-test:
     name: Build & Test

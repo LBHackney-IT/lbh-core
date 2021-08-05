@@ -29,6 +29,29 @@ jobs:
       - name: Display package version
         run: |
           echo "Version: $GITVERSION_NUGETVERSIONV2"
+
+  check-code-formatting:
+    name: Check code formatting
+    needs: calculate-version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet format
+        run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+      - name: Run formatter check
+        run: ./dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose build hackney-core-test
+      - name: Run tests
+        run: docker-compose run hackney-core-test
+
   publish-package:
     name: Publish Package
     runs-on: ubuntu-latest
