@@ -66,8 +66,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Restore dependencies
-        run: dotnet restore Hackney.Core.Middleware
       - name: Build the Package
         run: dotnet pack Hackney.Core.Middleware -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
