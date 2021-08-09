@@ -6,7 +6,6 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Middleware/**"
-      - ".github/workflows/Hackney.Core.Middleware.yml"
 jobs:
   calculate-version:
     name: Calculate Version
