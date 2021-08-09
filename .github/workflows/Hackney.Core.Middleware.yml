@@ -63,6 +63,7 @@ jobs:
     needs: build-and-test
     env:
       VERSION: ${{ needs.build-and-test.outputs.version }}
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
