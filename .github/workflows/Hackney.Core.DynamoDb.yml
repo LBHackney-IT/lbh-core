@@ -6,6 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.DynamoDb/**"
+      - "Hackney.Core.DynamoDb.Tests/**"
 jobs:
   calculate-version:
     name: Calculate Version
@@ -38,9 +39,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dotnet format
-        run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
-      - name: Run formatter check
-        run: ./dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
+        run: docker-compose build hackney-core-dynamodb-test
+      - name: Run tests
+        run: docker-compose run hackney-core-dynamodb-test
 
   build-and-test:
     name: Build & Test

@@ -6,6 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.HealthCheck/**"
+      - "Hackney.Core.HealthCheck.Tests/**"
 jobs:
   calculate-version:
     name: Calculate Version
@@ -52,9 +53,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: docker-compose build hackney-core-test
+        run: docker-compose build hackney-core-healthcheck-test
       - name: Run tests
-        run: docker-compose run hackney-core-test
+        run: docker-compose run hackney-core-healthcheck-test
 
   publish-package:
     name: Publish Package

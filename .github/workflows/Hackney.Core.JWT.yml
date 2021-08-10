@@ -6,6 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.JWT/**"
+      - "Hackney.Core.JWT.Tests/**"
 jobs:
   calculate-version:
     name: Calculate Version
@@ -52,9 +53,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: docker-compose build hackney-core-test
+        run: docker-compose build hackney-core-jwt-test
       - name: Run tests
-        run: docker-compose run hackney-core-test
+        run: docker-compose run hackney-core-jwt-test
 
   publish-package:
     name: Publish Package

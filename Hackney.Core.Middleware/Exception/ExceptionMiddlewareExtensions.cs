@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("Hackney.Core.Tests")]
+[assembly: InternalsVisibleTo("Hackney.Core.Tests.Shared")]
 
 namespace Hackney.Core.Middleware.Exception
 {
