@@ -3,7 +3,7 @@
 namespace Hackney.Core.DynamoDb
 {
     /// <summary>
-    /// Class encapsulting the results of paged query against DynamoDb
+    /// Class encapsulting the results of paged query against DynamoDb 
     /// </summary>
     /// <typeparam name="T">The database model class used.</typeparam>
     public class PagedResult<T> where T : class
