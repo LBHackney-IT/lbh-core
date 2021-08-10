@@ -6,7 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.JWT/**"
-      - "Hackney.Core.Tests.JWT/**"
+      - "Hackney.Core.JWT.Tests/**"
 jobs:
   calculate-version:
     name: Calculate Version

@@ -6,7 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.DynamoDb/**"
-      - "Hackney.Core.DynamoDb.Tests/**"
+      - "Hackney.Core.Tests.DynamoDb/**"
 jobs:
   calculate-version:
     name: Calculate Version

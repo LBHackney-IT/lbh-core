@@ -6,7 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Http/**"
-      - "Hackney.Core.Tests.Http/**"
+      - "Hackney.Core.Http.Tests/**"
 jobs:
   calculate-version:
     name: Calculate Version
