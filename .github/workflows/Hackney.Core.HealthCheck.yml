@@ -6,7 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.HealthCheck/**"
-      - "Hackney.Core.HealthCheck.Tests/**"
+      - "Hackney.Core.Tests.HealthCheck/**"
 jobs:
   calculate-version:
     name: Calculate Version

@@ -6,7 +6,7 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Sns/**"
-      - "Hackney.Core.Sns.Tests/**"
+      - "Hackney.Core.Tests.Sns/**"
 jobs:
   calculate-version:
     name: Calculate Version

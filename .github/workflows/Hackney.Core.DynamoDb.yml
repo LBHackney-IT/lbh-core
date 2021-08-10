@@ -28,8 +28,7 @@ jobs:
         with:
           useConfigFile: true
       - name: Display package version
-        run: |
-          echo "Version: $GITVERSION_NUGETVERSIONV2"
+        run: echo "Version: $GITVERSION_NUGETVERSIONV2"
 
   check-code-formatting:
     name: Check code formatting
@@ -41,9 +40,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dotnet format
-        run: docker-compose build hackney-core-dynamodb-test
-      - name: Run tests
-        run: docker-compose run hackney-core-dynamodb-test
+        run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+      - name: Run formatter check
+        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.Hackney.Core.DynamoDb
 
   build-and-test:
     name: Build & Test
@@ -57,9 +56,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: docker-compose build hackney-core-test
+        run: docker-compose build hackney-core-dynamodb-test
       - name: Run tests
-        run: docker-compose run hackney-core-test
+        run: docker-compose run hackney-core-dynamodb-test
 
   publish-package:
     name: Publish Package
