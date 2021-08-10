@@ -6,7 +6,7 @@
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
-    <Description>Common library providing functionality to support the development of LBH Web Api services.</Description>
+    <Description>Common library providing functionality to support the development of LBH Web API services.</Description>
     <NoWarn>S1066;S4457</NoWarn>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
