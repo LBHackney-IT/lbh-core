@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Hackney.Core.DynamoDb;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;

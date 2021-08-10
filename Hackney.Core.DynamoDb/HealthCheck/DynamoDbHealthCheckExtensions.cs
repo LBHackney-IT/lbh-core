@@ -7,12 +7,12 @@ namespace Hackney.Core.DynamoDb.HealthCheck
     {
         private const string Name = "DynamoDb";
 
-        internal static IServiceCollection RegisterDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
+        public static IServiceCollection RegisterDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
         {
             return services.AddSingleton<IHealthCheck, DynamoDbHealthCheck<T>>();
         }
 
-        internal static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
+        public static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
         {
             return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
         }
