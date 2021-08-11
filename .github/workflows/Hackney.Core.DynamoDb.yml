@@ -46,7 +46,9 @@ jobs:
           cd src
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./src/dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
+        run: |
+          cd src
+          ./dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
 
   build-and-test:
     name: Build & Test
