@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      - "src/Hackney.Core.JWT/**"
+      - "Hackney.Core/Hackney.Core.JWT/**"
       - "tests/Hackney.Core.Tests.JWT/**"
       - ".github/workflows/Hackney.Core.JWT.yml"
 jobs:
@@ -43,11 +43,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dotnet format
         run: |
-          cd src
+          cd Hackney.Core
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
         run: |
-          cd src
+          cd Hackney.Core
           ./dotnet-format-local/dotnet-format --check Hackney.Core.JWT
 
   build-and-test:
@@ -78,9 +78,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Build the Package
         run: |
-          cd src
+          cd Hackney.Core
           dotnet pack Hackney.Core.JWT -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd src/Hackney.Core.JWT/bin/Release
+          cd Hackney.Core/Hackney.Core.JWT/bin/Release
           dotnet nuget push Hackney.Core.JWT.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}

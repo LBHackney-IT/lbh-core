@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      - "src/Hackney.Core.Logging/**"
+      - "Hackney.Core/Hackney.Core.Logging/**"
       - "tests/Hackney.Core.Tests.Logging/**"
       - ".github/workflows/Hackney.Core.Logging.yml"
 jobs:
@@ -43,11 +43,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dotnet format
         run: |
-          cd src
+          cd Hackney.Core
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
         run: |
-          cd src
+          cd Hackney.Core
           ./dotnet-format-local/dotnet-format --check Hackney.Core.Logging
 
   build-and-test:
@@ -78,9 +78,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Build the Package
         run: |
-          cd src
+          cd Hackney.Core
           dotnet pack Hackney.Core.Logging -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd src/Hackney.Core.Logging/bin/Release
+          cd Hackney.Core/Hackney.Core.Logging/bin/Release
           dotnet nuget push Hackney.Core.Logging.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}

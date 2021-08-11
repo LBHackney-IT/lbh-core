@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      - "src/Hackney.Core.Sns/**"
+      - "Hackney.Core/Hackney.Core.Sns/**"
       - "tests/Hackney.Core.Tests.Sns/**"
       - ".github/workflows/Hackney.Core.Sns.yml"
 jobs:
@@ -43,11 +43,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dotnet format
         run: |
-          cd src
+          cd Hackney.Core
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
         run: |
-          cd src
+          cd Hackney.Core
           ./dotnet-format-local/dotnet-format --check Hackney.Core.Sns
 
   build-and-test:
@@ -78,9 +78,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Build the Package
         run: |
-          cd src
+          cd Hackney.Core
           dotnet pack Hackney.Core.Sns -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd src/Hackney.Core.Sns/bin/Release
+          cd Hackney.Core/Hackney.Core.Sns/bin/Release
           dotnet nuget push Hackney.Core.Sns.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}

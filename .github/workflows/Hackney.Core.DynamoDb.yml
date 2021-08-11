@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      - "src/Hackney.Core.DynamoDb/**"
+      - "Hackney.Core/Hackney.Core.DynamoDb/**"
       - "tests/Hackney.Core.Tests.DynamoDb/**"
       - ".github/workflows/Hackney.Core.DynamoDb.yml"
 jobs:
@@ -43,11 +43,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dotnet format
         run: |
-          cd src
+          cd Hackney.Core
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
         run: |
-          cd src
+          cd Hackney.Core
           ./dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
 
   build-and-test:
@@ -78,9 +78,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Build the Package
         run: |
-          cd src
+          cd Hackney.Core
           dotnet pack Hackney.Core.DynamoDb -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd src/Hackney.Core.DynamoDb/bin/Release
+          cd Hackney.Core/Hackney.Core.DynamoDb/bin/Release
           dotnet nuget push Hackney.Core.DynamoDb.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
