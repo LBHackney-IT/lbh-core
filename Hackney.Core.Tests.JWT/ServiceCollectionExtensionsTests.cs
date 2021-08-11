@@ -13,7 +13,7 @@ namespace Hackney.Core.Tests.JWT
         public void AddTokenFactoryTestNullServicesThrows()
         {
             IServiceCollection services = null;
-            Action act = () => ServiceCollectionExtensions.AddTokenFactory(services);
+            Action act = () => Hackney.Core.JWT.ServiceCollectionExtensions.AddTokenFactory(services);
             act.Should().Throw<ArgumentNullException>();
         }
 
