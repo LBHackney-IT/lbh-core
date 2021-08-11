@@ -45,7 +45,9 @@ jobs:
           cd src
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.<PACKAGE_NAME>
+        run: |
+          cd src
+          ./dotnet-format--local/dotnet-format --check Hackney.Core.<PACKAGE_NAME>
 
   build-and-test:
     name: Build & Test
@@ -79,5 +81,5 @@ jobs:
           dotnet pack <PACKAGE_NAME> -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd <PACKAGE_NAME>/bin/Release
+          cd src/<PACKAGE_NAME>/bin/Release
           dotnet nuget push <PACKAGE_NAME>.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}

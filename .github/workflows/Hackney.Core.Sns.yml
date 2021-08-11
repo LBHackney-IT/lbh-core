@@ -46,7 +46,9 @@ jobs:
           cd src
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.Sns
+        run: |
+          cd src
+          ./dotnet-format--local/dotnet-format --check Hackney.Core.Sns
 
   build-and-test:
     name: Build & Test
@@ -80,5 +82,5 @@ jobs:
           dotnet pack Hackney.Core.Sns -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd Hackney.Core.Sns/bin/Release
+          cd src/Hackney.Core.Sns/bin/Release
           dotnet nuget push Hackney.Core.Sns.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
