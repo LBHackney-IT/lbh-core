@@ -7,7 +7,7 @@ on:
     paths:
       - "src/Hackney.Core.Http/**"
       - "tests/Hackney.Core.Tests.Http/**"
-      - .github/workflows/Hackney.Core.Http.yml
+      - ".github/workflows/Hackney.Core.Http.yml"
 jobs:
   calculate-version:
     name: Calculate Version
@@ -42,7 +42,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dotnet format
-        run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+        run: |
+          cd src
+          dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
         run: ./dotnet-format-local//dotnet-format --check Hackney.Core.Http
 
@@ -73,7 +75,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build the Package
-        run: dotnet pack Hackney.Core.Http -p:PackageVersion=$VERSION --configuration Release
+        run: |
+          cd src
+          dotnet pack Hackney.Core.Http -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
           cd Hackney.Core.Http/bin/Release
