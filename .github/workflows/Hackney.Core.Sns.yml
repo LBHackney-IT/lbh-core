@@ -48,7 +48,7 @@ jobs:
       - name: Run formatter check
         run: |
           cd src
-          ./dotnet-format--local/dotnet-format --check Hackney.Core.Sns
+          ./dotnet-format-local/dotnet-format --check Hackney.Core.Sns
 
   build-and-test:
     name: Build & Test
