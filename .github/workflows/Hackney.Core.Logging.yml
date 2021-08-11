@@ -6,7 +6,8 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Logging/**"
-      - "Hackney.Core.Logging.Tests/**"
+      - "Hackney.Core.Tests.Logging/**"
+      - .github/workflows/Hackney.Core.Logging.yml
 jobs:
   calculate-version:
     name: Calculate Version

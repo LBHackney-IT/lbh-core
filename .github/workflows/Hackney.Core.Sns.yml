@@ -6,7 +6,8 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Sns/**"
-      - "Hackney.Core.Sns.Tests/**"
+      - "Hackney.Core.Tests.Sns/**"
+      - .github/workflows/Hackney.Core.Sns.yml
 jobs:
   calculate-version:
     name: Calculate Version

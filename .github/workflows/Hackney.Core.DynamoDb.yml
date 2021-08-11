@@ -7,6 +7,7 @@ on:
     paths:
       - "Hackney.Core.DynamoDb/**"
       - "Hackney.Core.Tests.DynamoDb/**"
+      - .github/workflows/Hackney.Core.DynamoDb.yml
 jobs:
   calculate-version:
     name: Calculate Version
@@ -28,8 +29,9 @@ jobs:
         with:
           useConfigFile: true
       - name: Display package version
-        run: echo "Version: $GITVERSION_NUGETVERSIONV2"
-
+        run: |
+          echo "Version: $GITVERSION_NUGETVERSIONV2"
+          
   check-code-formatting:
     name: Check code formatting
     runs-on: ubuntu-latest
@@ -42,7 +44,7 @@ jobs:
       - name: Install dotnet format
         run: dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.Hackney.Core.DynamoDb
+        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.DynamoDb
 
   build-and-test:
     name: Build & Test

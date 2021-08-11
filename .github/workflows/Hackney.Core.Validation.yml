@@ -6,7 +6,8 @@ on:
     - feature/**
     paths:
       - "Hackney.Core.Validation/**"
-      - "Hackney.Core.Validation.Tests/**"
+      - "Hackney.Core.Tests.Validation/**"
+      - .github/workflows/Hackney.Core.Validation.yml
 jobs:
   calculate-version:
     name: Calculate Version
