@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 COPY ./Hackney.Core.Middleware/Hackney.Core.Middleware.csproj ./Hackney.Core.Middleware/
+COPY ./Hackney.Core.Middleware/nuget.config ./Hackney.Core.Middleware/nuget.config
 COPY ./Hackney.Core.Tests.Middleware/Hackney.Core.Tests.Middleware.csproj ./Hackney.Core.Tests.Middleware/
 COPY ./Hackney.Core.Tests.Shared/Hackney.Core.Tests.Shared.csproj ./Hackney.Core.Tests.Shared/
 
