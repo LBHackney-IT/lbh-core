@@ -5,8 +5,8 @@ on:
     - release
     - feature/**
     paths:
-      - "Hackney.Core.Http/**"
-      - "Hackney.Core.Tests.Http/**"
+      - "src/Hackney.Core.Http/**"
+      - "tests/Hackney.Core.Tests.Http/**"
       - .github/workflows/Hackney.Core.Http.yml
 jobs:
   calculate-version:

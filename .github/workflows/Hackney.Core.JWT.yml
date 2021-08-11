@@ -5,8 +5,8 @@ on:
     - release
     - feature/**
     paths:
-      - "Hackney.Core.JWT/**"
-      - "Hackney.Core.Tests.JWT/**"
+      - "src/Hackney.Core.JWT/**"
+      - "tests/Hackney.Core.Tests.JWT/**"
       - .github/workflows/Hackney.Core.JWT.yml
 jobs:
   calculate-version:

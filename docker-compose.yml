@@ -6,37 +6,37 @@ services:
     image: hackney-core-dynamodb-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.DynamoDb/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.DynamoDb/Dockerfile
 
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.HealthCheck/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.HealthCheck/Dockerfile
 
   hackney-core-http-test:
     image: hackney-core-http-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.Http/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.Http/Dockerfile
 
   hackney-core-jwt-test:
     image: hackney-core-jwt-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.JWT/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.JWT/Dockerfile
       
   hackney-core-logging-test:
     image: hackney-core-logging-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.Logging/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.Logging/Dockerfile
       
   hackney-core-middleware-test:
     image: hackney-core-middleware-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.Middleware/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.Middleware/Dockerfile
       args:
         - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
       
@@ -44,11 +44,11 @@ services:
     image: hackney-core-sns-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.Sns/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.Sns/Dockerfile
       
   hackney-core-validation-test:
-    image: hackney-validation-di-test
+    image: hackney-core-validation-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests.Validation/Dockerfile
+      dockerfile: tests/Hackney.Core.Tests.Validation/Dockerfile
       

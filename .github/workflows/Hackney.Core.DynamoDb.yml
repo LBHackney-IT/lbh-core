@@ -5,8 +5,8 @@ on:
     - release
     - feature/**
     paths:
-      - "Hackney.Core.DynamoDb/**"
-      - "Hackney.Core.Tests.DynamoDb/**"
+      - "src/Hackney.Core.DynamoDb/**"
+      - "tests/Hackney.Core.Tests.DynamoDb/**"
       - .github/workflows/Hackney.Core.DynamoDb.yml
 jobs:
   calculate-version:

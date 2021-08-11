@@ -5,8 +5,8 @@ on:
     - release
     - feature/**
     paths:
-      - "<PACKAGE_NAME>/**"
-      - "Hackney.Core.Tests.<PACKAGE_NAME>/**"
+      - "src/<PACKAGE_NAME>/**"
+      - "tests/Hackney.Core.Tests.<PACKAGE_NAME>/**"
       - .github/workflows/<PACKAGE_NAME>.yml
 jobs:
   calculate-version:

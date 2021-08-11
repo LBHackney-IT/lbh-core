@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      - "Hackney.Core.Validation/**"
+      - "src/Hackney.Core.Validation/**"
       - "Hackney.Core.Tests.Validation/**"
       - .github/workflows/Hackney.Core.Validation.yml
 jobs:
