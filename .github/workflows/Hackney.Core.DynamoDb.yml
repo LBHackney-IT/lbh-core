@@ -46,7 +46,7 @@ jobs:
           cd src
           dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
       - name: Run formatter check
-        run: ./dotnet-format-local//dotnet-format --check Hackney.Core.DynamoDb
+        run: ./dotnet-format-local/dotnet-format --check Hackney.Core.DynamoDb
 
   build-and-test:
     name: Build & Test
@@ -80,5 +80,5 @@ jobs:
           dotnet pack Hackney.Core.DynamoDb -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
-          cd Hackney.Core.DynamoDb/bin/Release
+          cd src/Hackney.Core.DynamoDb/bin/Release
           dotnet nuget push Hackney.Core.DynamoDb.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
