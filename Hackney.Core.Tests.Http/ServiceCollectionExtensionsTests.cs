@@ -13,7 +13,7 @@ namespace Hackney.Core.Tests.Http
         public void AddHttpContextWrapperTestNullServicesThrows()
         {
             IServiceCollection services = null;
-            Action act = () => ServiceCollectionExtensions.AddHttpContextWrapper(services);
+            Action act = () => Hackney.Core.Http.ServiceCollectionExtensions.AddHttpContextWrapper(services);
             act.Should().Throw<ArgumentNullException>();
         }
 

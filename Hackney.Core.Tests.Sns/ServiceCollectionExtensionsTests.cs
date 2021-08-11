@@ -13,7 +13,7 @@ namespace Hackney.Core.Tests.Sns
         public void AddSnsGatewayTestNullServicesThrows()
         {
             IServiceCollection services = null;
-            Action act = () => ServiceCollectionExtensions.AddSnsGateway(services);
+            Action act = () => Hackney.Core.Sns.ServiceCollectionExtensions.AddSnsGateway(services);
             act.Should().Throw<ArgumentNullException>();
         }
 
