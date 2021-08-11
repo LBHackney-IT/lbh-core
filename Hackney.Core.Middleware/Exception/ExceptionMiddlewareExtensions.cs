@@ -30,7 +30,7 @@ namespace Hackney.Core.Middleware.Exception
             });
         }
 
-        internal static async Task HandleExceptions(HttpContext context, ILogger logger)
+        public static async Task HandleExceptions(HttpContext context, ILogger logger)
         {
             context.Response.ContentType = "application/json";
             string message = "Internal Server Error.";
