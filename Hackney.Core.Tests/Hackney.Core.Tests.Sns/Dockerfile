@@ -17,6 +17,6 @@ RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/Hackney.Core.T
 # Copy everything else and build
 COPY . .
 
-RUN dotnet build -c debug -o out tests/Hackney.Core.Tests.Sns/Hackney.Core.Tests.Sns.csproj
+RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.Sns/Hackney.Core.Tests.Sns.csproj
 
-CMD dotnet test tests/Hackney.Core.Tests.Sns
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Sns
