@@ -18,6 +18,9 @@ Any specific version number follows the form Major.Minor.Patch[-Suffix], where t
 For full details on how to use the package(s) within this repository please read 
 [this wiki page](https://github.com/LBHackney-IT/lbh-core/wiki/Using-the-package(s)-from-the-Hackney.Core-repository).
 
+*Note: The Hackney.Core project has been split into individual packages and is now deprecated.*
+*In order to use our packages, import each Hackney.Core dependency required individually.*
+
 ## Features
 
 The following features are implemented within this package.
@@ -40,6 +43,8 @@ The following features are implemented within this package.
 
 
 ### MVC Middleware
+
+**Project reference: `Hackney.Core.Middleware`**
 
 There are a number of different middleware classes implemented here. 
 
@@ -148,6 +153,8 @@ namespace SomeApi
 ```
 
 ### DynamoDb
+
+**Project reference: `Hackney.Core.DynamoDb`**
 
 #### Setting up DynamoDb support
 
@@ -329,7 +336,7 @@ public async Task<PagedResult<NoteDb>> GetNotesByTargetIdAsync(GetNotesByTargetI
 }
 ```
 
-#### Health check
+#### Health Check
 There is a `DynamoDbHealthCheck` class implemented that uses the 
 [Microsoft Health check framework](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-2.2).
 The check verifies that the required DynamoDb table is accessible by performing a `DescribeTable` call.
@@ -368,7 +375,10 @@ namespace SomeApi
 
 ```
 
-### Health check helpers
+### Health Check Helpers
+
+**Project reference: `Hackney.Core.HealthCheck`**
+
 The default HTTP response from the Microsoft Health check framework is simply a headline `HealthStatus` value with the appropriate Http status code.
 
 In order to provide more meaningful response information a custom response writer, the `HealthCheckResponseWriter.WriteResponse` static method,  
@@ -405,11 +415,16 @@ namespace SomeApi
 ```
 
 ### JWT
+
+**Project reference: `Hackney.Core.JWT`**
+
 #### Token Factory
 The `TokenFactory` implementation of the `ITokenFactory` interface is designed to easily retrieve a JWT token sent in the headers of an Http request.
 The `ITokenFactory` interface is made available by using the `AddTokenFactory()` extension method during your application start-up.
 
 ### Logging
+
+**Project reference: `Hackney.Core.Logging`**
 
 #### Lambda logging
 
@@ -518,11 +533,16 @@ namespace SomeApi
 ```
 
 ### Sns
+
+**Project reference: `Hackney.Core.Sns`**
+
 #### Sns Gateway
 The `SnsGateway` implementation of the `ISnsGateway` interface allows the easy publishing of an event message to an Sns topic.
 The `ISnsGateway` interface is made available by using the `AddSnsGateway()` extension method during your application start-up.
 
 ### Validation
+
+**Project reference: `Hackney.Core.Validation`**
 
 #### XssValidator
 The XssValidator class is [Fluent Validation](https://docs.fluentvalidation.net/en/latest/index.html#) `PropertyValidator` implementation that will check if a property has potentially dangerous content.

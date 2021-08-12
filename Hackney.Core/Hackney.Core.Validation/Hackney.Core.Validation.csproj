@@ -6,8 +6,9 @@
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
-    <Description>Common library providing functionality to support the development of LBH Web API services.</Description>
+    <Description>Common library providing property validation rules to use in LBH Web API services.</Description>
     <NoWarn>S1066;S4457</NoWarn>
+    Fluent Validation validator to check if a property has potentially harmful content
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
