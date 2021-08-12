@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+    <Authors>London Borough of Hackney Council</Authors>
+    <Company>London Borough of Hackney Council</Company>
+    <Copyright>2021</Copyright>
+    <Description>Common library providing Correlation, Logging Scope and Exception Handling Middleware for use in LBH Web API services.</Description>
+    <NoWarn>S1066;S4457</NoWarn>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
+    <PackageReference Include="Hackney.Core.JWT" Version="1.27.1-preview0024" />
+  </ItemGroup>
+</Project>

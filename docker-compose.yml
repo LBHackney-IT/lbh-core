@@ -2,8 +2,53 @@ version: "3.2"
 
 services:
 
-  hackney-core-test:
-    image: hackney-core-test
+  hackney-core-dynamodb-test:
+    image: hackney-core-dynamodb-test
     build:
       context: .
-      dockerfile: Hackney.Core.Tests/Dockerfile
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/Dockerfile
+
+  hackney-core-healthcheck-test:
+    image: hackney-core-healthcheck-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/Dockerfile
+
+  hackney-core-http-test:
+    image: hackney-core-http-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Http/Dockerfile
+
+  hackney-core-jwt-test:
+    image: hackney-core-jwt-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.JWT/Dockerfile
+      
+  hackney-core-logging-test:
+    image: hackney-core-logging-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Logging/Dockerfile
+      
+  hackney-core-middleware-test:
+    image: hackney-core-middleware-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Middleware/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+      
+  hackney-core-sns-test:
+    image: hackney-core-sns-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Sns/Dockerfile
+      
+  hackney-core-validation-test:
+    image: hackney-core-validation-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Validation/Dockerfile
+      

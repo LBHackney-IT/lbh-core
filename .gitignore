@@ -59,10 +59,12 @@ bin/
 .idea/
 tmp/
 .vs/
-/HousingSearchApi.Tests/Properties/launchSettings.json
+/Hackney.Core.Tests.Shared/Properties/launchSettings.json
 
 .fake
 .ionide
 
 *.nupkg
 testresults/
+.vscode/
+*.binlog
