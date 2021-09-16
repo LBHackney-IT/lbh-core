@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Hackney.Shared
+﻿namespace Hackney.Shared.Strings
 {
     public static class StringExtensions
     {
