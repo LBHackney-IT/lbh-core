@@ -4,10 +4,9 @@ on:
     branches:
     - release
     - feature/**
-    - AddedSolutionFile
+    - A
     paths:
       - "Hackney.Shared/Hackney.Shared.Strings/**"
-      - "Hackney.Shared.Tests.Strings/**"
       - ".github/workflows/Hackney.Shared.Strings.yml"
 jobs:
   calculate-version:
@@ -51,21 +50,19 @@ jobs:
           cd Hackney.Shared
           ./dotnet-format-local/dotnet-format --check Hackney.Shared.Strings
 
-  build-and-test:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    needs: calculate-version
-    env:
-      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
-    outputs:
-      version: ${{ needs.calculate-version.outputs.version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build
-        run: docker-compose build hackney-shared-strings-test
-      - name: Run tests
-        run: docker-compose run hackney-shared-strings-test
+  # build-and-test:
+    # name: Build & Test
+    # runs-on: ubuntu-latest
+    # needs: calculate-version
+    # env:
+      # LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
+    # outputs:
+      # version: ${{ needs.calculate-version.outputs.version }}
+    # steps:
+      # - name: Checkout
+        # uses: actions/checkout@v2
+      # - name: Build
+        # run: docker-compose build hackney-shared-strings      
 
   publish-package:
     name: Publish Package
