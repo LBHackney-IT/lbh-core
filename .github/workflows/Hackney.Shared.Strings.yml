@@ -4,6 +4,7 @@ on:
     branches:
     - release
     - feature/**
+    - AddedSolutionFile
     paths:
       - "Hackney.Shared/Hackney.Shared.Strings/**"
       - "Hackney.Shared.Tests.Strings/**"
