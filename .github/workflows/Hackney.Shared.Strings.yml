@@ -4,7 +4,7 @@ on:
     branches:
     - release
     - feature/**
-    - A
+    - AddedSolutionFile
     paths:
       - "Hackney.Shared/Hackney.Shared.Strings/**"
       - ".github/workflows/Hackney.Shared.Strings.yml"
