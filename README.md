@@ -21,6 +21,9 @@ For full details on how to use the package(s) within this repository please read
 *Note: The Hackney.Core project has been split into individual packages and is now deprecated.*
 *In order to use our packages, import each Hackney.Core dependency required individually.*
 
+## Adding a new package
+Please refer to [our documentation](https://docs.google.com/document/d/1aJzhNxmSq_D4porwSIa528xYwTghblJmky4decvQBlA/edit?usp=sharing) on creating NuGet packages. For this repository, create your project folder in the `Hackney.Core` folder and test folder in `Hackney.Core.Tests`. Use the [workflow template](.github/workflows-template/publish.yml) to create your own workflow file in the `.github/workflows` folder.
+
 ## Features
 
 The following features are implemented within this package.
@@ -38,6 +41,7 @@ The following features are implemented within this package.
   * [Lambda logging](#Lambda-logging)
 * [Sns](#Sns)
   * [Sns Gateway](#Sns-Gateway)
+  * [Shared Classes](#Shared-Classes)
 * [Validation](#Validation)
   * [XssValidator](#XssValidator)
 
@@ -539,6 +543,12 @@ namespace SomeApi
 #### Sns Gateway
 The `SnsGateway` implementation of the `ISnsGateway` interface allows the easy publishing of an event message to an Sns topic.
 The `ISnsGateway` interface is made available by using the `AddSnsGateway()` extension method during your application start-up.
+
+#### Shared Classes
+- EntityEventSns - Model of the event message received by a function
+- EventData - Contains the data changed in an event
+- User - Contains information about a user triggering an event
+- EventTypes - Names all events we are currently using
 
 ### Validation
 
