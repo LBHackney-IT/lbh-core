@@ -9,6 +9,7 @@ WORKDIR /app
 COPY ./Hackney.Core/Hackney.Core.HealthCheck/Hackney.Core.HealthCheck.csproj ./Hackney.Core/Hackney.Core.HealthCheck/
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/Hackney.Core.Tests.HealthCheck.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/
 COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj ./Hackney.Core/Hackney.Core.Testing/
+COPY ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj ./Hackney.Core/Hackney.Core.Logging/
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.HealthCheck/Hackney.Core.HealthCheck.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/Hackney.Core.Tests.HealthCheck.csproj
