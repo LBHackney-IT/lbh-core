@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: calculate-version
     env:
-      VERSION: ${{ needs.calculate-version.version }}
+      VERSION: ${{ needs.calculate-version.outputs.version }}
       LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
     steps:
       - name: Checkout
