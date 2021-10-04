@@ -1,7 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+    <Authors>London Borough of Hackney Council</Authors>
+    <Company>London Borough of Hackney Council</Company>
+    <Copyright>2021</Copyright>
+    <Description>Common library that extends the default Microsoft logging infrastructure for use in LBH Web API services.</Description>
+    <NoWarn>S1066;S4457</NoWarn>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,10 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
     <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hackney.Core.Logging\Hackney.Core.Logging.csproj" />
+  </ItemGroup>
 </Project>
