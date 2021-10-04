@@ -9,6 +9,7 @@ WORKDIR /app
 COPY ./Hackney.Core/Hackney.Core.Validation/Hackney.Core.Validation.csproj ./Hackney.Core/Hackney.Core.Validation/
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Validation/Hackney.Core.Tests.Validation.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Validation/
 COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj ./Hackney.Core/Hackney.Core.Testing/
+COPY ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj ./Hackney.Core/Hackney.Core.Logging/
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.Validation/Hackney.Core.Validation.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Validation/Hackney.Core.Tests.Validation.csproj
