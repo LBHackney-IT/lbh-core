@@ -6,9 +6,10 @@
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
-    <Description>Common library that extends the default Microsoft logging infrastructure for use in LBH Web API services.</Description>
+    <Description>Common library that provides helpers for automated testing in LBH Web API services.</Description>
     <NoWarn>S1066;S4457</NoWarn>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -36,7 +36,7 @@ namespace Hackney.Core.Testing
         protected virtual void Dispose(bool disposing)
         {
             if (disposing && !_disposed)
-            { 
+            {
                 if (_httpListener.IsListening)
                     _httpListener.Stop();
 
