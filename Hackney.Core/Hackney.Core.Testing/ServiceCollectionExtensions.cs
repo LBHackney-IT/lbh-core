@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
-namespace Hackney.Core.Tests.Shared
+namespace Hackney.Core.Testing
 {
     public static class ServiceCollectionExtensions
     {

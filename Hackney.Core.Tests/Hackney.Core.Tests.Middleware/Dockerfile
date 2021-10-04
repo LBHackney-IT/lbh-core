@@ -12,11 +12,11 @@ WORKDIR /app
 COPY ./Hackney.Core/Hackney.Core.Middleware/Hackney.Core.Middleware.csproj ./Hackney.Core/Hackney.Core.Middleware/
 COPY ./Hackney.Core/Hackney.Core.Middleware/nuget.config ./Hackney.Core/Hackney.Core.Middleware/nuget.config
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/Hackney.Core.Tests.Middleware.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/
-COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/Hackney.Core.Tests.Shared.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/
+COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj ./Hackney.Core/Hackney.Core.Testing/
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.Middleware/Hackney.Core.Middleware.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/Hackney.Core.Tests.Middleware.csproj
-RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/Hackney.Core.Tests.Shared.csproj
+RUN dotnet restore ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj
 
 # Copy everything else and build
 COPY . .

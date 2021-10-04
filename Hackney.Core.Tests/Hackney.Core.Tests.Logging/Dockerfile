@@ -8,11 +8,11 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers
 COPY ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj ./Hackney.Core/Hackney.Core.Logging/
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Logging/Hackney.Core.Tests.Logging.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Logging/
-COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/Hackney.Core.Tests.Shared.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/
+COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj ./Hackney.Core/Hackney.Core.Testing/
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Logging/Hackney.Core.Tests.Logging.csproj
-RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Shared/Hackney.Core.Tests.Shared.csproj
+RUN dotnet restore ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj
 
 # Copy everything else and build
 COPY . .

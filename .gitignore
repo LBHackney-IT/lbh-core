@@ -59,7 +59,7 @@ bin/
 .idea/
 tmp/
 .vs/
-/Hackney.Core.Tests.Shared/Properties/launchSettings.json
+Hackney.Core/Hackney.Core.Testing/Properties/launchSettings.json
 
 .fake
 .ionide
