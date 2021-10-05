@@ -44,6 +44,7 @@ The following features are implemented within this package.
   * [Shared Classes](#Shared-Classes)
 * [Validation](#Validation)
   * [XssValidator](#XssValidator)
+* [Testing](#Testing)
 
 
 ### MVC Middleware
@@ -579,3 +580,7 @@ namespace SomeApi.Domain.Validation
     }
 }
 ```
+
+### Testing
+
+**Project reference: `Hackney.Core.Testing`**

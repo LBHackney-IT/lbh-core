@@ -8,12 +8,12 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers
 COPY ./Hackney.Core/Hackney.Core.DynamoDb/Hackney.Core.DynamoDb.csproj ./Hackney.Core/Hackney.Core.DynamoDb/
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/Hackney.Core.Tests.DynamoDb.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/
-COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj ./Hackney.Core/Hackney.Core.Testing/
+COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/Hackney.Core.Testing.Shared.csproj ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/
 COPY ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj ./Hackney.Core/Hackney.Core.Logging/
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.DynamoDb/Hackney.Core.DynamoDb.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/Hackney.Core.Tests.DynamoDb.csproj
-RUN dotnet restore ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.csproj
+RUN dotnet restore ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/Hackney.Core.Testing.Shared.csproj
 
 # Copy everything else and build
 COPY . .
