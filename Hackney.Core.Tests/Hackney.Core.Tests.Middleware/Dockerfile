@@ -6,6 +6,8 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT='true'
 ARG LBHPACKAGESTOKEN
 ENV LBHPACKAGESTOKEN=$LBHPACKAGESTOKEN
 
+ARG LBHPACKAGESTOKEN
+ENV LBHPACKAGESTOKEN=$LBHPACKAGESTOKEN
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
@@ -13,7 +15,7 @@ COPY ./Hackney.Core/Hackney.Core.Middleware/Hackney.Core.Middleware.csproj ./Hac
 COPY ./Hackney.Core/Hackney.Core.Middleware/nuget.config ./Hackney.Core/Hackney.Core.Middleware/nuget.config
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/Hackney.Core.Tests.Middleware.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/
 COPY ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/Hackney.Core.Testing.Shared.csproj ./Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/
-COPY ./Hackney.Core/Hackney.Core.Logging/Hackney.Core.Logging.csproj ./Hackney.Core/Hackney.Core.Logging/
+COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.Middleware/Hackney.Core.Middleware.csproj
 RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Middleware/Hackney.Core.Tests.Middleware.csproj

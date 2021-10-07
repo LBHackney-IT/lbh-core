@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Hackney.Core.Middleware;
 using Hackney.Core.Middleware.Exception;
-using Hackney.Core.Testing;
+using Hackney.Core.Testing.Shared;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

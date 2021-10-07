@@ -5,7 +5,7 @@ using Moq;
 using System;
 using Xunit;
 
-namespace Hackney.Core.Testing
+namespace Hackney.Core.Testing.Shared
 {
     /// <summary>
     /// This fixture & collection should be used for on all test classes that are testing classes that use

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Hackney.Core.Http;
-using Hackney.Core.Testing;
+using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Xunit;

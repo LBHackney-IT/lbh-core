@@ -1,5 +1,5 @@
 using Hackney.Core.Logging;
-using Hackney.Core.Testing;
+using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;

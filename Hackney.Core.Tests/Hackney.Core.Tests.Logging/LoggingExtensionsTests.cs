@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Hackney.Core.Logging;
-using Hackney.Core.Testing;
+using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

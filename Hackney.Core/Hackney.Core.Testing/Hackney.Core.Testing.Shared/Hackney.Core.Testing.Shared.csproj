@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
+    <PackageReference Include="Hackney.Core.Logging" Version="1.30.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
@@ -28,7 +29,5 @@
     <PackageReference Include="xunit" Version="2.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Hackney.Core.Logging\Hackney.Core.Logging.csproj" />
-  </ItemGroup>
+
 </Project>
