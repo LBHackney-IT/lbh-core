@@ -12,6 +12,8 @@ jobs:
   calculate-version:
     name: Calculate Version
     runs-on: ubuntu-latest
+    env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
     outputs:
       version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
     steps:
