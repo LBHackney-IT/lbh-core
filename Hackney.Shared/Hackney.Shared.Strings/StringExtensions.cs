@@ -13,7 +13,6 @@
             if (string.IsNullOrEmpty(str)) return str;
             if (str.Length == 1) return str.ToLowerInvariant();
 
-            // else if (str.Length > 1)
             return char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
     }
