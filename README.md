@@ -42,8 +42,7 @@ The following features are implemented within this package.
 * [Sns](#Sns)
   * [Sns Gateway](#Sns-Gateway)
   * [Shared Classes](#Shared-Classes)
-* [Validation](#Validation)
-  * [XssValidator](#XssValidator)
+* [Validation](/Hackney.Core/Hackney.Core.Validation/readme.md)
 
 
 ### MVC Middleware
@@ -550,32 +549,3 @@ The `ISnsGateway` interface is made available by using the `AddSnsGateway()` ext
 - User - Contains information about a user triggering an event
 - EventTypes - Names all events we are currently using
 
-### Validation
-
-**Project reference: `Hackney.Core.Validation`**
-
-#### XssValidator
-The XssValidator class is [Fluent Validation](https://docs.fluentvalidation.net/en/latest/index.html#) `PropertyValidator` implementation that will check if a property has potentially dangerous content.
-
-##### Usage
-Applications using this validator will need to have already configured their application to use Fluent Validation.
-The validator is used through the `RuleBuilder` extension method `NotXssString()` that can be used when defining a validation rule.
-
-In the example, the `NotXssString` rule is applied to all 3 string properties on the object.
-```csharp
-using FluentValidation;
-using Hackney.Core.Validation;
-
-namespace SomeApi.Domain.Validation
-{
-    public class CategorisationValidator : AbstractValidator<Categorisation>
-    {
-        public CategorisationValidator()
-        {
-            RuleFor(x => x.Category).NotXssString();
-            RuleFor(x => x.SubCategory).NotXssString();
-            RuleFor(x => x.Description).NotXssString();
-        }
-    }
-}
-```
