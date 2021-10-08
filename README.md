@@ -44,6 +44,7 @@ The following features are implemented within this package.
   * [Shared Classes](#Shared-Classes)
 * [Validation](#Validation)
   * [XssValidator](#XssValidator)
+* [Validation.AspNet](#Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
 
 
 ### MVC Middleware
