@@ -17,14 +17,5 @@ namespace Hackney.Core.Validation
 
             return ruleBuilder.SetValidator(new XssValidator<T, TElement>());
         }
-
-        private const string IntPhoneNumberRegEx = @"^[+]?([0-9]*[\.\s\-\(\)]|[0-9]+){6,24}$";
-
-        private const string UkPhoneNumberRegEx
-           = @"^(((\+44\s?\d{4}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\+44\s?\d{3}|\(?0\d{3}\)?)\s?\d{3}\s?\d{4})|((\+44\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?\#(\d{4}|\d{3}))?$";
-
-        private const string UkPostCode = 
-            @"^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$";
-
     }
 }
