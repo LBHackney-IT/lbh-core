@@ -13,7 +13,7 @@ namespace Hackney.Core.ElasticSearch.Interfaces
 
         IQueryBuilder<T> SpecifyFieldsToBeFiltered(List<string> fields);
 
-        QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> descriptor);
+        QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> containerDescriptor);
 
         QueryContainer Search(QueryContainerDescriptor<T> containerDescriptor);
     }
