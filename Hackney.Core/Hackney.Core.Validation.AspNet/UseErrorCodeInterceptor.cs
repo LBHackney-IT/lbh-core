@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
 
 namespace Hackney.Core.Validation.AspNet
 {
