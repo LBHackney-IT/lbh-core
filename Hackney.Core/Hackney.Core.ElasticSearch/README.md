@@ -2,8 +2,8 @@
 
 This package contains helpers and common funcitonality that can be employed when using ElasticSearch.
 
-* [DI Registration](#DI Registration)
-* [Health check](#ElasticSearch-Health-check)
+* [DI Registration](#DI-Registration)
+* [Health check](#Health-check)
 
 
 ## DI Registration
@@ -38,7 +38,7 @@ namespace SomeApi
 
 ```
 
-## ElasticSearch Health Check
+## Health Check
 There is an `ElasticSearchHealthCheck` class implemented that uses the 
 [Microsoft Health check framework](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-2.2).
 The check verifies that the ElasticSearch instance configured is accessible by attempting to ping it .
