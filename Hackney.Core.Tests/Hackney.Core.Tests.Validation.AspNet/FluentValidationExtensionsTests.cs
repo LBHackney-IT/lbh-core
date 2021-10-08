@@ -24,7 +24,7 @@ namespace Hackney.Core.Tests.Validation.AspNet
         public void AddFluentValidationTestNullAssembliesThrows()
         {
             var services = new ServiceCollection();
-            Action act = () => services.AddFluentValidation((Assembly[]) null);
+            Action act = () => services.AddFluentValidation((Assembly[])null);
             act.Should().Throw<ArgumentNullException>();
         }
 

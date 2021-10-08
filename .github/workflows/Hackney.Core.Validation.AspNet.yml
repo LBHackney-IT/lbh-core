@@ -5,7 +5,7 @@ on:
     - release
     - feature/**
     paths:
-      -  "Hackney.Core/Hackney.Core.Validation.AspNet/**"
+      - "Hackney.Core/Hackney.Core.Validation.AspNet/**"
       - "Hackney.Core.Tests.Validation.AspNet/**"
       - ".github/workflows/Hackney.Core.Validation.AspNet.yml"
 jobs:
@@ -29,8 +29,9 @@ jobs:
         with:
           useConfigFile: true
       - name: Display package version
-        run: echo "Version: $GITVERSION_NUGETVERSIONV2"
-
+        run: |
+          echo "Version: $GITVERSION_NUGETVERSIONV2"
+          
   check-code-formatting:
     name: Check code formatting
     runs-on: ubuntu-latest
@@ -63,7 +64,7 @@ jobs:
       - name: Build
         run: docker-compose build hackney-core-validation-aspnet-test
       - name: Run tests
-        run: docker-compose run hackney-core-validation-aspNet-test
+        run: docker-compose run hackney-core-validation-aspnet-test
 
   publish-package:
     name: Publish Package
