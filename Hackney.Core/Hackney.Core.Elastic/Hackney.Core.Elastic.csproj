@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+		<Authors>London Borough of Hackney Council</Authors>
+		<Company>London Borough of Hackney Council</Company>
+		<Copyright>2021</Copyright>
+		<Description>Common library to support usage of Elastic Search functions in Web API services.</Description>
+		<NoWarn>S1066;S4457</NoWarn>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="NEST" Version="7.15.0" />
+	</ItemGroup>
+</Project>

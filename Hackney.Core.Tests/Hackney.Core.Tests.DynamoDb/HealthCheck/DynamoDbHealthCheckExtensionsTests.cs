@@ -1,11 +1,9 @@
 ﻿using FluentAssertions;
-using Hackney.Core.DynamoDb;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Hackney.Core.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
-using System.Linq;
 using Xunit;
 
 namespace Hackney.Core.Tests.DynamoDb.HealthCheck
