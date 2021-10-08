@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+    <Authors>London Borough of Hackney Council</Authors>
+    <Company>London Borough of Hackney Council</Company>
+    <Copyright>2021</Copyright>
+    <Description>Common library providing property validation rules to use in LBH Web API services.</Description>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="FluentValidation" Version="10.1.0" />    
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <!-- <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.0" /> -->
+  </ItemGroup>
+
+</Project>
