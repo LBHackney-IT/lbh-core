@@ -2,6 +2,7 @@
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+  
   <PropertyGroup>
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
     <Authors>London Borough of Hackney Council</Authors>
