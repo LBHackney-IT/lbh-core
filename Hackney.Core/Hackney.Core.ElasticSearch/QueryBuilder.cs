@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Hackney.Core.ElasticSearch.Interfaces;
+using Nest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hackney.Core.Elastic.Interfaces;
-using Nest;
 
-namespace Hackney.Core.Elastic
+namespace Hackney.Core.ElasticSearch
 {
     public class QueryBuilder<T> : IQueryBuilder<T> where T : class
     {

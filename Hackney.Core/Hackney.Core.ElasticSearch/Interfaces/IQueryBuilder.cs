@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Nest;
 
-namespace Hackney.Core.Elastic.Interfaces
+namespace Hackney.Core.ElasticSearch.Interfaces
 {
     public interface IQueryBuilder<T> where T : class
     {
