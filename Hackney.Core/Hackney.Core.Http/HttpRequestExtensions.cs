@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hackney.Core.Validation.AspNet
+namespace Hackney.Core.Http
 {
     public static class HttpRequestExtensions
     {

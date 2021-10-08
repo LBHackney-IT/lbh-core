@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Hackney.Core.Validation.AspNet;
+using Hackney.Core.Http;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Hackney.Core.Tests.Validation.AspNet
+namespace Hackney.Core.Tests.Http
 {
     public class HttpRequestExtensionsTests
     {
