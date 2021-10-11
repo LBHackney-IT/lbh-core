@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Nest;
+﻿using Nest;
+using System.Collections.Generic;
 
-namespace Hackney.Core.Elastic.Interfaces
+namespace Hackney.Core.ElasticSearch.Interfaces
 {
     public interface IQueryBuilder<T> where T : class
     {
@@ -13,7 +13,7 @@ namespace Hackney.Core.Elastic.Interfaces
 
         IQueryBuilder<T> SpecifyFieldsToBeFiltered(List<string> fields);
 
-        QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> descriptor);
+        QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> containerDescriptor);
 
         QueryContainer Search(QueryContainerDescriptor<T> containerDescriptor);
     }
