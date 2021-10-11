@@ -43,7 +43,7 @@ The following features are implemented within this package.
 * [Sns](#Sns)
   * [Sns Gateway](#Sns-Gateway)
   * [Shared Classes](#Shared-Classes)
-* [Validation](/Hackney.Core/Hackney.Core.Validation/readme.md)
+* [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
 
 
 ### MVC Middleware
