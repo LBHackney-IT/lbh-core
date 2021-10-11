@@ -2,7 +2,7 @@ assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
 branches:
   master:
-    regex: 'release'
+    regex: ^master$|^main$|^release$
     increment: Minor
     is-source-branch-for: ['feature']
     is-mainline: true

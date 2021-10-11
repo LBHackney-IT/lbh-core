@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Hackney.Core.ElasticSearch.Interfaces;
+using Nest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hackney.Core.Elastic.Interfaces;
-using Nest;
 
-namespace Hackney.Core.Elastic
+namespace Hackney.Core.ElasticSearch
 {
+    /// <summary>
+    /// TODO...
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class QueryBuilder<T> : IQueryBuilder<T> where T : class
     {
         private readonly IWildCardAppenderAndPrepender _wildCardAppenderAndPrepender;
@@ -19,6 +23,11 @@ namespace Hackney.Core.Elastic
             _queries = new List<Func<QueryContainerDescriptor<T>, QueryContainer>>();
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
         public IQueryBuilder<T> CreateWildstarSearchQuery(string searchText)
         {
             var listOfWildCardedWords = _wildCardAppenderAndPrepender.Process(searchText);
@@ -28,6 +37,11 @@ namespace Hackney.Core.Elastic
             return this;
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="commaSeparatedFilters"></param>
+        /// <returns></returns>
         public IQueryBuilder<T> CreateFilterQuery(string commaSeparatedFilters)
         {
             _filterQuery = string.Join(' ', commaSeparatedFilters.Split(","));
@@ -35,6 +49,11 @@ namespace Hackney.Core.Elastic
             return this;
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
         public IQueryBuilder<T> SpecifyFieldsToBeSearched(List<string> fields)
         {
             Func<QueryContainerDescriptor<T>, QueryContainer> query =
@@ -60,6 +79,11 @@ namespace Hackney.Core.Elastic
             return this;
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
         public IQueryBuilder<T> SpecifyFieldsToBeFiltered(List<string> fields)
         {
             Func<QueryContainerDescriptor<T>, QueryContainer> query =
@@ -85,11 +109,21 @@ namespace Hackney.Core.Elastic
             return this;
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="containerDescriptor"></param>
+        /// <returns></returns>
         public QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> containerDescriptor)
         {
             return containerDescriptor.Bool(builder => builder.Must(_queries));
         }
 
+        /// <summary>
+        /// TODO...
+        /// </summary>
+        /// <param name="containerDescriptor"></param>
+        /// <returns></returns>
         public QueryContainer Search(QueryContainerDescriptor<T> containerDescriptor)
         {
             return _queries.First().Invoke(containerDescriptor);
