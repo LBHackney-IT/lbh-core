@@ -59,9 +59,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Validation.AspNet", "Hackney.Core\Hackney.Core.Validation.AspNet\Hackney.Core.Validation.AspNet.csproj", "{34335E9C-FD09-4B50-92A8-087996A55FE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Tests.Validation.AspNet", "Hackney.Core.Tests\Hackney.Core.Tests.Validation.AspNet\Hackney.Core.Tests.Validation.AspNet.csproj", "{218C4F5F-FA86-42BA-8F77-E089BFB07B2B}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.ElasticSearch", "Hackney.Core\Hackney.Core.ElasticSearch\Hackney.Core.ElasticSearch.csproj", "{C474CD7C-DE7D-4F32-91DD-66EBE2FD0638}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.ElasticSearch", "Hackney.Core.Tests\Hackney.Core.Tests.ElasticSearch\Hackney.Core.Tests.ElasticSearch.csproj", "{2453F4C7-0CDC-428A-9046-B707D3E15E88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.ElasticSearch", "Hackney.Core\Hackney.Core.ElasticSearch\Hackney.Core.ElasticSearch.csproj", "{879AFDD3-0CF2-49B5-B297-41A426441174}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Tests.ElasticSearch", "Hackney.Core.Tests\Hackney.Core.Tests.ElasticSearch\Hackney.Core.Tests.ElasticSearch.csproj", "{2453F4C7-0CDC-428A-9046-B707D3E15E88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github workflows", "Github workflows", "{15E6A395-6A32-4A67-A28B-70E4AE343E31}"
 	ProjectSection(SolutionItems) = preProject
@@ -167,6 +168,10 @@ Global
 		{218C4F5F-FA86-42BA-8F77-E089BFB07B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{218C4F5F-FA86-42BA-8F77-E089BFB07B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{218C4F5F-FA86-42BA-8F77-E089BFB07B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{879AFDD3-0CF2-49B5-B297-41A426441174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{879AFDD3-0CF2-49B5-B297-41A426441174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{879AFDD3-0CF2-49B5-B297-41A426441174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{879AFDD3-0CF2-49B5-B297-41A426441174}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2453F4C7-0CDC-428A-9046-B707D3E15E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2453F4C7-0CDC-428A-9046-B707D3E15E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2453F4C7-0CDC-428A-9046-B707D3E15E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
