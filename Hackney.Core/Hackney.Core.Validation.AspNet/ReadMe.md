@@ -6,24 +6,54 @@ Fluent Validation allows you to separate validation rules from your object model
 
 #### UseErroCodeInterceptor
 
-We have customised our FluentValidation through the use of an interceptor. The `UseErrorCodeInterceptor` implements the `IValidatorInterceptor`.
+This class is used to configure error code and error messages that would be provided when a validation error occurs. This allows the client to understand the validation error that has occured and was of resolving it. 
 
-This interface has two methods – `BeforeAspNetValidation` and `AfterAspNetValidation`.
+Usage
+```csharp
 
-`BeforeMvcValidation` is invoked after the appropriate validator has been selected but before it is invoked. One of the arguments passed to this method is a `ValidationContext` that will eventually be passed to the validator. The context has several properties including a reference to the object being validated. If we want to change which rules are going to be invoked (for example, by using a custom `ValidatorSelector`) then we can create a new `ValidationContext`, set its Selector property, and return that from the `BeforeAspNetValidation` method.
+      private ValidationFailure ConstructFailure(ValidationFailure failure)
+      {
+         var errorDetail = new
+         {
+             ErrorCode = failure.ErrorCode,
+             ErrorMessage = failure.ErrorMessage,
+             CustomState = failure.CustomState
+         };
+         var errorDetailString = JsonSerializer.Serialize(errorDetail, _jsonOptions);
+         failure.ErrorMessage = errorDetailString;
+         return failure;
+      }
+  
+      public ValidationResult AfterAspNetValidation(ActionContext actionContext,
+      IValidationContext validationContext,ValidationResult result)
+      {
+         if (result.Errors.Any())
+         {
+             var projection = result.Errors.Select(failure => ConstructFailure(failure));
+             return new ValidationResult(projection);
+         }
 
-Likewise, `AfterAspNetValidation` occurs after validation has occurs. This time, we also have a reference to the result of the validation. Here we can do some additional processing on the error messages before they’re added to Model.
+         return result;
+      }
+```
+The first method `ConstructFailure` constructs the error message that would be provided if there is a validation error. 
+The second method `AfterAspNetValidation` displays the error message when there is a validation error.
 
 #### FluentValidationExtensions
 
 The main purpose of this class is to have a default `IValidatorInterceptor`  to be used for all validators.
 
-For example
+Usage
 
 ```csharp
+
+   public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+   {
+      return services.AddFluentValidation(Assembly.GetExecutingAssembly());
+   }
 
    services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblies(assemblies));
    services.TryAddTransient<IValidatorInterceptor, UseErrorCodeInterceptor>();
   
 ```
-The example above customises all validators to use the `AddFluentValidation()` as well as the `IValidatorInteceptor`
+The example above registers all the validators located in either the current assembly, or the specified assemblies
