@@ -4,40 +4,19 @@ The main use of this packages is to configure the use of FluentValidation within
 
 Fluent Validation allows you to separate validation rules from your object model and helps you structure the rules so that they are nice and readable. The rules are also super easy to test.
 
-#### UseErroCodeInterceptor
+#### UseErrorCodeInterceptor
 
-This class is used to configure error code and error messages that would be provided when a validation error occurs. This allows the client to understand the validation error that has occured and was of resolving it. 
+The `UseErrorCodeInterceptor` class is used under the covers to make sure that any error code that is specified on a validation rule is actually included in the HTTP response. By default it just includes the error message and any code specified is left out. Clients should not need to invoke this class directly.
 
-Usage
+So when a validation rule does this:
+
 ```csharp
 
-      private ValidationFailure ConstructFailure(ValidationFailure failure)
-      {
-         var errorDetail = new
-         {
-             ErrorCode = failure.ErrorCode,
-             ErrorMessage = failure.ErrorMessage,
-             CustomState = failure.CustomState
-         };
-         var errorDetailString = JsonSerializer.Serialize(errorDetail, _jsonOptions);
-         failure.ErrorMessage = errorDetailString;
-         return failure;
-      }
-  
-      public ValidationResult AfterAspNetValidation(ActionContext actionContext,
-      IValidationContext validationContext,ValidationResult result)
-      {
-         if (result.Errors.Any())
-         {
-             var projection = result.Errors.Select(failure => ConstructFailure(failure));
-             return new ValidationResult(projection);
-         }
+      RuleFor(x => x.ReasonForTermination).NotXssString()
+                    .WithErrorCode(ErrorCodes.XssCheckFailure);
 
-         return result;
-      }
 ```
-The first method `ConstructFailure` constructs the error message that would be provided if there is a validation error. 
-The second method `AfterAspNetValidation` displays the error message when there is a validation error.
+then the error code value for XssCheckFailure will actually be included in the error details in the HTTP response.
 
 #### FluentValidationExtensions
 
@@ -47,13 +26,19 @@ Usage
 
 ```csharp
 
-   public static IServiceCollection AddFluentValidation(this IServiceCollection services)
-   {
-      return services.AddFluentValidation(Assembly.GetExecutingAssembly());
-   }
+  public void ConfigureServices(IServiceCollection services)
+  {
+    ...
 
-   services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblies(assemblies));
-   services.TryAddTransient<IValidatorInterceptor, UseErrorCodeInterceptor>();
+    // This example will register any validators just in the application's assembly
+    services.AddFluentValidation();
+
+    // This example will register any validators in the assembly where the CreatePersonRequestObjectValidator is located
+    // (but not the local assembly - if you need that then add it specifically.)
+    services.AddFluentValidation(Assembly.GetAssembly(typeof(CreatePersonRequestObjectValidator)));
+
+    ...
+   }
   
 ```
 The example above registers all the validators located in either the current assembly, or the specified assemblies
