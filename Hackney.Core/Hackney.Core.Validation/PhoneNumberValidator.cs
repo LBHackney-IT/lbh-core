@@ -28,7 +28,7 @@ namespace Hackney.Core.Validation
 
         [ExcludeFromCodeCoverage]
         protected override string GetDefaultMessageTemplate(string errorCode)
-          => "{PropertyName} does not contain a valid " 
+          => "{PropertyName} does not contain a valid "
             + Enum.GetName(typeof(PhoneNumberType), Type)
             + " phone number.";
     }
