@@ -2,7 +2,7 @@ assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
 branches:
   master:
-    regex: ^master$|^main$
+    regex: ^master$|^main$|^release$
     increment: Minor
     is-source-branch-for: ['feature']
     is-mainline: true
@@ -10,7 +10,7 @@ branches:
     regex: feature[/-]
     tag: preview
     increment: Minor
-    source-branches: ['master', 'main']
+    source-branches: ['master', 'main', 'release']
 ignore:
   sha: []
 merge-message-formats: {}
