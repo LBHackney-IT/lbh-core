@@ -8,7 +8,7 @@ Fluent Validation allows you to separate validation rules from your object model
 
 The `UseErrorCodeInterceptor` class is used under the covers to make sure that any error code that is specified on a validation rule is actually included in the HTTP response. By default it just includes the error message and any code specified is left out. Clients should not need to invoke this class directly.
 
-So when a validation rule does this:
+Usage
 
 ```csharp
 
@@ -16,7 +16,6 @@ So when a validation rule does this:
                     .WithErrorCode(ErrorCodes.XssCheckFailure);
 
 ```
-then the error code value for XssCheckFailure will actually be included in the error details in the HTTP response.
 
 #### FluentValidationExtensions
 
@@ -41,4 +40,3 @@ Usage
    }
   
 ```
-The example above registers all the validators located in either the current assembly, or the specified assemblies
