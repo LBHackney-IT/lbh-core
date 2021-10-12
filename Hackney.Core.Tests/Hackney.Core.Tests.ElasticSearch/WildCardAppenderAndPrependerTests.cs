@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentAssertions;
-using Hackney.Core.Elastic;
+using Hackney.Core.ElasticSearch;
 using Xunit;
 
 namespace Hackney.Core.Tests.ElasticSearch
