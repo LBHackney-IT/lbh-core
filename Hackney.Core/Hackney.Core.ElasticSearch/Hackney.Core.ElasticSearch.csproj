@@ -6,10 +6,12 @@
 		<Company>London Borough of Hackney Council</Company>
 		<Copyright>2021</Copyright>
 		<Description>Common library to support usage of Elastic Search functions in Web API services.</Description>
-		<NoWarn>S1066;S4457</NoWarn>
+		<NoWarn>S1066;S4457;CA1031</NoWarn>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="NEST" Version="7.15.0" />
+	 <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+	 <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
+	 <PackageReference Include="NEST" Version="7.15.0" />
 	</ItemGroup>
 </Project>

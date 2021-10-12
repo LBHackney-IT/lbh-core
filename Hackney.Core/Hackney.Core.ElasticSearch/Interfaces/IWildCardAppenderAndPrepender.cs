@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Hackney.Core.Elastic.Interfaces
+namespace Hackney.Core.ElasticSearch.Interfaces
 {
     public interface IWildCardAppenderAndPrepender
     {
