@@ -13,7 +13,7 @@ namespace Hackney.Core.ElasticSearch
         private List<Func<QueryContainerDescriptor<T>, QueryContainer>> _filterQueries;
 
 
-        public QueryBuilder(IWildCardAppenderAndPrepender wildCardAppenderAndPrepender)
+        public QueryBuilder(IWildCardAppenderAndPrepender wildCardAppenderAndPrepender, IExactSearchQuerystringProcessor exactQueryStringProcessor)
         {
             _wildCardAppenderAndPrepender = wildCardAppenderAndPrepender;
         }
@@ -43,8 +43,12 @@ namespace Hackney.Core.ElasticSearch
             return this;
         }
 
-        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields)
+        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields, 
+            IExactSearchQuerystringProcessor processor = null)
         {
+            if (processor != null)
+                searchText = processor.Process(searchText);
+
             _exactQuery = CreateQuery(searchText, fields, 20);
 
             return this;
