@@ -88,7 +88,7 @@ namespace Hackney.Core.ElasticSearch
                 listOfFunctions.AddRange(_filterQueries);
 
                 queryContainer = containerDescriptor.Bool(x =>
-                    x.Must(containerDescriptor.Bool(x => x.Must(listOfFunctions)),
+                    x.Must(containerDescriptor.Bool(x => x.Should(listOfFunctions)),
                     queryContainer));
             }
 
