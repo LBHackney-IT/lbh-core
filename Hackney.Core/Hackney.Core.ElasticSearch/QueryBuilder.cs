@@ -43,7 +43,7 @@ namespace Hackney.Core.ElasticSearch
             return this;
         }
 
-        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields, 
+        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields,
             IExactSearchQuerystringProcessor processor = null)
         {
             if (processor != null)
