@@ -1,5 +1,6 @@
-﻿using FluentAssertions;
-using Hackney.Core.ElasticSearch;
+﻿using System;
+using FluentAssertions;
+using Hackney.Core.Elastic;
 using Xunit;
 
 namespace Hackney.Core.Tests.ElasticSearch
@@ -11,13 +12,6 @@ namespace Hackney.Core.Tests.ElasticSearch
         public WildCardAppenderAndPrependerTests()
         {
             _sut = new WildCardAppenderAndPrepender();
-        }
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void GivenNoInputReturnsAnEmptyList(string phrase)
-        {
-            _sut.Process(phrase).Should().BeEmpty();
         }
 
         [Theory]

@@ -1,20 +1,16 @@
-﻿using Nest;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Nest;
 
-namespace Hackney.Core.ElasticSearch.Interfaces
+namespace Hackney.Core.Elastic.Interfaces
 {
     public interface IQueryBuilder<T> where T : class
     {
-        IQueryBuilder<T> CreateWildstarSearchQuery(string searchText);
+        public IQueryBuilder<T> WithWildstarQuery(string searchText, List<string> fields);
 
-        IQueryBuilder<T> CreateFilterQuery(string commaSeparatedFilters);
+        public IQueryBuilder<T> WithFilterQuery(string commaSeparatedFilters, List<string> fields);
 
-        IQueryBuilder<T> SpecifyFieldsToBeSearched(List<string> fields);
+        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields);
 
-        IQueryBuilder<T> SpecifyFieldsToBeFiltered(List<string> fields);
-
-        QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> containerDescriptor);
-
-        QueryContainer Search(QueryContainerDescriptor<T> containerDescriptor);
+        public QueryContainer Build(QueryContainerDescriptor<T> containerDescriptor);
     }
 }
