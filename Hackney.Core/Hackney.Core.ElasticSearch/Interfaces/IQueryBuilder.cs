@@ -9,7 +9,7 @@ namespace Hackney.Core.ElasticSearch.Interfaces
 
         public IQueryBuilder<T> WithFilterQuery(string commaSeparatedFilters, List<string> fields);
 
-        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields, IExactSearchQuerystringProcessor processor);
+        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields, IExactSearchQuerystringProcessor processor = null);
 
         public QueryContainer Build(QueryContainerDescriptor<T> containerDescriptor);
     }
