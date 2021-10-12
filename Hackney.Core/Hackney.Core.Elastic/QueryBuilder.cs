@@ -9,44 +9,61 @@ namespace Hackney.Core.Elastic
     public class QueryBuilder<T> : IQueryBuilder<T> where T : class
     {
         private readonly IWildCardAppenderAndPrepender _wildCardAppenderAndPrepender;
-        private readonly List<Func<QueryContainerDescriptor<T>, QueryContainer>> _queries;
-        private string _searchQuery;
-        private string _filterQuery;
+        private Func<QueryContainerDescriptor<T>, QueryContainer> _wildstarQuery;
+        private Func<QueryContainerDescriptor<T>, QueryContainer> _exactQuery;
+        private List<Func<QueryContainerDescriptor<T>, QueryContainer>> _filterQueries;
+
 
         public QueryBuilder(IWildCardAppenderAndPrepender wildCardAppenderAndPrepender)
         {
             _wildCardAppenderAndPrepender = wildCardAppenderAndPrepender;
-            _queries = new List<Func<QueryContainerDescriptor<T>, QueryContainer>>();
         }
 
-        public IQueryBuilder<T> CreateWildstarSearchQuery(string searchText)
+        public IQueryBuilder<T> WithWildstarQuery(string searchText, List<string> fields)
         {
             var listOfWildCardedWords = _wildCardAppenderAndPrepender.Process(searchText);
-            _searchQuery = $"({string.Join(" AND ", listOfWildCardedWords)}) " +
-                           string.Join(' ', listOfWildCardedWords);
+            var queryString = $"({string.Join(" AND ", listOfWildCardedWords)}) " +
+                              string.Join(' ', listOfWildCardedWords);
+
+            _wildstarQuery = CreateQuery(queryString, fields);
 
             return this;
         }
 
-        public IQueryBuilder<T> CreateFilterQuery(string commaSeparatedFilters)
+        public IQueryBuilder<T> WithFilterQuery(string commaSeparatedFilters, List<string> fields)
         {
-            _filterQuery = string.Join(' ', commaSeparatedFilters.Split(","));
+            if (commaSeparatedFilters != null)
+            {
+                _filterQueries = new List<Func<QueryContainerDescriptor<T>, QueryContainer>>();
+                foreach (var filterWord in commaSeparatedFilters.Split(","))
+                {
+                    _filterQueries.Add(CreateQuery(filterWord, fields));
+                }
+            }
 
             return this;
         }
 
-        public IQueryBuilder<T> SpecifyFieldsToBeSearched(List<string> fields)
+        public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields)
+        {
+            _exactQuery = CreateQuery(searchText, fields, 20);
+
+            return this;
+        }
+
+        private static Func<QueryContainerDescriptor<T>, QueryContainer> CreateQuery(string queryString,
+            List<string> fields, double? boostValue = null)
         {
             Func<QueryContainerDescriptor<T>, QueryContainer> query =
                 (containerDescriptor) => containerDescriptor.QueryString(q =>
                 {
-                    var queryDescriptor = q.Query(_searchQuery)
+                    var queryDescriptor = q.Query(queryString)
                         .Type(TextQueryType.MostFields)
                         .Fields(f =>
                         {
                             foreach (var field in fields)
                             {
-                                f = f.Field(field);
+                                f = f.Field(field, boostValue);
                             }
 
                             return f;
@@ -55,44 +72,24 @@ namespace Hackney.Core.Elastic
                     return queryDescriptor;
                 });
 
-            _queries.Add(query);
-
-            return this;
+            return query;
         }
 
-        public IQueryBuilder<T> SpecifyFieldsToBeFiltered(List<string> fields)
+        public QueryContainer Build(QueryContainerDescriptor<T> containerDescriptor)
         {
-            Func<QueryContainerDescriptor<T>, QueryContainer> query =
-                (containerDescriptor) => containerDescriptor.QueryString(q =>
-                {
-                    var queryDescriptor = q.Query(_filterQuery)
-                        .Type(TextQueryType.MostFields)
-                        .Fields(f =>
-                        {
-                            foreach (var field in fields)
-                            {
-                                f = f.Field(field);
-                            }
+            var queryContainer = containerDescriptor.Bool(x => x.Should(_wildstarQuery, _exactQuery));
 
-                            return f;
-                        });
+            if (_filterQueries != null)
+            {
+                var listOfFunctions = new List<Func<QueryContainerDescriptor<T>, QueryContainer>>();
+                listOfFunctions.AddRange(_filterQueries);
 
-                    return queryDescriptor;
-                });
+                queryContainer = containerDescriptor.Bool(x =>
+                    x.Must(containerDescriptor.Bool(x => x.Should(listOfFunctions)),
+                    queryContainer));
+            }
 
-            _queries.Add(query);
-
-            return this;
-        }
-
-        public QueryContainer FilterAndRespectSearchScore(QueryContainerDescriptor<T> containerDescriptor)
-        {
-            return containerDescriptor.Bool(builder => builder.Must(_queries));
-        }
-
-        public QueryContainer Search(QueryContainerDescriptor<T> containerDescriptor)
-        {
-            return _queries.First().Invoke(containerDescriptor);
+            return queryContainer;
         }
     }
 }
