@@ -34,7 +34,7 @@ The following features are implemented within this package.
   * [Converters](#Converters)
   * [Paged results](#Paged-results)
   * [Health check](#DynamoDb-Health-check)
-* [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/readme.md)
+* [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
 * [Health check helpers](#Health-check-helpers)
 * [JWT](#JWT)
   * [Token Factory](#Token-Factory)
