@@ -16,6 +16,12 @@ services:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
 
+  hackney-core-elasticsearch-test:
+    image: hackney-core-elasticsearch-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
+
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:
