@@ -11,6 +11,10 @@ namespace Hackney.Core.Testing.Shared.E2E
 {
     public class BaseApiFixture<T> : IDisposable where T : class
     {
+        /// <summary>
+        // This fixture mocks an external API endpoint.
+        /// </summary>
+
         protected readonly JsonSerializerOptions _jsonOptions;
         private HttpListener _httpListener;
         public T ResponseObject { get; protected set; }
