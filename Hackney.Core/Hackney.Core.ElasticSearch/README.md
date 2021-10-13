@@ -9,7 +9,7 @@ This package contains helpers and common funcitonality that can be employed when
 ## DI Registration
 
 There is a `ConfigureElasticSearch()` extension method provided to facilitate setting up an application to use AWS DynamoDb.
-THis will register an `ElasticClient` instance configured with a `SingleNodeConnectionPool`. 
+This will register an `ElasticClient` instance configured with a `SingleNodeConnectionPool`. 
 The domain url is retrieved from the configuration using the key supplied. 
 If no value is found in the configuration then a default of http://localhost:9200 is used.
 Alternatively a custom default can be supplied.
