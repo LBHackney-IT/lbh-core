@@ -1,4 +1,4 @@
-﻿namespace Hackney.Shared.Sns
+﻿namespace Hackney.Core.Sns
 {
     public static class EventTypes
     {

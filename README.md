@@ -33,7 +33,8 @@ The following features are implemented within this package.
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
   * [Paged results](#Paged-results)
-  * [Health check](#Health-check)
+  * [Health check](#DynamoDb-Health-check)
+* [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
 * [Health check helpers](#Health-check-helpers)
 * [JWT](#JWT)
   * [Token Factory](#Token-Factory)
@@ -42,8 +43,8 @@ The following features are implemented within this package.
 * [Sns](#Sns)
   * [Sns Gateway](#Sns-Gateway)
   * [Shared Classes](#Shared-Classes)
-* [Validation](#Validation)
-  * [XssValidator](#XssValidator)
+* [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
+* [Validation.AspNet](#Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
 * [Testing](#Testing)
 
 
@@ -341,7 +342,7 @@ public async Task<PagedResult<NoteDb>> GetNotesByTargetIdAsync(GetNotesByTargetI
 }
 ```
 
-#### Health Check
+#### DynamoDb Health Check
 There is a `DynamoDbHealthCheck` class implemented that uses the 
 [Microsoft Health check framework](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-2.2).
 The check verifies that the required DynamoDb table is accessible by performing a `DescribeTable` call.

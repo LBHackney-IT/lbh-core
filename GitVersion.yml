@@ -1,24 +1,16 @@
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
 branches:
-  main:
-    regex: 'release'
-    tag: ''
+  master:
+    regex: ^master$|^main$|^release$
     increment: Minor
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-source-branch-for: ['feature']
-    is-release-branch: false
     is-mainline: true
   feature:
+    regex: feature[/-]
     tag: preview
-    increment: Inherit
-    source-branches: ['release', 'main', 'master']
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
+    increment: Minor
+    source-branches: ['master', 'main', 'release']
 ignore:
   sha: []
 merge-message-formats: {}

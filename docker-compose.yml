@@ -10,6 +10,12 @@ services:
       args:
         - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
 
+  hackney-core-elasticsearch-test:
+    image: hackney-core-elasticsearch-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
+
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:
@@ -64,3 +70,10 @@ services:
       args:
         - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
   
+
+  hackney-core-validation-aspnet-test:
+    image: hackney-core-validation-aspnet-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet/Dockerfile
+      
