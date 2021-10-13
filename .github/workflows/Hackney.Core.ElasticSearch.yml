@@ -74,6 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-test
     env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
       VERSION: ${{ needs.build-and-test.outputs.version }}
     steps:
       - name: Checkout
