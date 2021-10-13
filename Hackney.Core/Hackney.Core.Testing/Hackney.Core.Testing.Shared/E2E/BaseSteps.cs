@@ -2,7 +2,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Hackney.Core.Testing.Shared
+namespace Hackney.Core.Testing.Shared.E2E
 {
     public class BaseSteps
     {

@@ -1,4 +1,3 @@
-using AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,17 +11,20 @@ namespace Hackney.Core.Testing.Shared.E2E
 {
     public class BaseApiFixture<T> : IDisposable where T : class
     {
-        private readonly Fixture _fixture = new Fixture();
-        private readonly JsonSerializerOptions _jsonOptions;
-        private static HttpListener _httpListener;
-        public static T ResponseObject { get; private set; }
-        public List<string> ReceivedCorrelationIds { get; private set; } = new List<string>();
-        public static string ApiRoute => "http://localhost:5678/api/v1/";
-        public static string ApiToken => "sdjkhfgsdkjfgsdjfgh";
-        public List<T> Responses { get; private set; } = new List<T>();
+        protected readonly JsonSerializerOptions _jsonOptions;
+        private HttpListener _httpListener;
+        public T ResponseObject { get; protected set; }
+        public List<string> ReceivedCorrelationIds { get; protected set; } = new List<string>();
+        public string ApiRoute { get; protected set; }
+        public string ApiToken { get; protected set; }
+        public Dictionary<string, T> Responses { get; protected set; } = new Dictionary<string, T>();
+        public int CallsMade { get; private set; }
 
-        public BaseApiFixture()
+        public BaseApiFixture(string route, string token)
         {
+            ApiRoute = route ?? throw new ArgumentNullException(nameof(route));
+            ApiToken = token ?? throw new ArgumentNullException(nameof(token));
+
             _jsonOptions = CreateJsonOptions();
             StartApiStub();
         }
@@ -33,20 +35,22 @@ namespace Hackney.Core.Testing.Shared.E2E
             GC.SuppressFinalize(this);
         }
 
-        private bool _disposed;
+        protected bool _disposed;
         protected virtual void Dispose(bool disposing)
         {
             if (disposing && !_disposed)
             {
                 if (_httpListener.IsListening)
                     _httpListener.Stop();
+
                 ResponseObject = null;
+                Responses.Clear();
 
                 _disposed = true;
             }
         }
 
-        private JsonSerializerOptions CreateJsonOptions()
+        protected JsonSerializerOptions CreateJsonOptions()
         {
             var options = new JsonSerializerOptions
             {
@@ -59,8 +63,7 @@ namespace Hackney.Core.Testing.Shared.E2E
 
         private void StartApiStub()
         {
-            Environment.SetEnvironmentVariable("ApiUrl", ApiRoute);
-            Environment.SetEnvironmentVariable("ApiToken", ApiToken);
+            CallsMade = 0;
             ReceivedCorrelationIds.Clear();
 
             Task.Run(() =>
@@ -73,11 +76,12 @@ namespace Hackney.Core.Testing.Shared.E2E
                 while (true)
                 {
                     HttpListenerContext context = _httpListener.GetContext();
+                    CallsMade++;
                     HttpListenerResponse response = context.Response;
 
                     if (context.Request.Headers["Authorization"] != ApiToken)
                     {
-                        response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        response.StatusCode = (int) HttpStatusCode.Unauthorized;
                     }
                     else
                     {
@@ -86,10 +90,10 @@ namespace Hackney.Core.Testing.Shared.E2E
                         if (Responses.Any())
                         {
                             var requestedId = context.Request.Url.Segments.Last();
-                            // thisResponse = Responses.FirstOrDefault(x => x.Id.ToString() == requestedId);
+                            thisResponse = Responses.ContainsKey(requestedId) ? Responses[requestedId] : null;
                         }
 
-                        response.StatusCode = (int)((thisResponse is null) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+                        response.StatusCode = (int) ((thisResponse is null) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
                         string responseBody = string.Empty;
                         if (thisResponse is null)
                         {
