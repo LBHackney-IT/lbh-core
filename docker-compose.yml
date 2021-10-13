@@ -15,13 +15,8 @@ services:
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
-
-  hackney-core-elasticsearch-test:
-    image: hackney-core-elasticsearch-test
-    build:
-      context: .
-      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
-
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:
@@ -35,6 +30,8 @@ services:
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Http/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
 
   hackney-core-jwt-test:
     image: hackney-core-jwt-test
@@ -82,4 +79,6 @@ services:
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
       
