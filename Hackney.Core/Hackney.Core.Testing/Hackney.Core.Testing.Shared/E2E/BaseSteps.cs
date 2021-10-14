@@ -5,7 +5,9 @@ using System.Text.Json.Serialization;
 namespace Hackney.Core.Testing.Shared.E2E
 {
     /// <summary>
-    /// Base clase for BDDfy E2E test steps
+    /// Base clase for BDDfy E2E test steps.
+    /// This class is used when serialising objects to handle Camel Casing, Indentation, and conversion of enums to JSON strings.
+    /// It sets up the HttpClient, which is used to send HTTP requests and retrieve responses
     /// </summary>
     public class BaseSteps
     {

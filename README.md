@@ -28,7 +28,7 @@ Please refer to [our documentation](https://docs.google.com/document/d/1aJzhNxmS
 
 The following features are implemented within this package.
 * [MVC Middleware](#MVC-Middleware)
-  * [Correlation middleware](#Correlation-middleware])
+  * [Correlation middleware](#correlation-middleware])
   * [Exception middleware](#Exception-middleware)
 * [DynamoDb](#DynamoDb)
   * [Converters](#Converters)
@@ -47,7 +47,6 @@ The following features are implemented within this package.
 * [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
 * Testing
   * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
-
 
 ### MVC Middleware
 
@@ -108,7 +107,7 @@ It will log the exception and then return a standard error response that looks l
 
 ##### Usage
 
-If required, the [correlation middleware](#Correlation-middleware]) call should go before the exception handler to ensure that any error logged will also include the correlation id
+If required, the [correlation middleware](#correlation-middleware]) call should go before the exception handler to ensure that any error logged will also include the correlation id
 
 ```csharp
 using Hackney.Core.Middleware.Exception;
@@ -137,7 +136,7 @@ in the headers) of the caller.
 This means that all other logging need not concern itself without having to add this data as it is already included.
 
 ###### Usage
-When used in conjunction with the [correlation middleware](#Correlation-middleware]), the call to 
+When used in conjunction with the [correlation middleware](#correlation-middleware]), the call to 
 `UseLoggingScope()` should come _after_ the call to `UseCorrelationId()`.
 
 ```csharp
@@ -428,6 +427,27 @@ namespace SomeApi
 #### Token Factory
 The `TokenFactory` implementation of the `ITokenFactory` interface is designed to easily retrieve a JWT token sent in the headers of an Http request.
 The `ITokenFactory` interface is made available by using the `AddTokenFactory()` extension method during your application start-up.
+
+Usage
+
+```csharp
+using Hackney.Core.JWT;
+
+namespace SomeApi
+{
+    public class Startup
+    {
+        ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ...
+            services.AddTokenFactory();
+            ...
+        }
+    }
+}
+
+```
 
 ### Logging
 

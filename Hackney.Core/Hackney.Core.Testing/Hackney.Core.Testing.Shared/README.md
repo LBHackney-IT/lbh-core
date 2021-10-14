@@ -95,6 +95,11 @@ for use with testing any class that makes use of the [LogCall functionality](/RE
 within the Hackney.Core.Logging package.
 If a class under test has this attribute then unit tests will fail unless the appropriate pre-test configuration is done, 
 and this is provided by this pre-built collection.
+The reason tests will fail without it is because the AspectInjector framework (used by the `LogCall` attribute) 
+operates at compile-time. 
+This means that simply constructing an instance of a class that uses the attribute requires all of the 
+supporting objects used by the LogCallAspect to also be set up.
+
 
 #### Usage
 ```csharp
