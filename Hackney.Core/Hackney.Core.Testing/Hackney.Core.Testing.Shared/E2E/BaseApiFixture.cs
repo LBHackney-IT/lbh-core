@@ -125,7 +125,7 @@ namespace Hackney.Core.Testing.Shared.E2E
                     if (!string.IsNullOrEmpty(ApiToken)
                         && (context.Request.Headers["Authorization"] != ApiToken))
                     {
-                        response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                        response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace Hackney.Core.Testing.Shared.E2E
                             thisResponse = Responses.ContainsKey(requestedId) ? Responses[requestedId] : null;
                         }
 
-                        response.StatusCode = (int) ((thisResponse is null) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+                        response.StatusCode = (int)((thisResponse is null) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
                         string responseBody = string.Empty;
                         if (thisResponse is null)
                         {
