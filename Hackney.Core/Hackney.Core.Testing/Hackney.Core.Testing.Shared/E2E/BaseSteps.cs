@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Hackney.Core.Testing.Shared.E2E
 {
+    /// <summary>
+    /// Base clase for BDDfy E2E test steps
+    /// </summary>
     public class BaseSteps
     {
         protected readonly HttpClient _httpClient;

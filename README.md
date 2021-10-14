@@ -44,8 +44,9 @@ The following features are implemented within this package.
   * [Sns Gateway](#Sns-Gateway)
   * [Shared Classes](#Shared-Classes)
 * [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
-* [Validation.AspNet](#Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
-* [Testing](#Testing)
+* [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
+* Testing
+  * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
 
 
 ### MVC Middleware
@@ -551,7 +552,3 @@ The `ISnsGateway` interface is made available by using the `AddSnsGateway()` ext
 - EventData - Contains the data changed in an event
 - User - Contains information about a user triggering an event
 - EventTypes - Names all events we are currently using
-
-### Testing
-
-**Project reference: `Hackney.Core.Testing`**

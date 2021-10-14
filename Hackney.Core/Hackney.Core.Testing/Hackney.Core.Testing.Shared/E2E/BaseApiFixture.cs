@@ -9,17 +9,58 @@ using System.Threading.Tasks;
 
 namespace Hackney.Core.Testing.Shared.E2E
 {
+    /// <summary>
+    /// Base class for BDDfy E2E test fixtures that access an external API.
+    /// Creates an HttpListener to act as a stub Api.
+    /// </summary>
+    /// <typeparam name="T">Type of the response object this fixture provides</typeparam>
     public class BaseApiFixture<T> : IDisposable where T : class
     {
         protected readonly JsonSerializerOptions _jsonOptions;
         private HttpListener _httpListener;
+
+        /// <summary>
+        /// List of all requests made to the stub Api.
+        /// </summary>
+        public List<HttpListenerRequest> Requests { get; private set; } = new List<HttpListenerRequest>();
+
+        /// <summary>
+        /// A single response object to be returned when the stub Api is called.
+        /// </summary>
         public T ResponseObject { get; protected set; }
+
+        /// <summary>
+        /// List of correlation ids present all requests made to the stub Api.
+        /// </summary>
         public List<string> ReceivedCorrelationIds { get; protected set; } = new List<string>();
+
+        /// <summary>
+        /// The base route for the stub Api
+        /// </summary>
         public string ApiRoute { get; protected set; }
+
+        /// <summary>
+        /// An authorisation token that will be expected in any calls to the stub Api.
+        /// </summary>
         public string ApiToken { get; protected set; }
+
+        /// <summary>
+        /// A list ot response objects, keyed by id, to be returned when the stub Api is called. 
+        /// </summary>
         public Dictionary<string, T> Responses { get; protected set; } = new Dictionary<string, T>();
+
+        /// <summary>
+        /// The number of calls made to the stub Api
+        /// </summary>
         public int CallsMade { get; private set; }
 
+        public BaseApiFixture(string route)
+        {
+            ApiRoute = route ?? throw new ArgumentNullException(nameof(route));
+
+            _jsonOptions = CreateJsonOptions();
+            StartApiStub();
+        }
         public BaseApiFixture(string route, string token)
         {
             ApiRoute = route ?? throw new ArgumentNullException(nameof(route));
@@ -64,6 +105,7 @@ namespace Hackney.Core.Testing.Shared.E2E
         private void StartApiStub()
         {
             CallsMade = 0;
+            Requests.Clear();
             ReceivedCorrelationIds.Clear();
 
             Task.Run(() =>
@@ -77,9 +119,11 @@ namespace Hackney.Core.Testing.Shared.E2E
                 {
                     HttpListenerContext context = _httpListener.GetContext();
                     CallsMade++;
+                    Requests.Add(context.Request);
                     HttpListenerResponse response = context.Response;
 
-                    if (context.Request.Headers["Authorization"] != ApiToken)
+                    if (!string.IsNullOrEmpty(ApiToken)
+                        && (context.Request.Headers["Authorization"] != ApiToken))
                     {
                         response.StatusCode = (int) HttpStatusCode.Unauthorized;
                     }
