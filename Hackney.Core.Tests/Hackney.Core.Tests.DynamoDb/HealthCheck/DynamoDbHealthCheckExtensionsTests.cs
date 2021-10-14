@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Hackney.Core.DynamoDb.HealthCheck;
-using Hackney.Core.Tests.Shared;
+using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;

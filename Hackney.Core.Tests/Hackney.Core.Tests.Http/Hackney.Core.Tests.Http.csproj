@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.Http\Hackney.Core.Http.csproj" />
-    <ProjectReference Include="..\Hackney.Core.Tests.Shared\Hackney.Core.Tests.Shared.csproj" />
+    <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\Hackney.Core.Testing.Shared.csproj" />
   </ItemGroup>
 
 </Project>

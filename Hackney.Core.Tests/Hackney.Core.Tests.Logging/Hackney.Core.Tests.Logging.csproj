@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\MockLoggerExtensions.cs" Link="MockLoggerExtensions.cs" />
+    <Compile Include="..\..\Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\ServiceCollectionExtensions.cs" Link="ServiceCollectionExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.0.3">
@@ -29,7 +34,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.Logging\Hackney.Core.Logging.csproj" />
-    <ProjectReference Include="..\Hackney.Core.Tests.Shared\Hackney.Core.Tests.Shared.csproj" />
   </ItemGroup>
 
 </Project>

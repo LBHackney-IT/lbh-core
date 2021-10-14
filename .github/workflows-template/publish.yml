@@ -12,6 +12,8 @@ jobs:
   calculate-version:
     name: Calculate Version
     runs-on: ubuntu-latest
+    env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
     outputs:
       version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
     steps:
@@ -29,7 +31,8 @@ jobs:
         with:
           useConfigFile: true
       - name: Display package version
-        run: echo "Version: $GITVERSION_NUGETVERSIONV2"
+        run: |
+          echo "Version: $GITVERSION_NUGETVERSIONV2"
 
   check-code-formatting:
     name: Check code formatting
@@ -47,7 +50,7 @@ jobs:
       - name: Run formatter check
         run: |
           cd Hackney.Core
-          ./dotnet-format-local/dotnet-format --check Hackney.Core.<PACKAGE_NAME>
+          ./dotnet-format-local/dotnet-format --check <PACKAGE_NAME>
 
   build-and-test:
     name: Build & Test
@@ -63,7 +66,7 @@ jobs:
       - name: Build
         run: docker-compose build hackney-core-<PACKAGE_NAME_LOWERCASE>-test
       - name: Run tests
-        run: docker-compose run hackney-core-<PACKAGE_NAME>-test
+        run: docker-compose run hackney-core-<PACKAGE_NAME_LOWERCASE>-test
 
   publish-package:
     name: Publish Package

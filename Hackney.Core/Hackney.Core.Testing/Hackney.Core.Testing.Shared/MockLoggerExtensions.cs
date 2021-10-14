@@ -2,7 +2,7 @@
 using Moq;
 using System;
 
-namespace Hackney.Core.Tests.Shared
+namespace Hackney.Core.Testing.Shared
 {
     public static class MockLoggerExtensions
     {

@@ -7,37 +7,48 @@ services:
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
 
   hackney-core-elasticsearch-test:
     image: hackney-core-elasticsearch-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
-
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/Dockerfile
-
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+        
   hackney-core-http-test:
     image: hackney-core-http-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Http/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
 
   hackney-core-jwt-test:
     image: hackney-core-jwt-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.JWT/Dockerfile
-      
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+  
   hackney-core-logging-test:
     image: hackney-core-logging-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Logging/Dockerfile
-      
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+  
   hackney-core-middleware-test:
     image: hackney-core-middleware-test
     build:
@@ -51,16 +62,23 @@ services:
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Sns/Dockerfile
-      
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+  
   hackney-core-validation-test:
     image: hackney-core-validation-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Validation/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+  
 
   hackney-core-validation-aspnet-test:
     image: hackney-core-validation-aspnet-test
     build:
       context: .
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
       
