@@ -1,12 +1,12 @@
 ﻿using Amazon.SimpleNotificationService;
 using FluentAssertions;
-using Hackney.Core.DynamoDb;
+using Hackney.Core.Sns;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using Xunit;
 
-namespace Hackney.Core.Tests.DynamoDb
+namespace Hackney.Core.Tests.Sns
 {
     public class SnsInitilisationExtensionsTests
     {
