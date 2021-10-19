@@ -24,7 +24,7 @@ namespace Hackney.Core.Tests.Sns
         [InlineData("true")]
         public void ConfigureSnsTestNoLocalModeEnvVarUsesAWSService(string localModeEnvVar)
         {
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", localModeEnvVar);
+            Environment.SetEnvironmentVariable("Sns_LocalMode", localModeEnvVar);
 
             ServiceCollection services = new ServiceCollection();
             services.ConfigureSns();
@@ -34,7 +34,7 @@ namespace Hackney.Core.Tests.Sns
             sd.Lifetime.Should().Be((localModeEnvVar == "true") ? ServiceLifetime.Singleton : ServiceLifetime.Scoped);
             (sd.ImplementationFactory is null).Should().Be((localModeEnvVar != "true"));
 
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
+            Environment.SetEnvironmentVariable("Sns_LocalMode", null);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace Hackney.Core.Tests.Sns
         {
             string url = "http://localhost:8000";
             Environment.SetEnvironmentVariable("Localstack_SnsServiceUrl", url);
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", "true");
+            Environment.SetEnvironmentVariable("Sns_LocalMode", "true");
 
             ServiceCollection services = new ServiceCollection();
             services.ConfigureSns();
@@ -53,7 +53,7 @@ namespace Hackney.Core.Tests.Sns
             amazonSns.Config.ServiceURL.Should().Be(url);
 
             Environment.SetEnvironmentVariable("Localstack_SnsServiceUrl", null);
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
+            Environment.SetEnvironmentVariable("Sns_LocalMode", null);
         }
     }
 }
