@@ -3,7 +3,7 @@ using Amazon.SimpleNotificationService;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Hackney.Core.DynamoDb
+namespace Hackney.Core.Sns
 {
     public static class SnsInitilisationExtensions
     {
