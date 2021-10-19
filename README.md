@@ -40,9 +40,7 @@ The following features are implemented within this package.
   * [Token Factory](#Token-Factory)
 * [Logging](#Logging)
   * [Lambda logging](#Lambda-logging)
-* [Sns](#Sns)
-  * [Sns Gateway](#Sns-Gateway)
-  * [Shared Classes](#Shared-Classes)
+* [Sns](/Hackney.Core/Hackney.Core.Sns/README.md)
 * [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
 * [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
 * Testing
@@ -559,16 +557,3 @@ namespace SomeApi
 
 ```
 
-### Sns
-
-**Project reference: `Hackney.Core.Sns`**
-
-#### Sns Gateway
-The `SnsGateway` implementation of the `ISnsGateway` interface allows the easy publishing of an event message to an Sns topic.
-The `ISnsGateway` interface is made available by using the `AddSnsGateway()` extension method during your application start-up.
-
-#### Shared Classes
-- EntityEventSns - Model of the event message received by a function
-- EventData - Contains the data changed in an event
-- User - Contains information about a user triggering an event
-- EventTypes - Names all events we are currently using

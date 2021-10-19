@@ -17,7 +17,7 @@ namespace Hackney.Core.Sns
             if (services is null) throw new ArgumentNullException(nameof(services));
 
             bool localMode = false;
-            _ = bool.TryParse(Environment.GetEnvironmentVariable("DynamoDb_LocalMode"), out localMode);
+            _ = bool.TryParse(Environment.GetEnvironmentVariable("Sns_LocalMode"), out localMode);
 
             if (localMode)
             {
