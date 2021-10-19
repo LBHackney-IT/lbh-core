@@ -14,7 +14,7 @@ The `ISnsGateway` interface is made available by using the `AddSnsGateway()` ext
 
 The `SnsIntialisationExtensions` class configures an application to use the Amazon Simple Notification Service (SNS). This will allow the application to interact with SNS Topics and subscriptions.
 
-## Usage
+#### Usage
 
 ```csharp
 using Hackney.Core.Sns;
