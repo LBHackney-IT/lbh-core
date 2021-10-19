@@ -44,11 +44,11 @@ In order to launch the application successfully you would need to setup the envi
 
   "profiles": {
     "some_api": {
-      ...
+    
       "environmentVariables": {
         "DynamoDb_LocalMode": "true"
       }
-      ...
+
     }
   }
 
