@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
  
  <PropertyGroup>
    <TargetFramework>netstandard2.1</TargetFramework>
@@ -9,6 +9,11 @@
    <Description>Test Helpers for HackIT projects using DynamoDB</Description>
    <NoWarn>S1066;S4457</NoWarn>
    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+   <Version>1.0.0.1</Version>
  </PropertyGroup>
  
+  <ItemGroup>
+    <PackageReference Include="Hackney.Core.DynamoDb" Version="1.30.0" />
+  </ItemGroup>
+	
 </Project>
