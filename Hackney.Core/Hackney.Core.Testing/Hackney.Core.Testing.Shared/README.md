@@ -90,8 +90,8 @@ namespace SomeNamespace.Tests.E2E.Fixture
 The `BaseSteps` class is a base class for implementing a BDDfy "steps" class.
 
 ## LogCallAspectFixture
-This provides a pre-configured [xunit collection](https://xunit.net/docs/shared-context#collection-fixture) 
-for use with testing any class that makes use of the [LogCall functionality](/README.md#Log-call-aspect) 
+This fixture should be used in an [xunit collection](https://xunit.net/docs/shared-context#collection-fixture) 
+which should then be used with testing any class that makes use of the [LogCall functionality](/README.md#Log-call-aspect) 
 within the Hackney.Core.Logging package.
 If a class under test has this attribute then unit tests will fail unless the appropriate pre-test configuration is done, 
 and this is provided by this pre-built collection.
@@ -100,14 +100,21 @@ operates at compile-time.
 This means that simply constructing an instance of a class that uses the attribute requires all of the 
 supporting objects used by the LogCallAspect to also be set up.
 
+The reason a common collection cannot be added here is because xunit will not recognise colelction classes 
+definied in assemblies other than the one containing the tests.
+
 
 #### Usage
 ```csharp
 using Hackney.Core.Testing.Shared;
 using Xunit;
 
-namespace SomeDomain.Tests.UseCase
-{
+namespace SomeDomain.Tests
+{    
+    [CollectionDefinition("LogCall collection")]
+    public class LogCallAspectFixtureCollection : ICollectionFixture<LogCallAspectFixture>
+    { }
+
     [Collection("LogCall collection")]
     public class SomeUseCaseTests
     {
