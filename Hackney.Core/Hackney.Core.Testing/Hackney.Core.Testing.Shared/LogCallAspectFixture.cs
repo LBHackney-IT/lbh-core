@@ -3,18 +3,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
-using Xunit;
 
 namespace Hackney.Core.Testing.Shared
 {
     /// <summary>
-    /// This fixture & collection should be used for on all test classes that are testing classes that use
-    /// the LogCall attribute.
+    /// This fixture should be used in an xunit collection and then that collection used 
+    /// on all test classes that are testing classes that use the LogCall attribute.
     /// This is required because the AspectInjector framework operates at compile-time.
     /// This means that simply constructing an instance of a class that uses the attribute requires all of
     /// supporting objects used by the LogCallAspect to also be set up.
     /// </summary>
-
     public class LogCallAspectFixture
     {
         public Mock<ILogger<LogCallAspect>> MockLogger { get; private set; }
@@ -37,10 +35,5 @@ namespace Hackney.Core.Testing.Shared
             return mockLogger;
         }
     }
-
-    [CollectionDefinition("LogCall collection")]
-    public class LogCallAspectFixtureCollection : ICollectionFixture<LogCallAspectFixture>
-    { }
-
 }
 

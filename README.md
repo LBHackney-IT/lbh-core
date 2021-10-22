@@ -42,7 +42,7 @@ The following features are implemented within this package.
   * [Lambda logging](#Lambda-logging)
 * [Sns](/Hackney.Core/Hackney.Core.Sns/README.md)
 * [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
-* [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/README.md)
+* [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
 * Testing
   * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
 
