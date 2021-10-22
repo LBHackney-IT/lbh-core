@@ -4,11 +4,12 @@
   </PropertyGroup>
   
   <PropertyGroup>
+    <NoWarn>$(NoWarn);S3925;CA1032</NoWarn>
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
-    <Description>Common library providing property validation rules and help configure the use of FluentValidation in LBH Web API services.</Description>
+    <Description>Common library providing classes to help configure and use FluentValidation within LBH Web API services.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
