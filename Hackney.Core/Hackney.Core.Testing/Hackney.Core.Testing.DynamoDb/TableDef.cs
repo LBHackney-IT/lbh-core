@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace Hackney.Core.Testing.DynamoDb
 {
+    /// <summary>
+    /// Class representing a DynamoDb table definition. 
+    /// Used by <see cref="IDynamoDbFixture.EnsureTablesExist(List{TableDef})"/>
+    /// </summary>
     public class TableDef
     {
         public string Name { get; set; }

@@ -8,9 +8,20 @@ using System.Threading.Tasks;
 
 namespace Hackney.Core.Testing.DynamoDb
 {
+    /// <summary>
+    /// DynamoDb fixture class to be used to set up a local database instance for use in tests where a 
+    /// "real" instance is required.
+    /// </summary>
     public class DynamoDbFixture : IDynamoDbFixture, IDisposable
     {
+        /// <summary>
+        /// A IDynamoDBContext reference
+        /// </summary>
         public IDynamoDBContext DynamoDbContext { get; private set; }
+
+        /// <summary>
+        /// A IAmazonDynamoDB reference
+        /// </summary>
         public IAmazonDynamoDB DynamoDb { get; private set; }
 
         private static List<Action> _cleanup = new List<Action>();
@@ -39,6 +50,11 @@ namespace Hackney.Core.Testing.DynamoDb
             }
         }
 
+        /// <summary>
+        /// Uses the configured DynamoDb instance to created the required table(s). 
+        /// If the table already exists then the ResourceInUseException is *not* rethrown.
+        /// </summary>
+        /// <param name="tables">List of table definitions to create</param>
         public void EnsureTablesExist(List<TableDef> tables)
         {
             foreach (var table in tables)
@@ -86,6 +102,13 @@ namespace Hackney.Core.Testing.DynamoDb
             }
         }
 
+        /// <summary>
+        /// Saves the supplied entity to the configured DynamoDb instance. 
+        /// Also amtains a reference to the save entity and will remove it from the database automatically when disposed.
+        /// </summary>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <param name="entity">The entity instance</param>
+        /// <returns>Task</returns>
         public async Task SaveEntityAsync<T>(T entity) where T : class
         {
             await DynamoDbContext.SaveAsync<T>(entity).ConfigureAwait(false);

@@ -9,7 +9,6 @@
    <Description>Test Helpers for HackIT projects using DynamoDB</Description>
    <NoWarn>S1066;S4457</NoWarn>
    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-   <Version>1.0.0.1</Version>
  </PropertyGroup>
  
   <ItemGroup>
