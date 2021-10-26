@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
  
  <PropertyGroup>
    <TargetFramework>netstandard2.1</TargetFramework>
@@ -11,4 +11,8 @@
    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
  </PropertyGroup>
  
+  <ItemGroup>
+    <PackageReference Include="Hackney.Core.DynamoDb" Version="1.30.0" />
+  </ItemGroup>
+	
 </Project>
