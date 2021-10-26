@@ -18,8 +18,8 @@ configures the fixture when xunit creates it.
 ### Api projects
 #### 1. Create / modify the mock web application factory
 This should contain definitions of all the DynamoDb tables(s) that need to be created. 
-The definition of each should be exactly how it is created by the project's terreaform configuration. 
-The table difinitionis are then passed to the the fixture's `EnsureTablesExist()` method.
+The definition of each should be exactly how it is created by the project's terraform configuration. 
+The table definition(s) are then passed to the the fixture's `EnsureTablesExist()` method.
 
 ```csharp
 using Amazon.DynamoDBv2;
@@ -109,8 +109,8 @@ Non-Api projects construct the `IHostBuilder` slightly differently to that for A
 
 #### 1. Create / modify the mock application factory
 This should contain definitions of all the DynamoDb tables(s) that need to be created. 
-The definition of each should be exactly how it is created by the project's terreaform configuration. 
-The table difinitionis are then passed to the the fixture's `EnsureTablesExist()` method.
+The definition of each should be exactly how it is created by the project's terraform configuration. 
+The table definition(s) are then passed to the the fixture's `EnsureTablesExist()` method.
 
 ```csharp
 using Amazon.DynamoDBv2;
@@ -222,7 +222,7 @@ allows the tests to access the database to set up any required data and retrieve
 It contains the following:
 #### Properties
 * `DynamoDbContext` property - A high-level `IDynamoDbContext` reference for accessing the database.
-* `DynamoDb` property - A lower-level `IDynamoDb` reference for accessing the database.
+* `DynamoDb` property - A lower-level `IAmazonDynamoDB` reference for accessing the database.
 
 #### Methods
 * `EnsureTablesExist` - Called within the mock application factory's startup to ensure all the required tables exist 
