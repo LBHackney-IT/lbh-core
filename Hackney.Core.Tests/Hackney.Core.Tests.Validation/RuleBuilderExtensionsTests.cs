@@ -55,5 +55,23 @@ namespace Hackney.Core.Tests.Validation
             Assert.IsType<PhoneNumberValidator<Dummy>>(rule.Components.LastOrDefault()?.Validator);
             rule.Member.Name.Should().Be("StringVal");
         }
+
+        [Fact]
+        public void IsNationalInsuranceNumberTestNullRuleBuilderThrows()
+        {
+            IRuleBuilder<Dummy, string> ruleBuilder = null;
+            Func<IRuleBuilderOptions<Dummy, string>> func = () => ruleBuilder.IsNationalInsuranceNumber();
+            func.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void IsNationalInsuranceNumberTestCreatesValidator()
+        {
+            _validator.RuleFor(x => x.StringVal).IsNationalInsuranceNumber();
+
+            var rule = (IValidationRule<Dummy>)_validator.First();
+            Assert.IsType<NationalInsuranceNumberValidator<Dummy>>(rule.Components.LastOrDefault()?.Validator);
+            rule.Member.Name.Should().Be("StringVal");
+        }
     }
 }

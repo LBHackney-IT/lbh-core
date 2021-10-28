@@ -3,8 +3,40 @@
 This package provides ready-made validators for use by clients. 
 These include:
 
+* [NationalInsuranceNumberValidator](#NationalInsuranceNumberValidator)
 * [PhoneNumberValidator](#PhoneNumberValidator)
 * [XssValidator](#XssValidator)
+
+
+## NationalInsuranceNumberValidator
+The NationalInsuranceNumberValidator class is [Fluent Validation](https://docs.fluentvalidation.net/en/latest/index.html#) `PropertyValidator` 
+implementation that will check if a string property value is valid UK National Insurance number.
+##### Note 
+The validator _does_ tolerate spaces within the value, so these do not need to be removed before validating.
+
+### Usage
+Applications using this validator will need to have already configured their application to use Fluent Validation.
+The validator is used through the `RuleBuilder` extension method `IsNationalInsuranceNumber()` that can be used when defining a validation rule.
+
+```csharp
+using FluentValidation;
+using Hackney.Core.Validation;
+
+namespace SomeApi.Domain.Validation
+{
+    public class SomeRequestObjectValidator : AbstractValidator<SomeRequestObject>
+    {
+        public SomeRequestObjectValidator()
+        {
+            RuleFor(x => x.NiNumber).IsNationalInsuranceNumber();
+
+            // If the property is optional and could be null or empty.
+            RuleFor(x => x.NiNumber).IsNationalInsuranceNumber();
+                                    .When(x => !string.IsNullOrEmpty(x.NiNumber));
+        }
+    }
+}
+```
 
 
 ## PhoneNumberValidator
@@ -24,9 +56,9 @@ using Hackney.Core.Validation;
 
 namespace SomeApi.Domain.Validation
 {
-    public class CategorisationValidator : AbstractValidator<Categorisation>
+    public class SomeRequestObjectValidator : AbstractValidator<SomeRequestObject>
     {
-        public CategorisationValidator()
+        public SomeRequestObjectValidator()
         {
             RuleFor(x => x.Mobile).IsPhoneNumber(PhoneNumberType.UK);
             RuleFor(x => x.Work).IsPhoneNumber(PhoneNumberType.UK)
@@ -35,6 +67,7 @@ namespace SomeApi.Domain.Validation
     }
 }
 ```
+
 
 ## XssValidator
 The XssValidator class is [Fluent Validation](https://docs.fluentvalidation.net/en/latest/index.html#) `PropertyValidator` 
@@ -51,9 +84,9 @@ using Hackney.Core.Validation;
 
 namespace SomeApi.Domain.Validation
 {
-    public class CategorisationValidator : AbstractValidator<Categorisation>
+    public class SomeRequestObjectValidator : AbstractValidator<SomeRequestObject>
     {
-        public CategorisationValidator()
+        public SomeRequestObjectValidator()
         {
             RuleFor(x => x.Category).NotXssString();
             RuleFor(x => x.SubCategory).NotXssString();
