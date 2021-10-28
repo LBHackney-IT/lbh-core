@@ -17,6 +17,13 @@ namespace Hackney.Core.Tests.Validation
             return new ValidationContext<Dummy>(dummy);
         }
 
+        [Fact]
+        public void NationalInsuranceNumberValidatorConstructorTest()
+        {
+            var sut = new NationalInsuranceNumberValidator<Dummy>();
+            sut.Name.Should().Be("NationalInsuranceNumberValidator");
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
