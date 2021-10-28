@@ -30,5 +30,17 @@ namespace Hackney.Core.Validation
 
             return ruleBuilder.SetValidator(new PhoneNumberValidator<T>(type));
         }
+
+        /// <summary>
+        /// Validation rule to verify that the specified string property value contains a valid UK NI number
+        /// </summary>
+        /// <typeparam name="T">The object type</typeparam>
+        /// <param name="ruleBuilder">The RuleBuilder</param>
+        public static IRuleBuilderOptions<T, string> IsNationalInsuranceNumber<T>(this IRuleBuilder<T, string> ruleBuilder)
+        {
+            if (ruleBuilder is null) throw new ArgumentNullException(nameof(ruleBuilder));
+
+            return ruleBuilder.SetValidator(new NationalInsuranceNumberValidator<T>());
+        }
     }
 }
