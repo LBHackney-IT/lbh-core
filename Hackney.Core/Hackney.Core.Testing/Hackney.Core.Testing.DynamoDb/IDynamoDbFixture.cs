@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace Hackney.Core.Testing.DynamoDb
     /// DynamoDb fixture interface to be used to set up a local database instance for use in tests where a 
     /// "real" instance is required.
     /// </summary>
-    public interface IDynamoDbFixture
+    public interface IDynamoDbFixture : IDisposable
     {
         /// <summary>
         /// A IDynamoDBContext reference

@@ -12,7 +12,7 @@ namespace Hackney.Core.Testing.DynamoDb
     /// DynamoDb fixture class to be used to set up a local database instance for use in tests where a 
     /// "real" instance is required.
     /// </summary>
-    public class DynamoDbFixture : IDynamoDbFixture, IDisposable
+    public class DynamoDbFixture : IDynamoDbFixture
     {
         /// <summary>
         /// A IDynamoDBContext reference
