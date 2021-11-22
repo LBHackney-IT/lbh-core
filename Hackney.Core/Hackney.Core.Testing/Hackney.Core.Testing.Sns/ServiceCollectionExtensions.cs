@@ -7,8 +7,8 @@ namespace Hackney.Core.Testing.Sns
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Extension method to add the <see cref="ISnsFixture"/> and <see cref="ISnsFixture"/> to the DI container 
-        /// so that it can be used in tests.
+        /// Extension method to add the <see cref="ISnsFixture"/> and <see cref="ISnsEventVerifier"/> to the DI container 
+        /// so that they can be used in tests.
         /// </summary>
         /// <param name="services">The ServiceCollection</param>
         /// <returns>The ServiceCollection</returns>

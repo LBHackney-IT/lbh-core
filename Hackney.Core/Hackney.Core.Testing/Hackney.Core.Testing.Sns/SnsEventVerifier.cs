@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Hackney.Core.Testing.Sns
 {
     /// <summary>
-    /// Helper class used to verify that the correct Sns event gets raised during an E2E test
+    /// Sns event verifier class used to verify that an expected event is raised against the specified topic.
     /// </summary>
     public class SnsEventVerifier : ISnsEventVerifier
     {
@@ -23,6 +23,9 @@ namespace Hackney.Core.Testing.Sns
 
         private readonly string _sqsQueueName = "test-messages";
 
+        /// <summary>
+        /// The last exception encountered whilst processing <see cref="ISnsEventVerifier.VerifySnsEventRaised{T}(Action{T})"/>
+        /// </summary>
         public Exception LastException { get; private set; }
 
         /// <summary>
@@ -77,6 +80,10 @@ namespace Hackney.Core.Testing.Sns
             }
         }
 
+        /// <summary>
+        /// Purges all message from the temporary queue created for this verifier.
+        /// </summary>
+        /// <returns>Task</returns>
         public async Task PurgeQueueMessages()
         {
             var request = new PurgeQueueRequest()
@@ -95,7 +102,7 @@ namespace Hackney.Core.Testing.Sns
         /// Throw an exception should then contents not match.
         /// </param>
         /// <returns>true if a message in the temporary queue satisfies the verification function.
-        /// false if no message in the temporary queue satisfies the verification function</returns>
+        /// false if no message in the temporary queue satisfies the verification function.</returns>
         public async Task<bool> VerifySnsEventRaised<T>(Action<T> verifyFunction) where T : class
         {
             bool eventFound = false;
