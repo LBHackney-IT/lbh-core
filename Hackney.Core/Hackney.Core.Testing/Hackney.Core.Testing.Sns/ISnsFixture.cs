@@ -12,12 +12,12 @@ namespace Hackney.Core.Testing.Sns
     public interface ISnsFixture : IDisposable
     {
         /// <summary>
-        /// A IAmazonSimpleNotificationService reference
+        /// An IAmazonSimpleNotificationService reference
         /// </summary>
         IAmazonSimpleNotificationService SimpleNotificationService { get; }
 
         /// <summary>
-        /// A IAmazonSQS reference
+        /// An IAmazonSQS reference
         /// </summary>
         IAmazonSQS AmazonSQS { get; }
 
@@ -35,7 +35,7 @@ namespace Hackney.Core.Testing.Sns
         /// <typeparam name="T">The type used for the event payload</typeparam>
         /// <param name="topicName">The topic name required</param>
         /// <param name="topicArnEnvVarName">The name of the environment variable against which the created topic arn will be set.</param>
-        /// <param name="snsAttrs">(Optional) List of attributes to use in the topic creation.</param>
+        /// <param name="snsAttrs">(Optional) List of additional attributes to use in the topic creation.</param>
         /// <returns>Task</returns>
         void CreateSnsTopic<T>(string topicName, string topicArnEnvVarName, Dictionary<string, string> snsAttrs = null) where T : class;
     }
