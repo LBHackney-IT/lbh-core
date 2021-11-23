@@ -44,7 +44,9 @@ The following features are implemented within this package.
 * [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
 * [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
 * Testing
+  * [Hackney.Core.Testing.DynamoDb](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/README.md)
   * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
+  * [Hackney.Core.Testing.Sns](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/README.md)
 
 ### MVC Middleware
 

@@ -56,17 +56,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Tests.ElasticS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.ElasticSearch", "Hackney.Core\Hackney.Core.ElasticSearch\Hackney.Core.ElasticSearch.csproj", "{5AE9D30F-A495-42E3-8545-47EB969F7F02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Validation.AspNet", "Hackney.Core\Hackney.Core.Validation.AspNet\Hackney.Core.Validation.AspNet.csproj", "{6311F4A6-C138-496B-8F76-3752067C1257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Validation.AspNet", "Hackney.Core\Hackney.Core.Validation.AspNet\Hackney.Core.Validation.AspNet.csproj", "{6311F4A6-C138-496B-8F76-3752067C1257}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hackney.Core.Testing", "Hackney.Core.Testing", "{E77A8BD5-9A04-4AFD-AB24-39363217E57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Testing.Shared", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\Hackney.Core.Testing.Shared.csproj", "{6E27CD85-FD62-47EB-B680-4A76CD32107C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.Shared", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\Hackney.Core.Testing.Shared.csproj", "{6E27CD85-FD62-47EB-B680-4A76CD32107C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Testing.ElasticSearch", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.ElasticSearch\Hackney.Core.Testing.ElasticSearch.csproj", "{901F5F62-7952-4ABB-8D8C-F77871A25755}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.ElasticSearch", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.ElasticSearch\Hackney.Core.Testing.ElasticSearch.csproj", "{901F5F62-7952-4ABB-8D8C-F77871A25755}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Testing.DynamoDb", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.DynamoDb\Hackney.Core.Testing.DynamoDb.csproj", "{9DE4D522-8614-4977-8395-2EC9FB0BAC29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.DynamoDb", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.DynamoDb\Hackney.Core.Testing.DynamoDb.csproj", "{9DE4D522-8614-4977-8395-2EC9FB0BAC29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Validation.AspNet", "Hackney.Core.Tests\Hackney.Core.Tests.Validation.AspNet\Hackney.Core.Tests.Validation.AspNet.csproj", "{5A72A5D9-8998-4A57-B6A0-97DD96C9029E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Tests.Validation.AspNet", "Hackney.Core.Tests\Hackney.Core.Tests.Validation.AspNet\Hackney.Core.Tests.Validation.AspNet.csproj", "{5A72A5D9-8998-4A57-B6A0-97DD96C9029E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.Sns", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Sns\Hackney.Core.Testing.Sns.csproj", "{C2EE8B13-9E85-4AA7-A180-1A3023587088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +172,10 @@ Global
 		{5A72A5D9-8998-4A57-B6A0-97DD96C9029E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A72A5D9-8998-4A57-B6A0-97DD96C9029E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A72A5D9-8998-4A57-B6A0-97DD96C9029E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +206,7 @@ Global
 		{901F5F62-7952-4ABB-8D8C-F77871A25755} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 		{9DE4D522-8614-4977-8395-2EC9FB0BAC29} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 		{5A72A5D9-8998-4A57-B6A0-97DD96C9029E} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
+		{C2EE8B13-9E85-4AA7-A180-1A3023587088} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28557208-834D-4975-A0B9-DD03E1F44255}
