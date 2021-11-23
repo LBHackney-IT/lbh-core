@@ -8,7 +8,7 @@ It contains a fixture that can be used to set up a local Sns instance so that it
 * [ISnsFixture](#ISnsFixture)
 
 ## Configuring the Sns fixture
-As a concept, the fixture is a class that ensures that a local Sns instance is set up and accessibly by both the 
+As a concept, the fixture is a class that ensures that a local Sns instance is set up and accessible by both the 
 code under test and the tests themselves.
 
 The test project may well contain such a class if there is existing local code that configures a local database instance, 
@@ -21,7 +21,7 @@ In this way all topics and queues created for a test run are removed when it is 
 
 ### Api projects
 #### 1. Create / modify the mock web application factory
-`CreateSnsTopic` should be called oince for each topic that needs to be created.
+`CreateSnsTopic` should be called once for each topic that needs to be created.
 
 ```csharp
 using Hackney.Core.Sns;
@@ -113,7 +113,7 @@ namespace SomeApplication.Tests
 ### Non-Api projects
 Non-Api projects construct the `IHostBuilder` slightly differently to that for Api projects.
 #### 1. Create / modify the mock application factory
-`CreateSnsTopic` should be called oince for each topic that needs to be created.
+`CreateSnsTopic` should be called once for each topic that needs to be created.
 
 ```csharp
 using Hackney.Core.Sns;
@@ -244,7 +244,7 @@ namespace SomeApplication.Tests.V1.E2ETests.Stories
 
 #### Verifying an event was raised
 Create a method that calls the appropriate `SnsEventVerifier` passing it an action that will be used to test all event messages raised
-to see if it the one expected.
+to see if it is the one expected.
 ```csharp
 public async Task ThenTheThingCreatedEventIsRaised(ISnsFixture snsFixture)
 {
