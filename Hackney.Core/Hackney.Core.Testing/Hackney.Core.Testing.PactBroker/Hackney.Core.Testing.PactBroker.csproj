@@ -10,8 +10,7 @@
    <Copyright>2021</Copyright>
    <Description>Test Helpers for HackIT projects using Pact Broker</Description>
    <NoWarn>S1066;S4457;S1699;S1075</NoWarn>
-   <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-   <Version>1.0.0.2</Version>
+   <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
  </PropertyGroup>
  
   <ItemGroup>
