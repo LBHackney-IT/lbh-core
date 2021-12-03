@@ -45,6 +45,7 @@ The following features are implemented within this package.
 * [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
 * Testing
   * [Hackney.Core.Testing.DynamoDb](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/README.md)
+  * [Hackney.Core.Testing.PactBroker](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/README.md)
   * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
   * [Hackney.Core.Testing.Sns](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/README.md)
 

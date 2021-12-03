@@ -70,6 +70,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Tests.Validati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.Sns", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Sns\Hackney.Core.Testing.Sns.csproj", "{C2EE8B13-9E85-4AA7-A180-1A3023587088}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.PactBroker", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.PactBroker\Hackney.Core.Testing.PactBroker.csproj", "{60489CCF-5F17-4596-A190-96DEB709F39F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +178,10 @@ Global
 		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2EE8B13-9E85-4AA7-A180-1A3023587088}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60489CCF-5F17-4596-A190-96DEB709F39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60489CCF-5F17-4596-A190-96DEB709F39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60489CCF-5F17-4596-A190-96DEB709F39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60489CCF-5F17-4596-A190-96DEB709F39F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +213,7 @@ Global
 		{9DE4D522-8614-4977-8395-2EC9FB0BAC29} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 		{5A72A5D9-8998-4A57-B6A0-97DD96C9029E} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
 		{C2EE8B13-9E85-4AA7-A180-1A3023587088} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
+		{60489CCF-5F17-4596-A190-96DEB709F39F} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28557208-834D-4975-A0B9-DD03E1F44255}
