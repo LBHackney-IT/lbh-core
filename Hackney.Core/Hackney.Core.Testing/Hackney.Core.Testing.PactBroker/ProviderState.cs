@@ -9,7 +9,7 @@ namespace Hackney.Core.Testing.PactBroker
     {
         /// <summary>
         /// The State description.
-        /// This is the exacty text of the "Given" section for an interaction definined in a pact.
+        /// This is the exact text of the "Given" section for an interaction defined in a pact.
         /// </summary>
         public string State { get; set; }
 

@@ -58,13 +58,13 @@ namespace Hackney.Core.Testing.PactBroker
         /// <summary>
         /// Function to be used to set any required environment variables
         /// before the application DI container is set up and built.
-        /// Overrider this as necessary in the derived implementation.
+        /// Override this as necessary in the derived implementation.
         /// </summary>
         protected virtual void SetEnvironmentVariables() { }
 
         /// <summary>
         /// Function to be used to configure the API DI container.
-        /// Overrider this as necessary in the derived implementation.
+        /// Override this as necessary in the derived implementation.
         /// </summary>
         /// <param name="services">Services collection</param>
         protected virtual void ConfigureServices(IServiceCollection services) { }
@@ -72,7 +72,7 @@ namespace Hackney.Core.Testing.PactBroker
         /// <summary>
         /// Function to be used to setup any required objects used by the tests after 
         /// the API DI container has been configured and built.
-        /// Overrider this as necessary in the derived implementation.
+        /// Override this as necessary in the derived implementation.
         /// </summary>
         /// <param name="services">Services collection</param>
         protected virtual void ConfigureFixture(IServiceProvider provider) { }
