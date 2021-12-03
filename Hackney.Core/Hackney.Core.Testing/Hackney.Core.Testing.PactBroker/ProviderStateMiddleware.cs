@@ -39,7 +39,7 @@ namespace Hackney.Core.Testing.PactBroker
                 return;
             }
 
-            context.Response.StatusCode = (int) HttpStatusCode.OK;
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
 
             if (context.Request.Method == HttpMethod.Post.ToString())
             {
