@@ -15,12 +15,12 @@ Any specific version number follows the form Major.Minor.Patch[-Suffix], where t
 * *Suffix (optional)*: a hyphen followed by a string denoting a pre-release version
 
 ## Building the package
-After cloning the repo, you may find many errors similar to the one below when attempting to build the solution **_on a Windows machine_**:
+After cloning the repo, you may find many errors relating to the `Hackney.Core.Testing.PactBroker` project similar to the one below when attempting to build the solution **_on a Windows machine_**:
 ```cmd
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4965,5): warning MSB3026: Could not copy "C:\Users\<USER-NAME>\.nuget\packages\pactnet.windows\3.0.2\tools\pact-win32\lib\ruby\lib\ruby\gems\2.2.0\gems\bundler-1.9.9\lib\bundler\vendor\thor\lib\thor\actions\empty_directory.rb" to "bin\Debug\netcoreapp3.1\pact-win32\lib\ruby\lib\ruby\gems\2.2.0\gems\bundler-1.9.9\lib\bundler\vendor\thor\lib\thor\actions\empty_directory.rb". Beginning retry 1 in 1000ms. Could not find a part of the path 'bin\Debug\netcoreapp3.1\pact-win32\lib\ruby\lib\ruby\gems\2.2.0\gems\bundler-1.9.9\lib\bundler\vendor\thor\lib\thor\actions\empty_directory.rb'.
 ```
 This is because packages required by the PactBroker client libraries contain deep folder trees and when copied to the build output folder may 
-then have filenames longer than the that traditionally supported by Windows.
+then have filenames longer than that traditionally supported by Windows.
 
 This can be fixed by enabling long paths in the Windows registry using [these instructions](https://docs.microsoft.com/en-gb/windows/win32/fileio/maximum-file-path-limitation?tabs=cmd#enable-long-paths-in-windows-10-version-1607-and-later). 
 Once enabled it will take effect *without* needing to restart Visual Studio.

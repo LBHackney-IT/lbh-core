@@ -353,15 +353,15 @@ using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SomEntityApi.Tests.PactBroker
+namespace SomeEntityApi.Tests.PactBroker
 {
     [Collection("Pact Broker collection")]
     public class PactBrokerTests
     {
-        private readonly SomEntityPactBrokerFixture _testFixture;
+        private readonly SomeEntityPactBrokerFixture _testFixture;
         private readonly ITestOutputHelper _outputHelper;
 
-        public PactBrokerTests(SomEntityPactBrokerFixture testFixture, ITestOutputHelper output)
+        public PactBrokerTests(SomeEntityPactBrokerFixture testFixture, ITestOutputHelper output)
         {
             _testFixture = testFixture;
             _outputHelper = output;
