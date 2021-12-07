@@ -7,9 +7,9 @@ using System.Security.Claims;
 namespace Hackney.Core.Testing.PactBroker
 {
     /// <summary>
-    /// Static class usded to create a token that will be added to pact broker calls to the api
+    /// Static class used to create a token that will be added to pact broker calls to the api
     /// in order to satisfy the api token expectations.
-    /// TODO - Currently crteates only a very basic token and need to be extended to cover different use cases.
+    /// TODO - Currently creates only a very basic token and need to be extended to cover different use cases.
     /// </summary>
     public static class TokenGenerator
     {
