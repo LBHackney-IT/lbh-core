@@ -1,13 +1,13 @@
 ﻿# Hackney.Core.Testing.PactBroker NuGet Package
 
 This package is designed to assist with implementing a test to verify an AspNetCore v.3.1 API has not broken a pact 
-configured witin [Pact Broker](https://github.com/pact-foundation/pact_broker).
+configured within [Pact Broker](https://github.com/pact-foundation/pact_broker).
 
 ##### Note
 **This package targets `.NETCoreApp v.3.1` and not `.NETStandard`. 
 This means it can only be used with AspNetCore v.3.1 (or later) API applications.**
 
-The package contains a number of different classes to help setup the target Api application for a Pact Broker verification test.
+The package contains a number of different classes to help set up the target Api application for a Pact Broker verification test.
 The instructions below use xUnit as the test framework, but they could easily be adapted to use a different framework.
 
 
@@ -247,7 +247,7 @@ namespace SomeEntityApi.Tests.PactBroker
 
 ### 4. Create a pact broker fixture
 The fixture class must inherit from the `PactBrokerFixture` abstract base class and supply the custom test Startup class [implemented above](#Create-a-custom-Startup-class).
-`PactBrokerFixture` conatins a number of virtual methods that should be overiden as required.
+`PactBrokerFixture` contains a number of virtual methods that should be overriden as required.
 ##### SetEnvironmentVariables
 This is executed first and should be used to ensure any necessary environment variables exist. 
 This should also be used to set the required variables used by the pact broker test base classes to connect with the broker website ([see above](#Required-environment-variables)).

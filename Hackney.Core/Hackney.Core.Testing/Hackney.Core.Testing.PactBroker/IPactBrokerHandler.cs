@@ -17,7 +17,7 @@ namespace Hackney.Core.Testing.PactBroker
 
     /// <summary>
     /// Delegate representing the state details sent by the pact broker to the provider-states 
-    /// route in order that the API might prepare for the subsequent API call made by the broker.
+    /// route so that the API might prepare for the subsequent API call made by the broker.
     /// </summary>
     /// <param name="state">The state description - this is the "Given" text from a pact interaction</param>
     /// <param name="args">Any additional arguments sent (not currently in use)</param>
