@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	<TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+   
+ <PropertyGroup>
+   <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+   <Authors>London Borough of Hackney Council</Authors>
+   <Company>London Borough of Hackney Council</Company>
+   <Copyright>2021</Copyright>
+   <Description>Test Helpers for HackIT projects using Pact Broker</Description>
+   <NoWarn>S1066;S4457;S1699;S1075</NoWarn>
+   <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+ </PropertyGroup>
+ 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.0" />
+    <PackageReference Include="PactNet.Windows" Version="3.0.2" />
+    <PackageReference Include="PactNet.Linux.x64" Version="3.0.2" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+  </ItemGroup>
+	
+</Project>
