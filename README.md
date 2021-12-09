@@ -47,6 +47,7 @@ The following features are implemented within this package.
   * [Health check](#DynamoDb-Health-check)
 * [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
 * [Health check helpers](#Health-check-helpers)
+* [Http](/Hackney.Core/Hackney.Core/Hackney.Core.Http/README.md)
 * [JWT](#JWT)
   * [Token Factory](#Token-Factory)
 * [Logging](#Logging)
