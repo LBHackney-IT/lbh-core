@@ -84,8 +84,8 @@ namespace SomeApi.Gateway
 
 ### Testing
 To test gateway classes that use `IApiGateway`, unit tests can be written as normal.
-E2E tests that expect the external Api to be available should make use of the [BaseApiFixture](#/../Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md#BaseApiFixture) 
-class in the [Hackney.Core.Testing.Shared](#/../Hackney.Core.Testing/Hackney.Core.Testing.Shared) package
+E2E tests that expect the external Api to be available should make use of the [BaseApiFixture](../Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md#BaseApiFixture) 
+class in the [Hackney.Core.Testing.Shared](/../Hackney.Core.Testing/Hackney.Core.Testing.Shared) package
 
 ## IHttpContextWrapper
 
