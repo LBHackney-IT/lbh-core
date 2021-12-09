@@ -48,6 +48,9 @@ It is assumed that the Api's base uri and token are set in the application confi
 This would be standard practice so that the appropriate uri/token can be injected into the application container depending on the environment.
 The container tests should ensure that these environment variables are set appropriately.  
 
+**The uri and token are both required - the ApiGateway will throw an excpetion if either is not found at runtime.**
+
+
 ```csharp
 using Hackney.Core.Http;
 using Hackney.Core.Logging;
