@@ -41,10 +41,8 @@ namespace Hackney.Core.Authorization
             var requiredGoogleGroups = requiredGoogleGroupsVariable.Split(';');
             if (!token.Groups.Any(g => requiredGoogleGroups.Contains(g)))
             {
-                if (token.Groups == null)
-                {
-                    await HandleResponseAsync(context, HttpStatusCode.Forbidden, "Forbidden").ConfigureAwait(false);
-                }
+                await HandleResponseAsync(context, HttpStatusCode.Forbidden, "Forbidden").ConfigureAwait(false);
+                return;
             }
 
             await _next.Invoke(context).ConfigureAwait(false);
