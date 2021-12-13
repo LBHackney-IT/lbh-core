@@ -63,7 +63,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: docker-compose build hackney-core-hackney-core-authorization-test
+        run: docker-compose build hackney-core-authorization
 
   publish-package:
     name: Publish Package
