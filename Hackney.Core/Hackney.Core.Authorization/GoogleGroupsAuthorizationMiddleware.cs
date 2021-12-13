@@ -14,7 +14,7 @@ namespace Hackney.Core.Authorization
 
         public GoogleGroupsAuthorizationMiddleware(RequestDelegate next)
         {
-            _next=next;
+            _next = next;
         }
 
         public async Task Invoke(HttpContext context, ITokenFactory tokenFactory)
@@ -32,7 +32,7 @@ namespace Hackney.Core.Authorization
                 return;
             }
             var requiredGoogleGroupsVariable = Environment.GetEnvironmentVariable("REQUIRED_GOOGL_GROUPS");
-            if(requiredGoogleGroupsVariable == null)
+            if (requiredGoogleGroupsVariable == null)
             {
                 await HandleResponseAsync(context, HttpStatusCode.InternalServerError, "Cannot resolve REQUIRED_GOOGL_GROUPS environment variable!").ConfigureAwait(false);
                 return;
