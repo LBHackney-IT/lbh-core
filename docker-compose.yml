@@ -2,6 +2,14 @@ version: "3.2"
 
 services:
 
+  hackney-core-authorization:
+    image: hackney-core-dynamodb
+    build:
+      context: .
+      dockerfile: Hackney.Core/Hackney.Core.Authorization/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+
   hackney-core-dynamodb-test:
     image: hackney-core-dynamodb-test
     build:
