@@ -79,7 +79,10 @@ jobs:
         run: |
           cd Hackney.Core
           dotnet pack Hackney.Core.Authorization -p:PackageVersion=$VERSION --configuration Release
+          dotnet pack Hackney.Core.JWT -p:PackageVersion=$VERSION --configuration Release
       - name: Publish the Package
         run: |
           cd Hackney.Core/Hackney.Core.Authorization/bin/Release
           dotnet nuget push Hackney.Core.Authorization.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
+          cd Hackney.Core/Hackney.Core.JWT/bin/Release
+          dotnet nuget push Hackney.Core.JWT.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
