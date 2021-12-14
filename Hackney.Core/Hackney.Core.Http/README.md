@@ -39,9 +39,9 @@ namespace SomeApi
 
 ### Implementation
 Create a "Gateway" class as normal to encapsulate calling the required external Api. 
-The class should inject an instance of the IApiGatewayinto and should initialise it with the required name, and configuration keys for the uri and token.
+The class should inject an instance of the IApiGateway into and should initialise it with the required name, and configuration keys for the uri and token.
 
-This class should implement a single `async` Get method, but internally delegate the actual call to the instance of the IApiGateway inected into the class.
+This class should implement a single `async` Get method, but internally delegate the actual call to the instance of the IApiGateway injected into the class.
 This method will return either the requested entity, null, or throw a `GetFromApiException` exception for any other response from the Api call.
 
 It is assumed that the Api's base uri and token are set in the application configuration or as environment variables. 
@@ -93,7 +93,7 @@ class in the `Hackney.Core.Testing.Shared` package.
 
 ## IHttpContextWrapper
 
-The `IHttpContextWrapper` interface provdes a helper method to easily get at the headres dictionary of the current Http request.
+The `IHttpContextWrapper` interface provides a helper method to easily get at the headers dictionary of the current Http request.
 It can be registered within the DI container inthe applicaiton startup using the `IServiceCollection` extension method `AddHttpContextWrapper()`.
 
 ## JsonOptions
