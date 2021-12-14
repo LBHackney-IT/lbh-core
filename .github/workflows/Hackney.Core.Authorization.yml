@@ -6,6 +6,8 @@ on:
     - feature/**
     paths:
       - "Hackney.Core/Hackney.Core.Authorization/**"
+      - "Hackney.Core/Hackney.Core.JWT/**"
+      - "Hackney.Core.Tests/Hackney.Core.Tests.JWT/**"
       - ".github/workflows/Hackney.Core.Authorization.yml"
 jobs:
   calculate-version:
