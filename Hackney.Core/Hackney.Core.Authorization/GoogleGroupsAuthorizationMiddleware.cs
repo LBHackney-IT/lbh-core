@@ -52,9 +52,9 @@ namespace Hackney.Core.Authorization
         {
             var response = context.Response;
             response.ContentType = "application/json";
-            response.StatusCode = (int)code;
+            response.StatusCode = (int) code;
 
-            await response.WriteAsync(JsonConvert.SerializeObject(new BaseErrorResponse((int)code, message)))
+            await response.WriteAsync(JsonConvert.SerializeObject(new BaseErrorResponse((int) code, message)))
                    .ConfigureAwait(false);
         }
     }
