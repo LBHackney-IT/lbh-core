@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
-	  <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307</NoWarn>
+	  <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307;CA2000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
