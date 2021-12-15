@@ -10,7 +10,7 @@ branches:
     regex: feature[/-]
     tag: preview
     increment: Minor
-    source-branches: ['master', 'main', 'release', 'feature']
+    source-branches: ['master', 'main', 'release']
 ignore:
   sha: []
 merge-message-formats: {}
