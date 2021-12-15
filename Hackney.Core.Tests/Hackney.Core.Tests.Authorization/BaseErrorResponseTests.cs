@@ -7,28 +7,13 @@ namespace Hackney.Core.Tests.Authorization
 {
     public class BaseErrorResponseTests
     {
-        [Fact]
-        public void BaseErrorResponseConstructorNullDetailsIsEmpty()
+        [Theory]
+        [InlineData("Message", (int)HttpStatusCode.Forbidden, "Details", "Details")]
+        [InlineData("Message", (int)HttpStatusCode.Forbidden, null, "")]
+        public void BaseErrorResponseConstructorWithDifferentDetails(string expectedMessage, int expectedStatusCode, 
+            string actualDetails, string expectedDetails)
         {
-            var expectedMessage = "Message";
-            var expectedStatusCode = (int) HttpStatusCode.Forbidden;
-            string expectedDetails = null;
-
-            var sut = new BaseErrorResponse(expectedStatusCode, expectedMessage, expectedDetails);
-
-            sut.Details.Should().Be(string.Empty);
-            sut.Message.Should().Be(expectedMessage);
-            sut.StatusCode.Should().Be(expectedStatusCode);
-        }
-
-        [Fact]
-        public void BaseErrorResponseConstructorNonNullDetailsIsEmpty()
-        {
-            var expectedMessage = "Message";
-            var expectedStatusCode = (int) HttpStatusCode.Forbidden;
-            string expectedDetails = "Details";
-
-            var sut = new BaseErrorResponse(expectedStatusCode, expectedMessage, expectedDetails);
+            var sut = new BaseErrorResponse(expectedStatusCode, expectedMessage, actualDetails);
 
             sut.Details.Should().Be(expectedDetails);
             sut.Message.Should().Be(expectedMessage);

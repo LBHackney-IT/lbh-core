@@ -22,7 +22,7 @@ namespace Hackney.Core.Tests.Authorization
             
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
-                .Throws<ArgumentNullException>();
+                .Throws(new ArgumentNullException("MyException"));
 
             var mockRequestDelegate = new Mock<RequestDelegate>();
             mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
@@ -31,7 +31,7 @@ namespace Hackney.Core.Tests.Authorization
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
             Func<Task> act =  () => sut.Invoke(httpContext, mockTokenFactory.Object);
 
-            await act.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(false);
+            await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'MyException')").ConfigureAwait(false);
             mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
         }
         
@@ -40,7 +40,7 @@ namespace Hackney.Core.Tests.Authorization
         {
             Token expectedToken = null;
             var expectedResponseText = "JWT token cannot be parsed!";
-            var expectedStatusCode = (int) HttpStatusCode.Unauthorized;
+            var expectedStatusCode = (int)HttpStatusCode.Unauthorized;
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();

@@ -14,7 +14,7 @@ namespace Hackney.Core.Tests.Authorization
             
             Action act = () => Hackney.Core.Authorization.ApplicationBuilderExtension.UseGoogleGroupAuthorization(app);
             
-            act.Should().Throw<ArgumentNullException>();
+            act.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'IApplicationBuilder')");
         }
     }
 }
