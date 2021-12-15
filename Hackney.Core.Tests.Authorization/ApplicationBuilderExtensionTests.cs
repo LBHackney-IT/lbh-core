@@ -16,7 +16,5 @@ namespace Hackney.Core.Tests.Authorization
             
             act.Should().Throw<ArgumentNullException>();
         }
-
-        // ToDo: think of application builder UseGoogleGroupAuthorization check
     }
 }

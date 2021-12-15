@@ -48,11 +48,11 @@ namespace Hackney.Core.Tests.Authorization
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
                 .Returns(expectedToken);
-
+            
             var mockRequestDelegate = new Mock<RequestDelegate>();
             mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
                 .Returns(Task.FromResult(0));
-
+            
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
             await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
 
