@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hackney.Core\Hackney.Core.Authorization\Hackney.Core.Authorization.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="..\.dockerignore" />
   </ItemGroup>
 
@@ -30,6 +26,10 @@
 
   <ItemGroup>
     <None Remove="..\.dockerignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.Authorization\Hackney.Core.Authorization.csproj" />
   </ItemGroup>
 
 </Project>

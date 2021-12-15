@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Hackney.Core.Tests.Authorization": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

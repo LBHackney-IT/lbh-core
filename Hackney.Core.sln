@@ -74,7 +74,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.PactBr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Authorization", "Hackney.Core\Hackney.Core.Authorization\Hackney.Core.Authorization.csproj", "{362EF25B-96AE-4762-93A7-A587E5845C60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Authorization", "Hackney.Core.Tests.Authorization\Hackney.Core.Tests.Authorization.csproj", "{1A53447E-8A8E-44E6-86A0-54E95230EC78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Authorization", "Hackney.Core.Tests\Hackney.Core.Tests.Authorization\Hackney.Core.Tests.Authorization.csproj", "{1A53447E-8A8E-44E6-86A0-54E95230EC78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
