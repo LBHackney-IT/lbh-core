@@ -24,5 +24,21 @@ namespace Hackney.Core.Tests.Http
             services.AddHttpContextWrapper();
             services.IsServiceRegistered<IHttpContextWrapper, HttpContextWrapper>().Should().BeTrue();
         }
+
+        [Fact]
+        public void AddApiGatewayTestNullServicesThrows()
+        {
+            IServiceCollection services = null;
+            Action act = () => Hackney.Core.Http.ServiceCollectionExtensions.AddApiGateway(services);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void AddApiGatewayTestAddsRequiredTypes()
+        {
+            var services = new ServiceCollection();
+            services.AddApiGateway();
+            services.IsServiceRegistered<IApiGateway, ApiGateway>().Should().BeTrue();
+        }
     }
 }
