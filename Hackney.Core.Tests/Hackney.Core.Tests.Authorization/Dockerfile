@@ -9,12 +9,12 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 COPY ./Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj ./Hackney.Core.Tests.Authorization/
-COPY ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Authorization.csproj ./Hackney.Core/Hackney.Core.Authorization/
+COPY ./Hackney.Core/Hackney.Core/Hackney.Core.Authorization.csproj ./Hackney.Core/Hackney.Core.Authorization/
 COPY ./Hackney.Core/Hackney.Core.JWT/Hackney.Core.JWT.csproj ./Hackney.Core/Hackney.Core.JWT/
 COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
 
 RUN dotnet restore ./Hackney.Core/Hackney.Core.JWT/Hackney.Core.JWT.csproj
-RUN dotnet restore ./Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj
+RUN dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Authorization.csproj
 RUN dotnet restore ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Authorization.csproj
 
 # Copy everything else and build
