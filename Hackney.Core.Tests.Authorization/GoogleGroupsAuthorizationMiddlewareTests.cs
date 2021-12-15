@@ -78,7 +78,7 @@ namespace Hackney.Core.Tests.Authorization
                 Groups = null
             };
             var expectedResponseText = "JWT token should contain [groups] claim!";
-            var expectedStatusCode = (int) HttpStatusCode.Forbidden;
+            var expectedStatusCode = (int)HttpStatusCode.Forbidden;
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
@@ -98,7 +98,7 @@ namespace Hackney.Core.Tests.Authorization
             httpContext.Response.Body.Position = 0;
             using (StreamReader streamReader = new StreamReader(httpContext.Response.Body))
             {
-                string actualResponseText = await streamReader.ReadToEndAsync();
+                string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
 
                 var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
@@ -117,7 +117,7 @@ namespace Hackney.Core.Tests.Authorization
                 Groups = new string[] { "HackneyAll"}
             };
             var expectedResponseText = "Cannot resolve REQUIRED_GOOGL_GROUPS environment variable!";
-            var expectedStatusCode = (int) HttpStatusCode.InternalServerError;
+            var expectedStatusCode = (int)HttpStatusCode.InternalServerError;
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
@@ -137,7 +137,7 @@ namespace Hackney.Core.Tests.Authorization
             httpContext.Response.Body.Position = 0;
             using (StreamReader streamReader = new StreamReader(httpContext.Response.Body))
             {
-                string actualResponseText = await streamReader.ReadToEndAsync();
+                string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
 
                 var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
@@ -156,7 +156,7 @@ namespace Hackney.Core.Tests.Authorization
                 Groups = new string[] { "HackneyAll", "BadGroup" }
             };
             var expectedResponseText = "Forbidden";
-            var expectedStatusCode = (int) HttpStatusCode.Forbidden;
+            var expectedStatusCode = (int)HttpStatusCode.Forbidden;
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
@@ -176,7 +176,7 @@ namespace Hackney.Core.Tests.Authorization
             httpContext.Response.Body.Position = 0;
             using (StreamReader streamReader = new StreamReader(httpContext.Response.Body))
             {
-                string actualResponseText = await streamReader.ReadToEndAsync();
+                string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
 
                 var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
