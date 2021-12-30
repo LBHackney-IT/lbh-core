@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31919.166
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Validation", "Hackney.Core\Hackney.Core.Validation\Hackney.Core.Validation.csproj", "{F176AB91-474F-4D7D-BF3C-F660BD3D3C8F}"
 EndProject
@@ -72,7 +72,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.Sns", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Testing.PactBroker", "Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.PactBroker\Hackney.Core.Testing.PactBroker.csproj", "{60489CCF-5F17-4596-A190-96DEB709F39F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Authorization", "Hackney.Core\Hackney.Core.Authorization\Hackney.Core.Authorization.csproj", "{362EF25B-96AE-4762-93A7-A587E5845C60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hackney.Core.Authorization", "Hackney.Core\Hackney.Core.Authorization\Hackney.Core.Authorization.csproj", "{362EF25B-96AE-4762-93A7-A587E5845C60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Authorization", "Hackney.Core.Tests\Hackney.Core.Tests.Authorization\Hackney.Core.Tests.Authorization.csproj", "{1A53447E-8A8E-44E6-86A0-54E95230EC78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -188,6 +190,10 @@ Global
 		{362EF25B-96AE-4762-93A7-A587E5845C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{362EF25B-96AE-4762-93A7-A587E5845C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{362EF25B-96AE-4762-93A7-A587E5845C60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A53447E-8A8E-44E6-86A0-54E95230EC78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A53447E-8A8E-44E6-86A0-54E95230EC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A53447E-8A8E-44E6-86A0-54E95230EC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A53447E-8A8E-44E6-86A0-54E95230EC78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +227,7 @@ Global
 		{C2EE8B13-9E85-4AA7-A180-1A3023587088} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 		{60489CCF-5F17-4596-A190-96DEB709F39F} = {E77A8BD5-9A04-4AFD-AB24-39363217E57D}
 		{362EF25B-96AE-4762-93A7-A587E5845C60} = {35802D10-49D1-4885-8A51-A6D8AC05C309}
+		{1A53447E-8A8E-44E6-86A0-54E95230EC78} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28557208-834D-4975-A0B9-DD03E1F44255}
