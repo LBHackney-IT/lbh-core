@@ -36,6 +36,7 @@ namespace Hackney.Core.Authorization
             
             if(needToSkipAuth == true)
             {
+                await _next.Invoke(httpContext).ConfigureAwait(false);
                 return;
             }
 
