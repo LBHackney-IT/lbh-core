@@ -1,4 +1,5 @@
-﻿using Hackney.Core.JWT;
+﻿using Hackney.Core.Authorization.Exceptions;
+using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -11,41 +12,60 @@ namespace Hackney.Core.Authorization
     public class GoogleGroupsAuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
-
         public GoogleGroupsAuthorizationMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ITokenFactory tokenFactory)
+        public async Task Invoke(HttpContext httpContext, ITokenFactory tokenFactory)
         {
-            var token = tokenFactory.Create(context.Request.Headers);
+            var urlsEnvironmentVariable = Environment.GetEnvironmentVariable("URLS_TO_SKIP_AUTH");
+            if(urlsEnvironmentVariable == null)
+            {
+                throw new EnvironmentVariableIsNullException("URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable");
+            }
+            var urlsToSkipAuth = urlsEnvironmentVariable.Split(";").ToList();
+
+            if (!httpContext.Request.Path.HasValue)
+            {
+                throw new ArgumentNullException(httpContext.Request.Path.Value);
+            }
+
+            var requestUrl = httpContext.Request.Path.Value;
+            var needToSkipAuth = urlsToSkipAuth.Any(url => url.Equals(requestUrl));
+            
+            if(needToSkipAuth == true)
+            {
+                return;
+            }
+
+            var token = tokenFactory.Create(httpContext.Request.Headers);
             if (token == null)
             {
-                await HandleResponseAsync(context, HttpStatusCode.Unauthorized, "JWT token cannot be parsed!").ConfigureAwait(false);
+                await HandleResponseAsync(httpContext, HttpStatusCode.Unauthorized, "JWT token cannot be parsed!").ConfigureAwait(false);
                 return;
             }
 
             if (token.Groups == null)
             {
-                await HandleResponseAsync(context, HttpStatusCode.Forbidden, "JWT token should contain [groups] claim!").ConfigureAwait(false);
+                await HandleResponseAsync(httpContext, HttpStatusCode.Forbidden, "JWT token should contain [groups] claim!").ConfigureAwait(false);
                 return;
             }
-            var requiredGoogleGroupsVariable = Environment.GetEnvironmentVariable("REQUIRED_GOOGL_GROUPS");
+            var requiredGoogleGroupsVariable = Environment.GetEnvironmentVariable("REQUIRED_GOOGLE_GROUPS");
             if (requiredGoogleGroupsVariable == null)
             {
-                await HandleResponseAsync(context, HttpStatusCode.InternalServerError, "Cannot resolve REQUIRED_GOOGL_GROUPS environment variable!").ConfigureAwait(false);
+                await HandleResponseAsync(httpContext, HttpStatusCode.InternalServerError, "Cannot resolve REQUIRED_GOOGLE_GROUPS environment variable!").ConfigureAwait(false);
                 return;
             }
 
             var requiredGoogleGroups = requiredGoogleGroupsVariable.Split(';');
             if (!token.Groups.Any(g => requiredGoogleGroups.Contains(g)))
             {
-                await HandleResponseAsync(context, HttpStatusCode.Forbidden, "Forbidden").ConfigureAwait(false);
+                await HandleResponseAsync(httpContext, HttpStatusCode.Forbidden, "Forbidden").ConfigureAwait(false);
                 return;
             }
 
-            await _next.Invoke(context).ConfigureAwait(false);
+            await _next.Invoke(httpContext).ConfigureAwait(false);
         }
 
         public async Task HandleResponseAsync(HttpContext context, HttpStatusCode code, string message)

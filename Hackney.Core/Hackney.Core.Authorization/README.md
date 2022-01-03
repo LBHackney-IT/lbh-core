@@ -7,4 +7,4 @@ To use this middleware you need to add the next line in your `Configure(...)` me
     
 	    app.UseGoogleGroupAuthorization();
 	
-This middleware will use `REQUIRED_GOOGL_GROUPS` environment valiable to get required Google groups list
+This middleware will use `REQUIRED_GOOGLE_GROUPS` environment valiable to get required Google groups list
