@@ -20,7 +20,7 @@ namespace Hackney.Core.Authorization
         public async Task Invoke(HttpContext httpContext, ITokenFactory tokenFactory)
         {
             var urlsEnvironmentVariable = Environment.GetEnvironmentVariable("URLS_TO_SKIP_AUTH");
-            if(urlsEnvironmentVariable == null)
+            if (urlsEnvironmentVariable == null)
             {
                 throw new EnvironmentVariableIsNullException("URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable");
             }
@@ -32,9 +32,8 @@ namespace Hackney.Core.Authorization
             }
 
             var requestUrl = httpContext.Request.Path.Value;
-            var needToSkipAuth = urlsToSkipAuth.Any(url => url.Equals(requestUrl));
-            
-            if(needToSkipAuth == true)
+            var needToSkipAuth = urlsToSkipAuth.Any(url => url.Equals(requestUrl));           
+            if (needToSkipAuth == true)
             {
                 await _next.Invoke(httpContext).ConfigureAwait(false);
                 return;

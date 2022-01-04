@@ -4,7 +4,7 @@ namespace Hackney.Core.Authorization.Exceptions
 {
     public class EnvironmentVariableIsNullException : Exception
     {
-        public EnvironmentVariableIsNullException(string message):
+        public EnvironmentVariableIsNullException(string message) :
             base(message)
         { }
 
