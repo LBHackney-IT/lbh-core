@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Hackney.Core.Authorization;
-using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -20,6 +19,8 @@ namespace Hackney.Core.Tests.Authorization
         {
             Environment.SetEnvironmentVariable("URLS_TO_SKIP_AUTH", null);
             DefaultHttpContext httpContext = new DefaultHttpContext();
+            var expectedResponseText = "URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable!";
+            var expectedStatusCode = (int)HttpStatusCode.InternalServerError;
             httpContext.Response.Body = new MemoryStream();
 
             var mockTokenFactory = new Mock<ITokenFactory>();
@@ -31,18 +32,31 @@ namespace Hackney.Core.Tests.Authorization
                 .Returns(Task.FromResult(0));
 
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-            Func<Task> act = () => sut.Invoke(httpContext, mockTokenFactory.Object);
+            await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
 
-            await act.Should().ThrowAsync<EnvironmentVariableIsNullException>().WithMessage("URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable").ConfigureAwait(false);
+            httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
+            httpContext.Response.Body.Position = 0;
+            using (StreamReader streamReader = new StreamReader(httpContext.Response.Body))
+            {
+                string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+
+                var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
+
+                errorResponse.StatusCode.Should().Be(expectedStatusCode);
+                errorResponse.Message.Should().Be(expectedResponseText);
+            }
+            mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
         }
 
         [Fact]
-        public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestNullRequesUrlPath_ThrowsArgumentNullException()
+        public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestNullRequesUrlPath_HasInternalServerErrorResponse()
         {
             Environment.SetEnvironmentVariable("URLS_TO_SKIP_AUTH", "/development/swagger/v1.0/swagger.json");
             DefaultHttpContext httpContext = new DefaultHttpContext();
+            var expectedResponseText = "Cannot get Path value from request!";
+            var expectedStatusCode = (int)HttpStatusCode.InternalServerError;
             httpContext.Response.Body = new MemoryStream();
-            //httpContext.Request.Path = null;
+            httpContext.Request.Path = null;
 
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
@@ -53,9 +67,20 @@ namespace Hackney.Core.Tests.Authorization
                 .Returns(Task.FromResult(0));
 
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-            Func<Task> act = () => sut.Invoke(httpContext, mockTokenFactory.Object);
+            await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
 
-            await act.Should().ThrowAsync<ArgumentNullException>().WithMessage($"Value cannot be null.").ConfigureAwait(false);
+            httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
+            httpContext.Response.Body.Position = 0;
+            using (StreamReader streamReader = new StreamReader(httpContext.Response.Body))
+            {
+                string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+
+                var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
+
+                errorResponse.StatusCode.Should().Be(expectedStatusCode);
+                errorResponse.Message.Should().Be(expectedResponseText);
+            }
+            mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
         }
 
         [Fact]
@@ -207,7 +232,7 @@ namespace Hackney.Core.Tests.Authorization
             {
                 Groups = new string[] { "HackneyAll", "BadGroup" }
             };
-            var expectedResponseText = "Forbidden";
+            var expectedResponseText = "JWT token should contain allowed group!";
             var expectedStatusCode = (int)HttpStatusCode.Forbidden;
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
