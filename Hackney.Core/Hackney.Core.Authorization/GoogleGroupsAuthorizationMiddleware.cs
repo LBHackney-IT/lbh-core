@@ -62,7 +62,7 @@ namespace Hackney.Core.Authorization
             var requiredGoogleGroups = requiredGoogleGroupsVariable.Split(';');
             if (!token.Groups.Any(g => requiredGoogleGroups.Contains(g)))
             {
-                await HandleResponseAsync(httpContext, HttpStatusCode.Forbidden, "Forbidden").ConfigureAwait(false);
+                await HandleResponseAsync(httpContext, HttpStatusCode.Forbidden, "JWT token should contain allowed group!").ConfigureAwait(false);
                 return;
             }
 
