@@ -32,7 +32,7 @@ namespace Hackney.Core.Authorization
             }
 
             var requestUrl = httpContext.Request.Path.Value;
-            var needToSkipAuth = urlsToSkipAuth.Any(url => url.Equals(requestUrl));           
+            var needToSkipAuth = urlsToSkipAuth.Any(url => url.Equals(requestUrl));        
             if (needToSkipAuth == true)
             {
                 await _next.Invoke(httpContext).ConfigureAwait(false);
