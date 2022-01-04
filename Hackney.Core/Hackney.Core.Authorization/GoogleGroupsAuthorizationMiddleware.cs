@@ -1,5 +1,4 @@
-﻿using Hackney.Core.Authorization.Exceptions;
-using Hackney.Core.JWT;
+﻿using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -22,13 +21,15 @@ namespace Hackney.Core.Authorization
             var urlsEnvironmentVariable = Environment.GetEnvironmentVariable("URLS_TO_SKIP_AUTH");
             if (urlsEnvironmentVariable == null)
             {
-                throw new EnvironmentVariableIsNullException("URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable");
+                await HandleResponseAsync(httpContext, HttpStatusCode.InternalServerError, "URLS_TO_SKIP_AUTH environment variable is null. Please, set up URLS_TO_SKIP_AUTH variable!").ConfigureAwait(false);
+                return;
             }
             var urlsToSkipAuth = urlsEnvironmentVariable.Split(";").ToList();
 
             if (!httpContext.Request.Path.HasValue)
             {
-                throw new ArgumentNullException(httpContext.Request.Path.Value);
+                await HandleResponseAsync(httpContext, HttpStatusCode.InternalServerError, "Cannot get Path value from request!").ConfigureAwait(false);
+                return;
             }
 
             var requestUrl = httpContext.Request.Path.Value;

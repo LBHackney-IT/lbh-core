@@ -7,4 +7,7 @@ To use this middleware you need to add the next line in your `Configure(...)` me
     
 	    app.UseGoogleGroupAuthorization();
 	
-This middleware will use `REQUIRED_GOOGLE_GROUPS` environment valiable to get required Google groups list
+This middleware will use the next environment valiables:  
+*  `REQUIRED_GOOGLE_GROUPS` to get required Google groups list
+*  `URLS_TO_SKIP_AUTH` to get URLs to skip authorization. For example, we need to skip authorization for swagger 
+
