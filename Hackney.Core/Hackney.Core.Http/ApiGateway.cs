@@ -40,6 +40,7 @@ namespace Hackney.Core.Http
         /// </summary>
         public Dictionary<string, string> RequestHeaders { get; private set; }
 
+        private bool _useApiKey;
         private bool _initialised = false;
 
         public ApiGateway(IHttpClientFactory httpClientFactory, IConfiguration configuration)
@@ -55,7 +56,7 @@ namespace Hackney.Core.Http
         /// <param name="configKeyApiUrl">The configuration key containing the base uri route for the Api</param>
         /// <param name="configKeyApiToken">The configuration key containing the token to be used with the Api</param>
         /// <param name="headers">Any heasders to be used when calling the Api (optional)</param>
-        public void Initialise(string apiName, string configKeyApiUrl, string configKeyApiToken, Dictionary<string, string> headers = null)
+        public void Initialise(string apiName, string configKeyApiUrl, string configKeyApiToken, Dictionary<string, string> headers = null, bool useApiKey = false)
         {
             if (string.IsNullOrEmpty(apiName)) throw new ArgumentNullException(nameof(apiName));
             ApiName = apiName;
@@ -72,6 +73,7 @@ namespace Hackney.Core.Http
 
             RequestHeaders = headers ?? new Dictionary<string, string>();
 
+            _useApiKey = useApiKey;
             _initialised = true;
         }
 
@@ -93,7 +95,12 @@ namespace Hackney.Core.Http
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("x-correlation-id", correlationId.ToString());
-            client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(ApiToken);
+
+            if (_useApiKey)
+                client.DefaultRequestHeaders.Add("x-api-key", AuthenticationHeaderValue.Parse(ApiToken).ToString());
+            else
+                client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(ApiToken);
+
             foreach (var pair in RequestHeaders)
                 client.DefaultRequestHeaders.Add(pair.Key, pair.Value);
 
