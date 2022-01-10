@@ -1,4 +1,4 @@
-﻿using Hackney.Core.Http.Exceptions;
+using Hackney.Core.Http.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -97,7 +97,7 @@ namespace Hackney.Core.Http
             client.DefaultRequestHeaders.Add("x-correlation-id", correlationId.ToString());
 
             if (_useApiKey)
-                client.DefaultRequestHeaders.Add("x-api-key", AuthenticationHeaderValue.Parse(ApiToken).ToString());
+                client.DefaultRequestHeaders.Add("x-api-key", ApiToken);
             else
                 client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(ApiToken);
 
