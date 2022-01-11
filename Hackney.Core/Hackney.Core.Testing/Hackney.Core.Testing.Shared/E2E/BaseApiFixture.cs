@@ -123,7 +123,7 @@ namespace Hackney.Core.Testing.Shared.E2E
                     HttpListenerResponse response = context.Response;
 
                     if (!string.IsNullOrEmpty(ApiToken)
-                        && (context.Request.Headers["Authorization"] != ApiToken))
+                        && ((context.Request.Headers["Authorization"] != ApiToken) || (context.Request.Headers["x-api-key"] != ApiToken)))
                     {
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     }
