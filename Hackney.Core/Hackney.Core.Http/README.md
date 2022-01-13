@@ -39,7 +39,7 @@ namespace SomeApi
 
 ### Implementation
 Create a "Gateway" class as normal to encapsulate calling the required external Api. 
-The class should inject an instance of the IApiGateway into and should initialise it with the required name, and configuration keys for the uri and token.
+The class should inject an instance of the IApiGateway into and should initialise it with the required name, and configuration keys for the uri and token. Optionally, you can also add custom headers and toggle the use of API Keys in this initialisation method. 
 
 This class should implement a single `async` Get method, but internally delegate the actual call to the instance of the IApiGateway injected into the class.
 This method will return either the requested entity, null, or throw a `GetFromApiException` exception for any other response from the Api call.
@@ -48,7 +48,7 @@ It is assumed that the Api's base uri and token are set in the application confi
 This would be standard practice so that the appropriate uri/token can be injected into the application container depending on the environment.
 The container tests should ensure that these environment variables are set appropriately.  
 
-**The uri and token are both required - the ApiGateway will throw an excpetion if either is not found at runtime.**
+**The uri and token are both required - the ApiGateway will throw an exception if either is not found at runtime.**
 
 
 ```csharp
@@ -64,15 +64,15 @@ namespace SomeApi.Gateway
     public class SomeEntitytApi : ISomeEntityApi
     {
         private const string ApiName = "SomeEntity";
-        private const string AccountApiUrl = "SomeEntityApiUrl";
-        private const string AccountApiToken = "SomeEntityApiToken";
+        private const string ApiUrl = "SomeEntityApiUrl";
+        private const string ApiToken = "SomeEntityApiToken";
 
         private readonly IApiGateway _apiGateway;
 
         public SomeEntityApi(IApiGateway apiGateway)
         {
             _apiGateway = apiGateway;
-            _apiGateway.Initialise(ApiName, AccountApiUrl, AccountApiToken);
+            _apiGateway.Initialise(ApiName, ApiUrl, ApiToken);
         }
 
         [LogCall]
