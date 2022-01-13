@@ -36,7 +36,8 @@ namespace Hackney.Core.Http
         /// <param name="configKeyApiUrl">The configuration key containing the base uri route for the Api</param>
         /// <param name="configKeyApiToken">The configuration key containing the token to be used with the Api</param>
         /// <param name="headers">Any heasders to be used when calling the Api (optional)</param>
-        void Initialise(string apiName, string configKeyApiUrl, string configKeyApiToken, Dictionary<string, string> headers = null);
+        /// <param name="useApiKey">Set to 'true' if this API needs an 'x-api-key' header rather than 'Authorization' (optional)</param>
+        void Initialise(string apiName, string configKeyApiUrl, string configKeyApiToken, Dictionary<string, string> headers = null, bool useApiKey = false);
 
         /// <summary>
         /// Makes a basic GET call to the Api to retrieve the requestsed entity details from it

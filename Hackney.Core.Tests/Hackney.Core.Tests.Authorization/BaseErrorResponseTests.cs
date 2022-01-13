@@ -10,7 +10,7 @@ namespace Hackney.Core.Tests.Authorization
         [Theory]
         [InlineData("Message", (int)HttpStatusCode.Forbidden, "Details", "Details")]
         [InlineData("Message", (int)HttpStatusCode.Forbidden, null, "")]
-        public void BaseErrorResponseConstructorWithDifferentDetails(string expectedMessage, int expectedStatusCode, 
+        public void BaseErrorResponseConstructorWithDifferentDetails(string expectedMessage, int expectedStatusCode,
             string actualDetails, string expectedDetails)
         {
             var sut = new BaseErrorResponse(expectedStatusCode, expectedMessage, actualDetails);

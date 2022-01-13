@@ -19,7 +19,7 @@ namespace Hackney.Core.Tests.Authorization
         {
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
-            
+
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
                 .Throws(new ArgumentNullException("MyException"));
@@ -29,12 +29,12 @@ namespace Hackney.Core.Tests.Authorization
                 .Returns(Task.FromResult(0));
 
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-            Func<Task> act =  () => sut.Invoke(httpContext, mockTokenFactory.Object);
+            Func<Task> act = () => sut.Invoke(httpContext, mockTokenFactory.Object);
 
             await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'MyException')").ConfigureAwait(false);
             mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
         }
-        
+
         [Fact]
         public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestNullToken_HasUnauthorizedResponse()
         {
@@ -44,15 +44,15 @@ namespace Hackney.Core.Tests.Authorization
 
             DefaultHttpContext httpContext = new DefaultHttpContext();
             httpContext.Response.Body = new MemoryStream();
-            
+
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
                 .Returns(expectedToken);
-            
+
             var mockRequestDelegate = new Mock<RequestDelegate>();
             mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
                 .Returns(Task.FromResult(0));
-            
+
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
             await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
 
@@ -73,7 +73,7 @@ namespace Hackney.Core.Tests.Authorization
         [Fact]
         public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestTokenGroupsAreNull_HasForbiddenResponse()
         {
-            Token expectedToken = new Token 
+            Token expectedToken = new Token
             {
                 Groups = null
             };
@@ -114,7 +114,7 @@ namespace Hackney.Core.Tests.Authorization
             Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", null);
             Token expectedToken = new Token
             {
-                Groups = new string[] { "HackneyAll"}
+                Groups = new string[] { "HackneyAll" }
             };
             var expectedResponseText = "Cannot resolve REQUIRED_GOOGL_GROUPS environment variable!";
             var expectedStatusCode = (int)HttpStatusCode.InternalServerError;
@@ -151,7 +151,7 @@ namespace Hackney.Core.Tests.Authorization
         public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestNoRequiredGoogleGroupsInToken_HasForbiddenResponse()
         {
             Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", "GoodGroup; HackneyAll;");
-            Token expectedToken = new Token 
+            Token expectedToken = new Token
             {
                 Groups = new string[] { "HackneyAll", "BadGroup" }
             };
@@ -185,12 +185,12 @@ namespace Hackney.Core.Tests.Authorization
             }
             mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
         }
-        
+
         [Fact]
         public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestValidToken_CallsNextDelegate()
         {
             Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", "GoodGroup; HackneyAll;");
-            Token expectedToken = new Token 
+            Token expectedToken = new Token
             {
                 Groups = new string[] { "HackneyAll", "GoodGroup", "SomeMoreGroup" }
             };
@@ -205,7 +205,7 @@ namespace Hackney.Core.Tests.Authorization
             var mockRequestDelegate = new Mock<RequestDelegate>();
             mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
                 .Returns(Task.FromResult(0));
-            
+
             var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
             await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
 

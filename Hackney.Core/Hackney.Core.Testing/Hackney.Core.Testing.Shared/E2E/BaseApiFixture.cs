@@ -122,10 +122,11 @@ namespace Hackney.Core.Testing.Shared.E2E
                     Requests.Add(context.Request);
                     HttpListenerResponse response = context.Response;
 
-                    if (!string.IsNullOrEmpty(ApiToken)
-                        && (context.Request.Headers["Authorization"] != ApiToken))
+                    var passedToken = context.Request.Headers["Authorization"] ?? context.Request.Headers["x-api-key"];
+                    if (!string.IsNullOrEmpty(ApiToken) && passedToken != ApiToken)
                     {
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        throw new UnauthorizedAccessException("Request headers do not contain `Authorization` or `x-api-key` keys");
                     }
                     else
                     {
