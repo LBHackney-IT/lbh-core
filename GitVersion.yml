@@ -8,7 +8,7 @@ branches:
     is-mainline: true
   feature:
     regex: feature[/-]
-    tag: "feat-{BranchName}"
+    tag: preview
     increment: Minor
     source-branches: ['master', 'main', 'release']
 ignore:
