@@ -1,18 +1,27 @@
-# Hackney.Core NuGet Package
-At Hackney, we have created the NuGet Package to prevent the duplication of common code when implementing our APIs.
-Hence this NuGet package will store the common code that can then be used in the relevant projects. 
+# Hackney.Core NuGet Packages
+At Hackney, we have created NuGet Packagse to prevent the duplication of common code when implementing our APIs.
+Hence this NuGet package will store common code that can then be used in relevant projects. 
 
-#### GitHub Actions Pipeline - Versioning
-The pipeline automatically updates the package version number using [GitVersion](https://gitversion.net/).
+## Contributing
 
-Version numbers use the following format:
+### Automated Versioning
+The pipeline automatically updates the version number for all packages in Hackney.Core.
 
-Any specific version number follows the form Major.Minor.Patch[-Suffix], where the components have the following meanings:
+Any specific version number follows the form `Major.Minor.Patch[-Suffix]`, where the components have the following meanings:
 
 * *Major*: Breaking changes
 * *Minor*: New features, but backward compatible
 * *Patch*: Backwards compatible bug fixes only
 * *Suffix (optional)*: a hyphen followed by a string denoting a pre-release version
+
+### Branching Strategy
+
+In order for the pipeline to be able to run automated tests and create preview versions of packages, you must name your branch correctly.
+
+**Name your branch following the convention of `feature/<some-feature>`.** This will allow the pipeline to work correctly. 
+If all tests pass, a new version of your package will be publised on every commit. You can see published versions of packages [here](https://github.com/orgs/LBHackney-IT/packages?repo_name=lbh-core).
+
+All preview versions of packages will have the suffix **`-feat-<branch-name>-<number>`**
 
 ## Building the package
 After cloning the repo, you may find many errors relating to the `Hackney.Core.Testing.PactBroker` project similar to the one below when attempting to build the solution **_on a Windows machine_**:
