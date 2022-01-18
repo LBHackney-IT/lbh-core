@@ -1,5 +1,5 @@
 # Hackney.Core NuGet Packages
-At Hackney, we have created NuGet Packagse to prevent the duplication of common code when implementing our APIs.
+At Hackney, we have created NuGet Packages to prevent the duplication of common code when implementing our APIs.
 Hence this NuGet package will store common code that can then be used in relevant projects. 
 
 ## Contributing
