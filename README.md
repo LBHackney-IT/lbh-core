@@ -21,7 +21,9 @@ In order for the pipeline to be able to run automated tests and create preview v
 **Name your branch following the convention of `feature/<some-feature>`.** This will allow the pipeline to work correctly. 
 If all tests pass, a new version of your package will be publised on every commit. You can see published versions of packages [here](https://github.com/orgs/LBHackney-IT/packages?repo_name=lbh-core).
 
-All preview versions of packages will have the suffix **`-feat-<branch-name>-<number>`**
+All preview versions of packages will have the suffix **`-feat-<branch-name>-<number>`**.
+
+This branch name in the package version has a character limit of **12 characters**, so try to name your branch accordingly, otherwise it will be cut off.
 
 ## Building the package
 After cloning the repo, you may find many errors relating to the `Hackney.Core.Testing.PactBroker` project similar to the one below when attempting to build the solution **_on a Windows machine_**:
