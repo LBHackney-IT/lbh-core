@@ -22,7 +22,7 @@ namespace Hackney.Core.Http.Exceptions
         /// <summary>
         /// The entity Id requested
         /// </summary>
-        public Guid EntityId { get; }
+        public string EntityId { get; }
 
         /// <summary>
         /// The headers used in the GET request
@@ -39,12 +39,12 @@ namespace Hackney.Core.Http.Exceptions
         /// </summary>
         public string ResponseBody { get; }
 
-        public GetFromApiException(string type, string route, Guid id, HttpStatusCode statusCode, string responseBody)
+        public GetFromApiException(string type, string route, string id, HttpStatusCode statusCode, string responseBody)
             : this(type, route, new List<KeyValuePair<string, IEnumerable<string>>>(), id, statusCode, responseBody)
         { }
 
         public GetFromApiException(string type, string route, IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers,
-            Guid id, HttpStatusCode statusCode, string responseBody)
+            string id, HttpStatusCode statusCode, string responseBody)
             : base($"Failed to get {type} details for id {id}. Route: {route}; Status code: {statusCode}; Message: {responseBody}")
         {
             EntityType = type;

@@ -88,7 +88,7 @@ namespace Hackney.Core.Http
         /// <param name="correlationId">The correlation id to use on the request.</param>
         /// <returns>The requested entity if found. null if not found</returns>
         /// <exception cref="GetFromApiException">If the Http GET request returns anything other than a success status code or not found</exception>
-        public async Task<T> GetByIdAsync<T>(string route, Guid id, Guid correlationId) where T : class
+        public async Task<T> GetByIdAsync<T>(string route, string id, Guid correlationId) where T : class
         {
             if (!_initialised) throw new InvalidOperationException("Initialise() must be called before any other calls are made");
 
@@ -117,6 +117,11 @@ namespace Hackney.Core.Http
 
             throw new GetFromApiException(ApiName, route, client.DefaultRequestHeaders.ToList(),
                                           id, response.StatusCode, responseBody);
+        }
+
+        public async Task<T> GetByIdAsync<T>(string route, Guid id, Guid correlationId) where T : class
+        {
+            return await GetByIdAsync<T>(route, id.ToString(), correlationId).ConfigureAwait(false);
         }
     }
 }

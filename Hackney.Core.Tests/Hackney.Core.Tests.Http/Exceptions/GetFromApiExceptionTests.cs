@@ -13,7 +13,7 @@ namespace Hackney.Core.Tests.Http.Exceptions
         public void GetFromApiExceptionConstructorTest()
         {
             var type = "SomeEntityName";
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString();
             var route = $"Some/route/{id}";
             var statusCode = HttpStatusCode.OK;
             var msg = "Some API error message";
@@ -32,7 +32,7 @@ namespace Hackney.Core.Tests.Http.Exceptions
         public void GetFromApiExceptionConstructorWithHeadersTest()
         {
             var type = "SomeEntityName";
-            var id = Guid.NewGuid();
+            var id = Guid.NewGuid().ToString();
             var route = $"Some/route/{id}";
             var statusCode = HttpStatusCode.OK;
             var msg = "Some API error message";
