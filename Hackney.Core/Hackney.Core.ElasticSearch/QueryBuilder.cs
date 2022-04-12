@@ -61,7 +61,7 @@ namespace Hackney.Core.ElasticSearch
                 (containerDescriptor) => containerDescriptor.QueryString(q =>
                 {
                     var queryDescriptor = q.Query(queryString)
-                        .Type(TextQueryType.MostFields)
+                        .Type(TextQueryType.BestFields)
                         .Fields(f =>
                         {
                             foreach (var field in fields)
