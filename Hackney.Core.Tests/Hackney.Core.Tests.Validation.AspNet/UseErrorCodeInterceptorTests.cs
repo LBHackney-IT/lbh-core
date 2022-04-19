@@ -41,7 +41,7 @@ namespace Hackney.Core.Tests.Validation.AspNet
             return options;
         }
 
-        private IEnumerable<ValidationFailure> ConstructFailures()
+        private static IEnumerable<ValidationFailure> ConstructFailures()
         {
             var failures = new List<ValidationFailure>();
             for (int i = 1; i < 5; i++)
