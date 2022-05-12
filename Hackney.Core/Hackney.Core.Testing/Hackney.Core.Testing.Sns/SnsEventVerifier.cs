@@ -2,6 +2,7 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Hackney.Core.Testing.Sns
         private readonly string _queueUrl;
         private readonly string _subscriptionArn;
 
-        private readonly string _sqsQueueName = "test-messages";
+        private readonly string _sqsQueueName = "test-messages.fifo";
 
         /// <summary>
         /// The last exception encountered whilst processing <see cref="ISnsEventVerifier.VerifySnsEventRaised{T}(Action{T})"/>
@@ -43,7 +44,16 @@ namespace Hackney.Core.Testing.Sns
             _topicArn = topicArn;
             _jsonOptions = CreateJsonOptions();
 
-            var queueResponse = _amazonSQS.CreateQueueAsync(_sqsQueueName).GetAwaiter().GetResult();
+            var createQueueRequest = new CreateQueueRequest
+            {
+                QueueName = _sqsQueueName,
+                Attributes = new Dictionary<string, string>()
+                {
+                    { QueueAttributeName.FifoQueue, "true" }
+                }
+            };
+            var queueResponse = _amazonSQS.CreateQueueAsync(createQueueRequest).GetAwaiter().GetResult();
+
             _queueUrl = queueResponse.QueueUrl;
 
             _subscriptionArn = _snsClient.SubscribeQueueAsync(_topicArn, _amazonSQS, _queueUrl)
@@ -90,7 +100,7 @@ namespace Hackney.Core.Testing.Sns
             {
                 QueueUrl = _queueUrl
             };
-            await _amazonSQS.PurgeQueueAsync(request);
+            await _amazonSQS.PurgeQueueAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -111,7 +121,11 @@ namespace Hackney.Core.Testing.Sns
                 MaxNumberOfMessages = 10,
                 WaitTimeSeconds = 2
             };
-            var response = await _amazonSQS.ReceiveMessageAsync(request);
+            var response = await _amazonSQS.ReceiveMessageAsync(request).ConfigureAwait(false);
+
+            if(response.Messages.Count == 0)
+                LastException = new Exception("No SQS messages received.");
+            
             foreach (var msg in response.Messages)
             {
                 eventFound = IsExpectedMessage(msg, verifyFunction);

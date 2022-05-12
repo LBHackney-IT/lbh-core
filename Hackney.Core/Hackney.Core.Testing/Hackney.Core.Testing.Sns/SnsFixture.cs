@@ -78,8 +78,8 @@ namespace Hackney.Core.Testing.Sns
             if (string.IsNullOrEmpty(topicArnEnvVarName)) throw new ArgumentNullException(nameof(topicArnEnvVarName));
 
             snsAttrs = snsAttrs ?? new Dictionary<string, string>();
-            snsAttrs.Add("fifo_topic", "true");
-            snsAttrs.Add("content_based_deduplication", "true");
+            snsAttrs.Add("FifoTopic", "true");
+            snsAttrs.Add("ContentBasedDeduplication", "true");
 
             var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
             {
