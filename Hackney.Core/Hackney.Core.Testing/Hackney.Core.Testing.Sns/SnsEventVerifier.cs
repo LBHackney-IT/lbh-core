@@ -123,9 +123,9 @@ namespace Hackney.Core.Testing.Sns
             };
             var response = await _amazonSQS.ReceiveMessageAsync(request).ConfigureAwait(false);
 
-            if(response.Messages.Count == 0)
+            if (response.Messages.Count == 0)
                 LastException = new Exception("No SQS messages received.");
-            
+
             foreach (var msg in response.Messages)
             {
                 eventFound = IsExpectedMessage(msg, verifyFunction);
