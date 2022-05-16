@@ -28,6 +28,8 @@ namespace Hackney.Core.Testing.Sns
         /// <returns><see cref="ISnsEventVerifier"/> reference or null</returns>
         ISnsEventVerifier GetSnsEventVerifier<T>() where T : class;
 
+        void PurgeAllQueueMessages();
+
         /// <summary>
         /// Creates the required Sns topic in the configured Sns instance. 
         /// Also creates an <see cref="SnsEventVerifier"/> for the topic.
