@@ -63,6 +63,16 @@ namespace Hackney.Core.Testing.Sns
         }
 
         /// <summary>
+        /// Purges all messages from every queue used in each SnsEventVerifier.
+        /// </summary>
+        /// <returns>Task</returns>
+        public void PurgeAllQueueMessages()
+        {
+            foreach (var verifier in _snsVerifers)
+                verifier.Value.PurgeQueueMessages();
+        }
+
+        /// <summary>
         /// Creates the required Sns topic in the configured Sns instance. 
         /// Also creates an <see cref="SnsEventVerifier"/> for the topic.
         /// </summary>
@@ -78,8 +88,8 @@ namespace Hackney.Core.Testing.Sns
             if (string.IsNullOrEmpty(topicArnEnvVarName)) throw new ArgumentNullException(nameof(topicArnEnvVarName));
 
             snsAttrs = snsAttrs ?? new Dictionary<string, string>();
-            snsAttrs.Add("fifo_topic", "true");
-            snsAttrs.Add("content_based_deduplication", "true");
+            snsAttrs.Add("FifoTopic", "true");
+            snsAttrs.Add("ContentBasedDeduplication", "true");
 
             var response = SimpleNotificationService.CreateTopicAsync(new CreateTopicRequest
             {
