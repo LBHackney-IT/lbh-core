@@ -51,12 +51,6 @@ namespace Hackney.Core.Testing.Sns
             }
         }
 
-        public void PurgeAllQueueMessages()
-        {
-            foreach (var verifier in _snsVerifers)
-                verifier.Value.PurgeQueueMessages();
-        }
-
         /// <summary>
         /// Retrieves the SnsEventVerifier appropriate to the specified event type.
         /// </summary>
@@ -66,6 +60,16 @@ namespace Hackney.Core.Testing.Sns
         {
             var name = typeof(T).Name;
             return _snsVerifers.ContainsKey(name) ? _snsVerifers[name] : null;
+        }
+
+        /// <summary>
+        /// Purges all messages from every queue used in each SnsEventVerifier.
+        /// </summary>
+        /// <returns>Task</returns>
+        public void PurgeAllQueueMessages()
+        {
+            foreach (var verifier in _snsVerifers)
+                verifier.Value.PurgeQueueMessages();
         }
 
         /// <summary>

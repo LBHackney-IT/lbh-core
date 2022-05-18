@@ -84,6 +84,7 @@ namespace SomeApplication.Tests
 
                 SnsFixture = serviceProvider.GetRequiredService<ISnsFixture>();
                 SnsFixture.CreateSnsTopic<EntityEventSns>("some-topic-name", "ENV-VAR-NAME-FOR-TOPIC-ARN");
+                // Make sure this topic name has '.fifo' at the end to make it a first-in-first-out topic.
             });
         }
     }
@@ -242,6 +243,24 @@ namespace SomeApplication.Tests.V1.E2ETests.Stories
 }
 ```
 
+##### Disposing SQS messages correctly
+Add the following to your `Dispose` method to dispose of the SQS messages:
+
+```csharp
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                // ... other cleanup actions here
+                _snsFixture?.PurgeAllQueueMessages();
+
+                _disposed = true;
+            }
+        }
+```
+**Not doing this may result in an error: 'No SQS messages received.'**
+
 #### Verifying an event was raised
 Create a method that calls the appropriate `SnsEventVerifier` passing it an action that will be used to test all event messages raised
 to see if it is the one expected.
@@ -271,10 +290,11 @@ public async Task ThenTheThingCreatedEventIsRaised(ISnsFixture snsFixture)
     };
 
     // Retrieve the right verifier reference
-    var snsVerifer = snsFixture.GetSnsEventVerifier<EventEntitySns>();
+    var snsVerifier = snsFixture.GetSnsEventVerifier<EventEntitySns>();
 
     // Verify our event was raised
-    (await snsVerifer.VerifySnsEventRaised<EventEntitySns>(verifyFunc)).Should().BeTrue(snsVerifer.LastException?.Message);
+    var isValid = await snsVerifier.VerifySnsEventRaised<EventEntitySns>(verifyFunc);
+    if (!isValid && snsVerifier.LastException != null) throw snsVerifier.LastException;
 }
 ```
 
@@ -306,6 +326,7 @@ It contains the following:
 
 #### Methods
 * `CreateSnsTopic` - Called within the mock application factory's startup to create the required Sns topic used by the code under test.
+* `PurgeAllQueueMessages` - This method can be used in cleanup to purge all queue messages from all `SnsEventVerifier`s for the specific topic.
 * `GetSnsEventVerifier` - A method that can be used by tests to retrieve the `SnsEventVerifier` for the spcified topic so that the test 
 can validate that the expected event was actually raised with the expected data.
  

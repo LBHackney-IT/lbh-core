@@ -23,6 +23,7 @@ namespace Hackney.Core.Testing.Sns
         /// </param>
         /// <returns>true if a message in the temporary queue satisfies the verification function.
         /// false if no message in the temporary queue satisfies the verification function.</returns>
+        /// <exception cref="System.Exception">If no SQS messages are found.</exception>
         Task<bool> VerifySnsEventRaised<T>(Action<T> verifyFunction) where T : class;
 
         /// <summary>

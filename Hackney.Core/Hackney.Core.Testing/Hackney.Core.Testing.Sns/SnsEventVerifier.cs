@@ -28,7 +28,6 @@ namespace Hackney.Core.Testing.Sns
         /// The last exception encountered whilst processing <see cref="ISnsEventVerifier.VerifySnsEventRaised{T}(Action{T})"/>
         /// </summary>
         public Exception LastException { get; private set; }
-        public int NumberOfResponses { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -114,6 +113,7 @@ namespace Hackney.Core.Testing.Sns
         /// </param>
         /// <returns>true if a message in the temporary queue satisfies the verification function.
         /// false if no message in the temporary queue satisfies the verification function.</returns>
+        /// <exception cref="System.Exception">If no SQS messages are found.</exception>
         public async Task<bool> VerifySnsEventRaised<T>(Action<T> verifyFunction) where T : class
         {
             bool eventFound = false;
@@ -124,9 +124,7 @@ namespace Hackney.Core.Testing.Sns
             };
             var response = await _amazonSQS.ReceiveMessageAsync(request).ConfigureAwait(false);
 
-            NumberOfResponses = response.Messages.Count;
-
-            if (NumberOfResponses == 0)
+            if (response.Messages.Count == 0)
                 LastException = new Exception("No SQS messages received.");
 
             foreach (var msg in response.Messages)

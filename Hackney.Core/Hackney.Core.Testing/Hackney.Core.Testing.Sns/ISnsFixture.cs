@@ -28,6 +28,10 @@ namespace Hackney.Core.Testing.Sns
         /// <returns><see cref="ISnsEventVerifier"/> reference or null</returns>
         ISnsEventVerifier GetSnsEventVerifier<T>() where T : class;
 
+        /// <summary>
+        /// Purges all messages from every queue used in each SnsEventVerifier.
+        /// </summary>
+        /// <returns>Task</returns>
         void PurgeAllQueueMessages();
 
         /// <summary>
