@@ -4,7 +4,7 @@
     {
         public BaseErrorResponse() { }
 
-        public BaseErrorResponse(int statusCode, string message, string details = null)
+        public BaseErrorResponse(int statusCode, string message, string? details = null)
         {
             StatusCode = statusCode;
             Message = message;

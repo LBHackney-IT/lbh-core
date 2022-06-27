@@ -18,25 +18,25 @@ namespace Hackney.Core.ElasticSearch
             _wildCardAppenderAndPrepender = wildCardAppenderAndPrepender;
         }
 
-        public IQueryBuilder<T> WithWildstarQuery(string searchText, List<string> fields)
+        public IQueryBuilder<T> WithWildstarQuery(string searchText, List<string> fields, TextQueryType textQueryType = TextQueryType.MostFields)
         {
             var listOfWildCardedWords = _wildCardAppenderAndPrepender.Process(searchText);
             var queryString = $"({string.Join(" AND ", listOfWildCardedWords)}) " +
                               string.Join(' ', listOfWildCardedWords);
 
-            _wildstarQuery = CreateQuery(queryString, fields);
+            _wildstarQuery = CreateQuery(queryString, fields, null, textQueryType);
 
             return this;
         }
 
-        public IQueryBuilder<T> WithFilterQuery(string commaSeparatedFilters, List<string> fields)
+        public IQueryBuilder<T> WithFilterQuery(string commaSeparatedFilters, List<string> fields, TextQueryType textQueryType = TextQueryType.MostFields)
         {
             if (commaSeparatedFilters != null)
             {
                 _filterQueries = new List<Func<QueryContainerDescriptor<T>, QueryContainer>>();
                 foreach (var filterWord in commaSeparatedFilters.Split(","))
                 {
-                    _filterQueries.Add(CreateQuery(filterWord, fields));
+                    _filterQueries.Add(CreateQuery(filterWord, fields, null, textQueryType));
                 }
             }
 
@@ -44,24 +44,24 @@ namespace Hackney.Core.ElasticSearch
         }
 
         public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields,
-            IExactSearchQuerystringProcessor processor = null)
+            IExactSearchQuerystringProcessor processor = null, TextQueryType textQueryType = TextQueryType.MostFields)
         {
             if (processor != null)
                 searchText = processor.Process(searchText);
 
-            _exactQuery = CreateQuery(searchText, fields, 20);
+            _exactQuery = CreateQuery(searchText, fields, 20, textQueryType);
 
             return this;
         }
 
         private static Func<QueryContainerDescriptor<T>, QueryContainer> CreateQuery(string queryString,
-            List<string> fields, double? boostValue = null)
+            List<string> fields, double? boostValue = null, TextQueryType textQueryType = TextQueryType.MostFields)
         {
             Func<QueryContainerDescriptor<T>, QueryContainer> query =
                 (containerDescriptor) => containerDescriptor.QueryString(q =>
                 {
                     var queryDescriptor = q.Query(queryString)
-                        .Type(TextQueryType.MostFields)
+                        .Type(textQueryType)
                         .Fields(f =>
                         {
                             foreach (var field in fields)
