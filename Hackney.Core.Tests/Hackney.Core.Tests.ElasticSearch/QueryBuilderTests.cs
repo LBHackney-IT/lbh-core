@@ -65,17 +65,4 @@ namespace Hackney.Core.Tests.ElasticSearch
             Assert.Equal(1, container.Count(q => q != null));
         }
     }
-
-    public class MatchQueryVisitor : QueryVisitor
-    {
-        public string Field { get; set; }
-        public string Value { get; set; }
-        public override void Visit(IMatchQuery query)
-        {
-            var inferrer = new Inferrer(new ConnectionSettings(new InMemoryConnection()));
-            Field = inferrer.Field(query.Field);
-            Value = query.Query;
-
-        }
-    }
 }
