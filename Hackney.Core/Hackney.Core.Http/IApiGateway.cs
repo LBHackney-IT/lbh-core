@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Hackney.Core.Http
@@ -58,5 +59,7 @@ namespace Hackney.Core.Http
         /// <param name="correlationId">The correlation id to use on the request.</param>
         /// <returns>The requested entity</returns>
         Task<T> GetByIdAsync<T>(string route, string id, Guid correlationId) where T : class;
+
+        Task SendAsync(HttpRequestMessage message, Guid correlationId);
     }
 }

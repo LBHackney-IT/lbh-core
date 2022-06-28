@@ -121,7 +121,7 @@ namespace Hackney.Core.Http
 
         public async Task SendAsync(HttpRequestMessage message, Guid correlationId)
         {
-             var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient();
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("x-correlation-id", correlationId.ToString());
@@ -144,7 +144,7 @@ namespace Hackney.Core.Http
                                        client.DefaultRequestHeaders.ToList(),
                                        response.StatusCode,
                                        responseBody);
-        } 
+        }
 
         public async Task<T> GetByIdAsync<T>(string route, Guid id, Guid correlationId) where T : class
         {
