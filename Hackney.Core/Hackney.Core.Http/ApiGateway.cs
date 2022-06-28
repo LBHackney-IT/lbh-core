@@ -119,6 +119,33 @@ namespace Hackney.Core.Http
                                           id, response.StatusCode, responseBody);
         }
 
+        public async Task SendAsync(HttpRequestMessage message, Guid correlationId)
+        {
+             var client = _httpClientFactory.CreateClient();
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("x-correlation-id", correlationId.ToString());
+
+            if (_useApiKey)
+                client.DefaultRequestHeaders.Add("x-api-key", ApiToken);
+            else
+                client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(ApiToken);
+
+            foreach (var pair in RequestHeaders)
+                client.DefaultRequestHeaders.Add(pair.Key, pair.Value);
+
+            var response = await client.SendAsync(message)
+                                       .ConfigureAwait(false);
+
+            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+                throw new ApiException(ApiName,
+                                       message.RequestUri.ToString(),
+                                       client.DefaultRequestHeaders.ToList(),
+                                       response.StatusCode,
+                                       responseBody);
+        } 
+
         public async Task<T> GetByIdAsync<T>(string route, Guid id, Guid correlationId) where T : class
         {
             return await GetByIdAsync<T>(route, id.ToString(), correlationId).ConfigureAwait(false);
