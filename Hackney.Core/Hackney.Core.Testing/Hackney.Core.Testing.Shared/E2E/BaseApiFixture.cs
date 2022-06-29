@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -138,7 +139,8 @@ namespace Hackney.Core.Testing.Shared.E2E
                             thisResponse = Responses.ContainsKey(requestedId) ? Responses[requestedId] : null;
                         }
 
-                        response.StatusCode = (int)((thisResponse is null) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
+                        var httpMethod = context.Request.HttpMethod;
+                        response.StatusCode = (int)((thisResponse is null && httpMethod != HttpMethod.Post.ToString()) ? HttpStatusCode.NotFound : HttpStatusCode.OK);
                         string responseBody = string.Empty;
                         if (thisResponse is null)
                         {

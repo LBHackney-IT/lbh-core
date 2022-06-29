@@ -140,7 +140,7 @@ namespace Hackney.Core.Http
             var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
                 return response;
-            
+
             throw new ApiException(ApiName,
                                    message.RequestUri.ToString(),
                                    client.DefaultRequestHeaders.ToList(),
