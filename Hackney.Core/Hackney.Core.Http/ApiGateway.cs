@@ -119,7 +119,7 @@ namespace Hackney.Core.Http
                                           id, response.StatusCode, responseBody);
         }
 
-        public async Task SendAsync(HttpRequestMessage message, Guid correlationId)
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, Guid correlationId)
         {
             var client = _httpClientFactory.CreateClient();
 
@@ -138,12 +138,14 @@ namespace Hackney.Core.Http
                                        .ConfigureAwait(false);
 
             var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode)
-                throw new ApiException(ApiName,
-                                       message.RequestUri.ToString(),
-                                       client.DefaultRequestHeaders.ToList(),
-                                       response.StatusCode,
-                                       responseBody);
+            if (response.IsSuccessStatusCode)
+                return response;
+            
+            throw new ApiException(ApiName,
+                                   message.RequestUri.ToString(),
+                                   client.DefaultRequestHeaders.ToList(),
+                                   response.StatusCode,
+                                   responseBody);
         }
 
         public async Task<T> GetByIdAsync<T>(string route, Guid id, Guid correlationId) where T : class

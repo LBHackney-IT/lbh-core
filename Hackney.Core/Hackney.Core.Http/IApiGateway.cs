@@ -60,6 +60,6 @@ namespace Hackney.Core.Http
         /// <returns>The requested entity</returns>
         Task<T> GetByIdAsync<T>(string route, string id, Guid correlationId) where T : class;
 
-        Task SendAsync(HttpRequestMessage message, Guid correlationId);
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, Guid correlationId);
     }
 }
