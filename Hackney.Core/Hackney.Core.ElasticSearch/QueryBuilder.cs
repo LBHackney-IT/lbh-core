@@ -10,6 +10,7 @@ namespace Hackney.Core.ElasticSearch
         private readonly IWildCardAppenderAndPrepender _wildCardAppenderAndPrepender;
         private Func<QueryContainerDescriptor<T>, QueryContainer> _wildstarQuery;
         private Func<QueryContainerDescriptor<T>, QueryContainer> _exactQuery;
+        private Func<QueryContainerDescriptor<T>, QueryContainer> _simpleQuery;
         private List<Func<QueryContainerDescriptor<T>, QueryContainer>> _filterQueries;
 
 
@@ -93,6 +94,31 @@ namespace Hackney.Core.ElasticSearch
             }
 
             return queryContainer;
+        }
+
+        public IQueryBuilder<T> WithSimpleQuery(string searchText, List<string> fields)
+        {
+            _simpleQuery = CreateSimpleQuery(searchText, fields);
+
+            return this;
+        }
+
+        private Func<QueryContainerDescriptor<T>, QueryContainer> CreateSimpleQuery(string searchText, List<string> fields)
+        {
+            Func<QueryContainerDescriptor<T>, QueryContainer> query =
+                (containerDescriptor) => containerDescriptor.SimpleQueryString(sqs =>
+                sqs.Query(searchText) 
+                .Fields(f =>
+                    {
+                        foreach (var field in fields)
+                        {
+                            f = f.Field(field);
+                        }
+                        return f;
+                    })
+                );
+            
+            return query;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Hackney.Core.ElasticSearch.Interfaces
 
         public IQueryBuilder<T> WithExactQuery(string searchText, List<string> fields, IExactSearchQuerystringProcessor processor = null, TextQueryType textQueryType = TextQueryType.MostFields);
 
+        public IQueryBuilder<T> WithSimpleQuery(string searchText, List<string> fields);
         public QueryContainer Build(QueryContainerDescriptor<T> containerDescriptor);
     }
 }
