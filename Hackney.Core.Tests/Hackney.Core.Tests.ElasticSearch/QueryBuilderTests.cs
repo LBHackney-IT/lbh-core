@@ -80,7 +80,7 @@ namespace Hackney.Core.Tests.ElasticSearch
 
             Assert.NotNull(container);
             Assert.Equal(2, container.Fields.Count());
-            
+
         }
     }
 }
