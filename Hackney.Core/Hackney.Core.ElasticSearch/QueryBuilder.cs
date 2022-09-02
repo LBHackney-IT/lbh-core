@@ -10,7 +10,6 @@ namespace Hackney.Core.ElasticSearch
         private readonly IWildCardAppenderAndPrepender _wildCardAppenderAndPrepender;
         private Func<QueryContainerDescriptor<T>, QueryContainer> _wildstarQuery;
         private Func<QueryContainerDescriptor<T>, QueryContainer> _exactQuery;
-        private Func<SimpleQueryStringQueryDescriptor<T>, QueryContainer> _simpleQuery;
         private List<Func<QueryContainerDescriptor<T>, QueryContainer>> _filterQueries;
 
 
@@ -96,38 +95,17 @@ namespace Hackney.Core.ElasticSearch
             return queryContainer;
         }
 
-        public QueryContainer BuildSimpleQuery(QueryContainerDescriptor<T> containerDescriptor, string searchTerm)
+        public QueryContainer BuildSimpleQuery(QueryContainerDescriptor<T> containerDescriptor, string searchTerm, List<string> fields)
         {
-            var simpleContainer = containerDescriptor.SimpleQueryString(q => q.Fields(f=>f.Field("assetAddress.addressLine1.textAddress").Field("assetAddress.addressLine1.postcode")).Query(searchTerm));
-
-            return simpleContainer;
-        }
-
-        public IQueryBuilder<T> WithSimpleQuery(string searchText, List<string> fields)
-        {
-            _simpleQuery = CreateSimpleQuery(searchText, fields);
-
-            return this;
-        }
-
-        private Func<SimpleQueryStringQueryDescriptor<T>, QueryContainer> CreateSimpleQuery(string searchText, List<string> fields)
-        {
-            Func<SimpleQueryStringQueryDescriptor<T>, QueryContainer> query =
-                (containerDescriptor) => containerDescriptor.Query(searchText)
-                .F
-
-
-                .Fields(f =>
+            return containerDescriptor.SimpleQueryString(q => q.Fields(f => 
+                {
+                    foreach (var field in fields)
                     {
-                        foreach (var field in fields)
-                        {
-                            f = f.Field(field);
-                        }
-                        return f;
-                    })
-                );
-            
-            return query;
+                        f = f.Field(field);
+                    }
+                    return f;
+                }
+            ).Query(searchTerm));
         }
     }
 }
