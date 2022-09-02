@@ -94,5 +94,18 @@ namespace Hackney.Core.ElasticSearch
 
             return queryContainer;
         }
+
+        public QueryContainer BuildSimpleQuery(QueryContainerDescriptor<T> containerDescriptor, string searchTerm, List<string> fields)
+        {
+            return containerDescriptor.SimpleQueryString(q => q.Fields(f =>
+                {
+                    foreach (var field in fields)
+                    {
+                        f = f.Field(field);
+                    }
+                    return f;
+                }
+            ).Query(searchTerm));
+        }
     }
 }

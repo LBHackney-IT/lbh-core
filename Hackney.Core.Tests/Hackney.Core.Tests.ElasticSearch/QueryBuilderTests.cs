@@ -64,5 +64,23 @@ namespace Hackney.Core.Tests.ElasticSearch
             Assert.Equal(2, container.Count());
             Assert.Equal(1, container.Count(q => q != null));
         }
+
+        [Fact]
+        public void WhenCreatingSimpleQuery_WithWildstar_ResultantQueryBeOfSimpleType()
+        {
+            // Arrange 
+            string searchText = "17 Dulwich Park Avenue";
+            var fields = new List<string> { "field11", "field12" };
+
+            // Act
+            QueryContainer query = _sut.BuildSimpleQuery(_queryContainerDesc, searchText, fields);
+
+            // Assert
+            var container = (query as IQueryContainer).SimpleQueryString;
+
+            Assert.NotNull(container);
+            Assert.Equal(2, container.Fields.Count());
+            Assert.Equal(searchText, container.Query);
+        }
     }
 }
