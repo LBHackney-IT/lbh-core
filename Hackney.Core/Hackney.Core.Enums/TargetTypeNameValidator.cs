@@ -3,7 +3,7 @@ using FluentValidation.Validators;
 
 namespace Hackney.Core.Enums
 {
-   /// <summary>
+    /// <summary>
     /// Fluent Validation validator to check if a property is a valid TargetType
     /// </summary>
     /// <typeparam name="T">The object type</typeparam>
@@ -14,6 +14,6 @@ namespace Hackney.Core.Enums
         {
         }
 
-        public override string Name => "TargetTypeNameValidator";      
-    }    
+        public override string Name => "TargetTypeNameValidator";
+    }
 }
