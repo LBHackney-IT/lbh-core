@@ -25,6 +25,15 @@ services:
       dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Dockerfile
       args:
         - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+
+  hackney-core-enums-test:
+    image: hackney-core-enums-test
+    build:
+      context: .
+      dockerfile: Hackney.Core.Tests/Hackney.Core.Tests.Enums/Dockerfile
+      args:
+        - LBHPACKAGESTOKEN=${LBHPACKAGESTOKEN}
+
   hackney-core-healthcheck-test:
     image: hackney-core-healthcheck-test
     build:

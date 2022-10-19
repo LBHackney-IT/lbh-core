@@ -1,0 +1,88 @@
+name: Hackney.Core.Enums-publish
+on:
+  push:
+    branches:
+    - release
+    - feature/**
+    paths:
+      - "Hackney.Core/Hackney.Core.Enums/**"
+      - "Hackney.Core.Tests/Hackney.Core.Tests.Enums/**"
+      - ".github/workflows/Hackney.Core.Enums.yml"
+jobs:
+  calculate-version:
+    name: Calculate Version
+    runs-on: ubuntu-latest
+    env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
+    outputs:
+      version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Determine package version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
+      - name: Display package version
+        run: |
+          echo "Version: $GITVERSION_NUGETVERSIONV2"
+          
+  check-code-formatting:
+    name: Check code formatting
+    runs-on: ubuntu-latest
+    needs: calculate-version
+    env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet format
+        run: |
+          cd Hackney.Core
+          dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+      - name: Run formatter check
+        run: |
+          cd Hackney.Core
+          ./dotnet-format-local/dotnet-format --check Hackney.Core.Enums
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    needs: calculate-version
+    env:
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
+    outputs:
+      version: ${{ needs.calculate-version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: docker-compose build hackney-core-enums-test
+      - name: Run tests
+        run: docker-compose run hackney-core-enums-test
+
+  publish-package:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    env:
+      VERSION: ${{ needs.build-and-test.outputs.version }}
+      LBHPACKAGESTOKEN: ${{secrets.LBHPACKAGESTOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build the Package
+        run: |
+          cd Hackney.Core
+          dotnet pack Hackney.Core.Enums -p:PackageVersion=$VERSION --configuration Release
+      - name: Publish the Package
+        run: |
+          cd Hackney.Core/Hackney.Core.Enums/bin/Release
+          dotnet nuget push Hackney.Core.Enums.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{secrets.NUGET_KEY }}
