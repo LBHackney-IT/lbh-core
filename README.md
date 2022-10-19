@@ -57,6 +57,7 @@ The following features are implemented within this package.
   * [Paged results](#Paged-results)
   * [Health check](#DynamoDb-Health-check)
 * [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
+* [Enums](/Hackney.Core/Hackney.Core.Enums/README.md)
 * [Health check helpers](#Health-check-helpers)
 * [Http](/Hackney.Core/Hackney.Core.Http/README.md)
 * [JWT](#JWT)
