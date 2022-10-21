@@ -26,6 +26,7 @@ namespace Hackney.Core.Tests.Enums
         [InlineData(TargetType.asset)]
         [InlineData(TargetType.tenure)]
         [InlineData(TargetType.repair)]
+        [InlineData(TargetType.process)]
         public void TargetTypeValidatorIsValidSucceeds(TargetType targetType)
         {
             var ctx = CreateContext();

@@ -8,6 +8,7 @@ namespace Hackney.Core.Enums
         person,
         asset,
         tenure,
-        repair
+        repair,
+        process
     }
 }
