@@ -22,11 +22,11 @@ namespace Hackney.Core.Tests.Enums
         }
 
         [Theory]
-        [InlineData(TargetType.person)]
-        [InlineData(TargetType.asset)]
-        [InlineData(TargetType.tenure)]
-        [InlineData(TargetType.repair)]
-        [InlineData(TargetType.process)]
+        [InlineData(TargetType.Person)]
+        [InlineData(TargetType.Asset)]
+        [InlineData(TargetType.Tenure)]
+        [InlineData(TargetType.Repair)]
+        [InlineData(TargetType.Process)]
         public void TargetTypeValidatorIsValidSucceeds(TargetType targetType)
         {
             var ctx = CreateContext();
@@ -42,4 +42,4 @@ namespace Hackney.Core.Tests.Enums
             sut.IsValid(ctx, (TargetType)(-1)).Should().BeFalse();
         }
     }
-}    
+}
