@@ -5,10 +5,10 @@ namespace Hackney.Core.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TargetType
     {
-        person,
-        asset,
-        tenure,
-        repair,
-        process
+        Person,
+        Asset,
+        Tenure,
+        Repair,
+        Process
     }
 }
