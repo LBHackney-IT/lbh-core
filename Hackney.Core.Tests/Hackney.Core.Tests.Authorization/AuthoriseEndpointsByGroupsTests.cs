@@ -15,21 +15,36 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace Hackney.Core.Tests.Authorization
 {
-    public class AuthoriseEndpointByGroupsFacts
+    public class AuthoriseEndpointByGroupsTests
     {
-        TokenGroupsFilter _classUnderFact;
+        TokenGroupsFilter _classUnderTest;
         Mock<ITokenFactory> _mockTokenFactory;
         private string[] _requiredGoogleGroups;
         private static Fixture _fixture => new Fixture();
+        private AuthorizationFilterContext _context;
+        private HeaderDictionary _requestHeaders;
 
-        public AuthoriseEndpointByGroupsFacts()
+        public AuthoriseEndpointByGroupsTests()
         {
             _mockTokenFactory = new Mock<ITokenFactory>();
 
             _requiredGoogleGroups = new string[] { "test_group_name", "some-other-group" };
             Environment.SetEnvironmentVariable("groups", string.Join(",", _requiredGoogleGroups));
 
-            _classUnderFact = new TokenGroupsFilter(_mockTokenFactory.Object, "groups");
+            _classUnderTest = new TokenGroupsFilter(_mockTokenFactory.Object, "groups");
+
+            SetUpMockContextAndHeaders();
+        }
+
+        private void SetUpMockContextAndHeaders()
+        {
+            _requestHeaders = new HeaderDictionary(new Dictionary<string, StringValues> { { "Authorization", "abc" } });
+
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.Setup(x => x.Request.Headers).Returns(_requestHeaders);
+
+            var actionContext = new ActionContext(mockHttpContext.Object, new RouteData(), new ActionDescriptor());
+            _context = new AuthorizationFilterContext(actionContext, new List<IFilterMetadata>());
         }
 
         [Fact]
@@ -42,60 +57,44 @@ namespace Hackney.Core.Tests.Authorization
             func.Should().Throw<EnvironmentVariableNullException>().WithMessage($"Cannot resolve {incorrectEnvVariable} environment variable.");
         }
 
-        private (AuthorizationFilterContext, HeaderDictionary) SetUpMockContextAndHeaders()
-        {
-            var requestHeaders = new HeaderDictionary(new Dictionary<string, StringValues> { { "Authorization", "abc" } });
-
-            var mockHttpContext = new Mock<HttpContext>();
-            mockHttpContext.Setup(x => x.Request.Headers).Returns(requestHeaders);
-
-            var actionContext = new ActionContext(mockHttpContext.Object, new RouteData(), new ActionDescriptor());
-            var context = new AuthorizationFilterContext(actionContext, new List<IFilterMetadata>());
-
-            return (context, requestHeaders);
-        }
-
         [Fact]
         public void OnAuthorizationResultIsUnauthorizedIfTokenIsNull()
         {
             // Arrange
-            (var context, var requestHeaders) = SetUpMockContextAndHeaders();
-            _mockTokenFactory.Setup(x => x.Create(requestHeaders, "Authorization")).Returns((Token)null);
+            _mockTokenFactory.Setup(x => x.Create(_requestHeaders, "Authorization")).Returns((Token)null);
             // Act
-            _classUnderFact.OnAuthorization(context);
+            _classUnderTest.OnAuthorization(_context);
             // Assert
-            context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
-            (context.Result as UnauthorizedObjectResult).Value.Should().Be("User  is not authorized to access this endpoint.");
-            _mockTokenFactory.Verify(x => x.Create(requestHeaders, "Authorization"), Times.Once);
+            _context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
+            (_context.Result as UnauthorizedObjectResult).Value.Should().Be("User  is not authorized to access this endpoint.");
+            _mockTokenFactory.Verify(x => x.Create(_requestHeaders, "Authorization"), Times.Once);
         }
 
         [Fact]
         public void OnAuthorizationResultIsUnauthorizedIfTokenDoesNotContainRequiredGoogleGroups()
         {
             // Arrange
-            (var context, var requestHeaders) = SetUpMockContextAndHeaders();
             var userToken = _fixture.Build<Token>().With(x => x.Groups, new string[] { "not one of the allowed groups" }).Create();
-            _mockTokenFactory.Setup(x => x.Create(requestHeaders, "Authorization")).Returns((Token)userToken);
+            _mockTokenFactory.Setup(x => x.Create(_requestHeaders, "Authorization")).Returns((Token)userToken);
             // Act
-            _classUnderFact.OnAuthorization(context);
+            _classUnderTest.OnAuthorization(_context);
             // Assert
-            context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
-            (context.Result as UnauthorizedObjectResult).Value.Should().Be($"User {userToken.Name} is not authorized to access this endpoint.");
-            _mockTokenFactory.Verify(x => x.Create(requestHeaders, "Authorization"), Times.Once);
+            _context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
+            (_context.Result as UnauthorizedObjectResult).Value.Should().Be($"User {userToken.Name} is not authorized to access this endpoint.");
+            _mockTokenFactory.Verify(x => x.Create(_requestHeaders, "Authorization"), Times.Once);
         }
 
         [Fact]
         public void OnAuthorizationResultIsNullIfTokenContainsOneOfTheRequiredGoogleGroups()
         {
             // Arrange
-            (var context, var requestHeaders) = SetUpMockContextAndHeaders();
             var userToken = _fixture.Build<Token>().With(x => x.Groups, new string[] { "test_group_name" }).Create();
-            _mockTokenFactory.Setup(x => x.Create(requestHeaders, "Authorization")).Returns((Token)userToken);
+            _mockTokenFactory.Setup(x => x.Create(_requestHeaders, "Authorization")).Returns((Token)userToken);
             // Act
-            _classUnderFact.OnAuthorization(context);
+            _classUnderTest.OnAuthorization(_context);
             // Assert
-            context.Result.Should().BeNull();
-            _mockTokenFactory.Verify(x => x.Create(requestHeaders, "Authorization"), Times.Once);
+            _context.Result.Should().BeNull();
+            _mockTokenFactory.Verify(x => x.Create(_requestHeaders, "Authorization"), Times.Once);
         }
 
     }
