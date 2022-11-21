@@ -6,12 +6,12 @@
 	<Authors>London Borough of Hackney Council</Authors>
 	<Company>London Borough of Hackney Council</Company>
 	<Copyright>2021</Copyright>
-	<Description>Common library providing functionality to validates that provided in request JWT token contains correct Google Group. Used in LBH Web API services.</Description>
+	<Description>This library provides functionality to validate that a request's JWT token contains the correct Google Group(s) to allow access to an API or endpoint.</Description>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hackney.Core.JWT\Hackney.Core.JWT.csproj" />
+    <PackageReference Include="Hackney.Core.JWT" Version="1.72.0" />
   </ItemGroup>
 
   <ItemGroup>

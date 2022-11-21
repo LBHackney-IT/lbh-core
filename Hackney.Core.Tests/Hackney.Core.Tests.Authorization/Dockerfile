@@ -20,6 +20,6 @@ RUN dotnet restore ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Author
 # Copy everything else and build
 COPY . .
 
-RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/Hackney.Core.Tests.DynamoDb.csproj
+RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Authorization
