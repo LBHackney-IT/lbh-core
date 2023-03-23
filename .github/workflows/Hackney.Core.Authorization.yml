@@ -8,6 +8,7 @@ on:
       - "Hackney.Core/Hackney.Core.Authorization/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Authorization/**"
       - ".github/workflows/Hackney.Core.Authorization.yml"
+
 jobs:
   calculate-version:
     name: Calculate Version
