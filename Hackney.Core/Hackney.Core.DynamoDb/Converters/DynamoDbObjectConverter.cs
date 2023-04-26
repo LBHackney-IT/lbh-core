@@ -18,7 +18,8 @@ namespace Hackney.Core.DynamoDb.Converters
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
             options.Converters.Add(new JsonStringEnumConverter());
             return options;
