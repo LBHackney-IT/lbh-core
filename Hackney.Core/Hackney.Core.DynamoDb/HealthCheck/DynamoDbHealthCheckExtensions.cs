@@ -5,7 +5,7 @@ namespace Hackney.Core.DynamoDb.HealthCheck
 {
     public static class DynamoDbHealthCheckExtensions
     {
-        private const string Name = "DynamoDb";
+        private const string Name = "DynamoDb_";
 
         public static IServiceCollection RegisterDynamoDbHealthCheck<T>(this IServiceCollection services) where T : class
         {
@@ -14,7 +14,7 @@ namespace Hackney.Core.DynamoDb.HealthCheck
 
         public static IHealthChecksBuilder AddDynamoDbHealthCheck<T>(this IHealthChecksBuilder builder) where T : class
         {
-            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name);
+            return builder.AddCheck<DynamoDbHealthCheck<T>>(Name + typeof(T).Name);
         }
 
         /// <summary>
