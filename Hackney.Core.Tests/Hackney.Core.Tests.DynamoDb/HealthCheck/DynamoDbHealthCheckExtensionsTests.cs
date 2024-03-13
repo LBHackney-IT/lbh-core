@@ -38,7 +38,7 @@ namespace Hackney.Core.Tests.DynamoDb.HealthCheck
             var mockBuilder = new Mock<IHealthChecksBuilder>();
             _ = mockBuilder.Object.AddDynamoDbHealthCheck<TestModelDb>();
 
-            mockBuilder.Verify(x => x.Add(It.Is<HealthCheckRegistration>(hcr => hcr.Name == "DynamoDb"
+            mockBuilder.Verify(x => x.Add(It.Is<HealthCheckRegistration>(hcr => hcr.Name == "DynamoDb_" + typeof(TestModelDb).Name
                                                                              && hcr.Factory != null)), Times.Once);
         }
     }
