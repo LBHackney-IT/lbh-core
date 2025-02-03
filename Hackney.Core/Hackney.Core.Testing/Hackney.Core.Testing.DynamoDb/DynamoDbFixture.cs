@@ -112,7 +112,17 @@ namespace Hackney.Core.Testing.DynamoDb
         public async Task SaveEntityAsync<T>(T entity) where T : class
         {
             await DynamoDbContext.SaveAsync<T>(entity).ConfigureAwait(false);
-            _cleanup.Add(async () => await DynamoDbContext.DeleteAsync(entity).ConfigureAwait(false));
+            _cleanup.Add(async () =>
+            {
+                try
+                {
+                    await DynamoDbContext.DeleteAsync(entity).ConfigureAwait(false);
+                }
+                catch (ConditionalCheckFailedException ex)
+                {
+                    Console.WriteLine($"Delete failed: {ex.Message}");
+                }
+            });
         }
     }
 }
