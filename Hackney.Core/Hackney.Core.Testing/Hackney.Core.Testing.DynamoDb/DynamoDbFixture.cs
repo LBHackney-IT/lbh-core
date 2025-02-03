@@ -120,6 +120,7 @@ namespace Hackney.Core.Testing.DynamoDb
                 }
                 catch (ConditionalCheckFailedException ex)
                 {
+                    // Ignore this exception as it means the entity has already been deleted
                     Console.WriteLine($"Delete failed: {ex.Message}");
                 }
             });
