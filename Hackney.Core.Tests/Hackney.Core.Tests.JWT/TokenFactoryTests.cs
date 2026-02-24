@@ -11,15 +11,13 @@ namespace Hackney.Core.Tests.JWT
     public class TokenFactoryTests
     {
         private readonly Mock<IHeaderDictionary> _mockHeaders;
-        // I've checked it - this is a dummy token.
-        private readonly string _tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
-
         private readonly TokenFactory _sut;
 
         public TokenFactoryTests()
         {
+            var nonEmptyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
             _mockHeaders = new Mock<IHeaderDictionary>();
-            _mockHeaders.Setup(x => x["Authorization"]).Returns(_tokenString);
+            _mockHeaders.Setup(x => x["Authorization"]).Returns(nonEmptyToken.JwtString);
 
             _sut = new TokenFactory();
         }
