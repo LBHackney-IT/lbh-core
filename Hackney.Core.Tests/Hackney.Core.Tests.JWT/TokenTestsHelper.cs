@@ -12,7 +12,7 @@ namespace Hackney.Core.Tests.JWT
 {
     internal static class TokenTestsHelper
     {
-        private static string TestSecret => "this-is-a-very-long-test-secret-key-that-is-at-least-32-bytes!";
+        public static string TestSecret => "this-is-a-very-long-test-secret-key-that-is-at-least-32-bytes!";
         public static char CognitoTokenGoogleGroupsSeparator => ';';
         private static Fixture _fixture = new Fixture();
 
@@ -30,7 +30,7 @@ namespace Hackney.Core.Tests.JWT
             return string.Join(CognitoTokenGoogleGroupsSeparator, googleGroups);
         }
 
-        private static TokenPresentation GenerateTestTokenObj(TokenSchema tokenSchema)
+        public static TokenPresentation GenerateTestTokenObj(TokenSchema tokenSchema)
         {
             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             long oneHourFromNow = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds();

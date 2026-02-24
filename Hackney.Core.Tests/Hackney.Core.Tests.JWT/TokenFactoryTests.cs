@@ -92,5 +92,36 @@ namespace Hackney.Core.Tests.JWT
             decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
             decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
         }
+
+        [Fact]
+        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArrayWhen()
+        {
+            // arrange
+            var headerName = "Authorization";
+            var schemaIrrelForTest = TokenSchema.Cognito;
+
+            var grouplessToken = TokenTestsHelper.GenerateTestTokenObj(schemaIrrelForTest);
+            grouplessToken.Groups = null;
+            grouplessToken.CustomGroups = null;
+
+            var grouplessTokenJwtString = TokenTestsHelper.GenerateCleanJwt(grouplessToken, TokenTestsHelper.TestSecret);
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[headerName]).Returns(grouplessTokenJwtString);
+
+            // act 
+            var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
+
+            // assert
+            // parses fields that exist
+            decodedToken.Email.Should().Be(grouplessToken.Email);
+            decodedToken.Exp.Should().Be(grouplessToken.Exp);
+            decodedToken.Iat.Should().Be(grouplessToken.Iat);
+            decodedToken.Name.Should().Be(grouplessToken.Name);
+            decodedToken.Nbf.Should().Be(grouplessToken.Nbf);
+            decodedToken.Sub.Should().Be(grouplessToken.Sub);
+            // defaults to empty array when no groups are found
+            decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
+        }
     }
 }
