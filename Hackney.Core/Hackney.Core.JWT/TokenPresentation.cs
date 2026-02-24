@@ -8,7 +8,7 @@ namespace Hackney.Core.JWT
     /// Domain layer contract. Do not use outside Hackney.Core.JWT,
     /// hence 'internal'.
     /// </summary>
-    internal class TokenPresentation
+    public class TokenPresentation
     {
         public string Sub { get; set; }
 
