@@ -51,7 +51,7 @@ namespace Hackney.Core.Tests.JWT
             else
             {
                 composer = composer
-                    .With(t => t.Groups, GenerateGoogleGroups(count: 5))
+                    .With(t => t.Groups, GenerateGoogleGroups(count: 5).ToArray())
                     .With(t => t.CustomGroups, null as string);
             }
 

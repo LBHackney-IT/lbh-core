@@ -51,17 +51,24 @@ namespace Hackney.Core.Tests.JWT
         [InlineData("some-header")]
         public void TokenFactoryCreateTestReturnsToken(string headerName)
         {
+            // arrange
+            var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
             var actualHeader = headerName ?? ITokenFactory.DefaultHeaderName;
-            _mockHeaders.Setup(x => x[actualHeader]).Returns(_tokenString);
 
-            var token = _sut.Create(_mockHeaders.Object);
-            token.Email.Should().Be("e2e-testing@development.com");
-            token.Exp.Should().Be(0);
-            token.Groups.Should().BeEquivalentTo(new[] { "e2e-testing" });
-            token.Iat.Should().Be(1623058232);
-            token.Name.Should().Be("Tester");
-            token.Nbf.Should().Be(0);
-            token.Sub.Should().Be("115018116092098676113");
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[actualHeader]).Returns(testToken.JwtString);
+
+            // act 
+            var decodedToken = _sut.Create(_mockHeaders.Object, actualHeader);
+
+            // assert
+            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Groups.Should().BeEquivalentTo(testToken.TokenObj.Groups);
+            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
         }
 
         [Fact]
@@ -70,7 +77,7 @@ namespace Hackney.Core.Tests.JWT
             // arrange
             var headerName = "Authorization";
             var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-            var expectedGroupsArray = testToken.TokenObj.CustomGroups.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray();
+            var expectedGroupsArray = testToken.TokenObj.CustomGroups?.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray();
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(x => x[headerName]).Returns(testToken.JwtString);

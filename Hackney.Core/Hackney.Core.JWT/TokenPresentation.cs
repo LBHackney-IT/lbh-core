@@ -13,11 +13,11 @@ namespace Hackney.Core.JWT
         public string Sub { get; set; }
 
         // The old token format groups field
-        public string[] Groups { get; set; }
+        public string[]? Groups { get; set; }
 
         // New cognito token format field
         [JsonProperty("custom:groups")]
-        public string CustomGroups { get; set; }
+        public string? CustomGroups { get; set; }
 
         public string Email { get; set; }
         public string Name { get; set; }
