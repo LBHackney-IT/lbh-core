@@ -12,6 +12,9 @@ namespace Hackney.Core.JWT
     /// </summary>
     public class TokenFactory : ITokenFactory
     {
+        // Separator aws cognito pre-token lambda uses to join Google group names with
+        public char CognitoTokenGoogleGroupsSeparator => ';';
+
         /// <summary>
         /// Extracts a JWT from the supplied Http headers and creates a token object from it.
         /// </summary>
@@ -32,8 +35,42 @@ namespace Hackney.Core.JWT
 
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(encodedString);
+
             var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
-            return JsonConvert.DeserializeObject<Token>(decodedPayload);
+
+            // clean architecture principles - separate out presentation concern from domain logic 
+            var presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
+
+            if (presentationToken == null)
+                return null;
+
+            // preserve the model that domain logic expects
+            return MapToDomain(presentationToken);
+        }
+
+        private Token MapToDomain(TokenPresentation presentation)
+        {
+            string[] parsedGroups = Array.Empty<string>();
+
+            if (presentation.Groups != null)
+            {
+                parsedGroups = presentation.Groups;
+            }
+            else if (!string.IsNullOrWhiteSpace(presentation.CustomGroups))
+            {
+                parsedGroups = presentation.CustomGroups.Split(this.CognitoTokenGoogleGroupsSeparator, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            return new Token
+            {
+                Sub = presentation.Sub,
+                Groups = parsedGroups,
+                Email = presentation.Email,
+                Name = presentation.Name,
+                Nbf = presentation.Nbf,
+                Exp = presentation.Exp,
+                Iat = presentation.Iat
+            };
         }
     }
 }
