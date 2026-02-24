@@ -6,6 +6,7 @@ using Hackney.Core.JWT;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoFixture.Dsl;
+using System;
 
 namespace Hackney.Core.Tests.JWT
 {
@@ -31,17 +32,27 @@ namespace Hackney.Core.Tests.JWT
 
         private static TokenPresentation GenerateTestTokenObj(TokenSchema tokenSchema)
         {
+            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long oneHourFromNow = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds();
+
             var builder = _fixture.Build<TokenPresentation>();
 
-            IPostprocessComposer<TokenPresentation> composer;
+            IPostprocessComposer<TokenPresentation> composer = builder
+                .With(t => t.Iat, now)
+                .With(t => t.Nbf, now)
+                .With(t => t.Exp, oneHourFromNow);
 
             if (tokenSchema == TokenSchema.Cognito)
             {
-                composer = builder.With(t => t.CustomGroups, GenerateCognitoTokenGroupsString(count: 5));
+                composer = composer
+                    .With(t => t.Groups, null as string[])
+                    .With(t => t.CustomGroups, GenerateCognitoTokenGroupsString(count: 5));
             }
             else
             {
-                composer = builder.With(t => t.Groups, GenerateGoogleGroups(count: 5));
+                composer = composer
+                    .With(t => t.Groups, GenerateGoogleGroups(count: 5))
+                    .With(t => t.CustomGroups, null as string);
             }
 
             return composer.Create();
@@ -57,18 +68,14 @@ namespace Hackney.Core.Tests.JWT
             {
                 { "sub", token.Sub },
                 { "email", token.Email },
-                { "name", token.Name },
-                { "nbf", token.Nbf },
-                { "exp", token.Exp },
-                { "iat", token.Iat }
+                { "name", token.Name }
             };
 
-            // If old token schema
             if (token.Groups != null)
             {
                 claims.Add("groups", token.Groups);
             }
-            else // If cognito token
+            else
             {
                 claims.Add("custom:groups", token.CustomGroups);
             }
@@ -76,7 +83,12 @@ namespace Hackney.Core.Tests.JWT
             var descriptor = new SecurityTokenDescriptor
             {
                 Claims = claims,
-                SigningCredentials = credentials
+                SigningCredentials = credentials,
+
+                // converts 'long' unix timestamps to date times
+                Expires = DateTimeOffset.FromUnixTimeSeconds(token.Exp).UtcDateTime,
+                NotBefore = DateTimeOffset.FromUnixTimeSeconds(token.Nbf).UtcDateTime,
+                IssuedAt = DateTimeOffset.FromUnixTimeSeconds(token.Iat).UtcDateTime
             };
 
             var handler = new JwtSecurityTokenHandler();
