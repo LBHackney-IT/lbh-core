@@ -11,6 +11,7 @@ namespace Hackney.Core.Tests.JWT
 {
     internal static class TokenTestsHelper
     {
+        private static string TestSecret => "this-is-a-very-long-test-secret-key-that-is-at-least-32-bytes!";
         public static char CognitoTokenGoogleGroupsSeparator => ';';
         private static Fixture _fixture = new Fixture();
 
@@ -82,6 +83,22 @@ namespace Hackney.Core.Tests.JWT
             var securityToken = handler.CreateToken(descriptor);
             return handler.WriteToken(securityToken);
         }
+
+        public static TestToken<TokenPresentation> GenerateTestTokenPresentationJWT(TokenSchema tokenSchema)
+        {
+            var presentationToken = GenerateTestTokenObj(tokenSchema);
+            return new TestToken<TokenPresentation>
+            {
+                JwtString = GenerateCleanJwt(presentationToken, TestSecret),
+                TokenObj = presentationToken
+            };
+        }
+    }
+
+    internal class TestToken<T> where T : class, new()
+    {
+        public string JwtString { get; set; }
+        public T TokenObj { get; set; }
     }
 
     internal enum TokenSchema
