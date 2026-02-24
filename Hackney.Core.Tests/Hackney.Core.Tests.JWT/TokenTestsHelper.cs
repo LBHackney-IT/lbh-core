@@ -5,6 +5,7 @@ using AutoFixture;
 using Hackney.Core.JWT;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoFixture.Dsl;
 
 namespace Hackney.Core.Tests.JWT
 {
@@ -27,19 +28,24 @@ namespace Hackney.Core.Tests.JWT
             return string.Join(CognitoTokenGoogleGroupsSeparator, googleGroups);
         }
 
-        private static TokenPresentation GenerateTestTokenPresentationObj()
+        private static TokenPresentation GenerateTestTokenObj(TokenSchema tokenSchema)
         {
-            return _fixture.Build<TokenPresentation>()
-                .With(x => x.CustomGroups, GenerateCognitoTokenGroupsString(count: 5))
-                .Create();
+            var builder = _fixture.Build<TokenPresentation>();
+
+            IPostprocessComposer<TokenPresentation> composer;
+
+            if (tokenSchema == TokenSchema.Cognito)
+            {
+                composer = builder.With(t => t.CustomGroups, GenerateCognitoTokenGroupsString(count: 5));
+            }
+            else
+            {
+                composer = builder.With(t => t.Groups, GenerateGoogleGroups(count: 5));
+            }
+
+            return composer.Create();
         }
 
-        private static Token GenerateTestTokenObj()
-        {
-            return _fixture.Build<Token>()
-                .With(x => x.Groups, GenerateGoogleGroups(count: 5))
-                .Create();
-        }
 
         public static string GenerateCleanJwt(TokenPresentation token, string secret)
         {
@@ -76,5 +82,11 @@ namespace Hackney.Core.Tests.JWT
             var securityToken = handler.CreateToken(descriptor);
             return handler.WriteToken(securityToken);
         }
+    }
+
+    internal enum TokenSchema
+    {
+        Old,
+        Cognito
     }
 }
