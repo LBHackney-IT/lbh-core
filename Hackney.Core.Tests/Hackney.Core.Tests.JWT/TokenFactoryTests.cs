@@ -3,6 +3,7 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Hackney.Core.Tests.JWT
@@ -10,6 +11,7 @@ namespace Hackney.Core.Tests.JWT
     public class TokenFactoryTests
     {
         private readonly Mock<IHeaderDictionary> _mockHeaders;
+        // I've checked it - this is a dummy token.
         private readonly string _tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
 
         private readonly TokenFactory _sut;
@@ -60,6 +62,30 @@ namespace Hackney.Core.Tests.JWT
             token.Name.Should().Be("Tester");
             token.Nbf.Should().Be(0);
             token.Sub.Should().Be("115018116092098676113");
+        }
+
+        [Fact]
+        public void TokenFactory_CreateMethod_MapsTheCognitoTokenCorrectly()
+        {
+            // arrange
+            var headerName = "Authorization";
+            var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+            var expectedGroupsArray = testToken.TokenObj.CustomGroups.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray();
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[headerName]).Returns(testToken.JwtString);
+
+            // act 
+            var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
+
+            // assert
+            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Groups.Should().BeEquivalentTo(expectedGroupsArray);
+            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
         }
     }
 }
