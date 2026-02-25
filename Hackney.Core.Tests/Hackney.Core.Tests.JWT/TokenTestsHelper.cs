@@ -96,10 +96,10 @@ namespace Hackney.Core.Tests.JWT
             return handler.WriteToken(securityToken);
         }
 
-        public static TestToken<TokenPresentation> GenerateTestTokenPresentationJWT(TokenSchema tokenSchema)
+        public static TestToken GenerateTestTokenPresentationJWT(TokenSchema tokenSchema)
         {
             var presentationToken = GenerateTestTokenObj(tokenSchema);
-            return new TestToken<TokenPresentation>
+            return new TestToken
             {
                 JwtString = GenerateCleanJwt(presentationToken, TestSecret),
                 TokenObj = presentationToken
@@ -107,10 +107,10 @@ namespace Hackney.Core.Tests.JWT
         }
     }
 
-    internal class TestToken<T> where T : class, new()
+    internal class TestToken where T : class, new()
     {
         public string JwtString { get; set; }
-        public T TokenObj { get; set; }
+        public TokenPresentation TokenObj { get; set; }
     }
 
     internal enum TokenSchema
