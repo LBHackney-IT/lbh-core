@@ -94,7 +94,7 @@ namespace Hackney.Core.Tests.JWT
         }
 
         [Fact]
-        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArrayWhen()
+        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArrayWhenNeitherGroupsNorCustomGroupsIsSet()
         {
             // arrange
             var headerName = "Authorization";
