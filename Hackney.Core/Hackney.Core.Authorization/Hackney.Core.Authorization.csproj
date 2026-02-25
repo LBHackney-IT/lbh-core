@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hackney.Core.JWT" Version="1.87.0-feat-add-cognito0016" />
+    <PackageReference Include="Hackney.Core.JWT" Version="1.87.0" />
   </ItemGroup>
 
   <ItemGroup>
