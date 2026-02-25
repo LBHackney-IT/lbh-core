@@ -107,7 +107,7 @@ namespace Hackney.Core.Tests.JWT
         }
     }
 
-    internal class TestToken where T : class, new()
+    internal class TestToken
     {
         public string JwtString { get; set; }
         public TokenPresentation TokenObj { get; set; }
