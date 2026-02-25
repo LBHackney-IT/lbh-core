@@ -3,6 +3,7 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Hackney.Core.Tests.JWT
@@ -10,14 +11,13 @@ namespace Hackney.Core.Tests.JWT
     public class TokenFactoryTests
     {
         private readonly Mock<IHeaderDictionary> _mockHeaders;
-        private readonly string _tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUwMTgxMTYwOTIwOTg2NzYxMTMiLCJlbWFpbCI6ImUyZS10ZXN0aW5nQGRldmVsb3BtZW50LmNvbSIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiVGVzdGVyIiwiZ3JvdXBzIjpbImUyZS10ZXN0aW5nIl0sImlhdCI6MTYyMzA1ODIzMn0.SooWAr-NUZLwW8brgiGpi2jZdWjyZBwp4GJikn0PvEw";
-
         private readonly TokenFactory _sut;
 
         public TokenFactoryTests()
         {
+            var nonEmptyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
             _mockHeaders = new Mock<IHeaderDictionary>();
-            _mockHeaders.Setup(x => x["Authorization"]).Returns(_tokenString);
+            _mockHeaders.Setup(x => x["Authorization"]).Returns(nonEmptyToken.JwtString);
 
             _sut = new TokenFactory();
         }
@@ -49,17 +49,79 @@ namespace Hackney.Core.Tests.JWT
         [InlineData("some-header")]
         public void TokenFactoryCreateTestReturnsToken(string headerName)
         {
+            // arrange
+            var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
             var actualHeader = headerName ?? ITokenFactory.DefaultHeaderName;
-            _mockHeaders.Setup(x => x[actualHeader]).Returns(_tokenString);
 
-            var token = _sut.Create(_mockHeaders.Object);
-            token.Email.Should().Be("e2e-testing@development.com");
-            token.Exp.Should().Be(0);
-            token.Groups.Should().BeEquivalentTo(new[] { "e2e-testing" });
-            token.Iat.Should().Be(1623058232);
-            token.Name.Should().Be("Tester");
-            token.Nbf.Should().Be(0);
-            token.Sub.Should().Be("115018116092098676113");
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[actualHeader]).Returns(testToken.JwtString);
+
+            // act 
+            var decodedToken = _sut.Create(_mockHeaders.Object, actualHeader);
+
+            // assert
+            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Groups.Should().BeEquivalentTo(testToken.TokenObj.Groups);
+            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
+        }
+
+        [Fact]
+        public void TokenFactory_CreateMethod_MapsTheCognitoTokenCorrectly()
+        {
+            // arrange
+            var headerName = "Authorization";
+            var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+            var expectedGroupsArray = testToken.TokenObj.CustomGroups?.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray();
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[headerName]).Returns(testToken.JwtString);
+
+            // act 
+            var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
+
+            // assert
+            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Groups.Should().BeEquivalentTo(expectedGroupsArray);
+            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
+        }
+
+        [Fact]
+        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArrayWhenNeitherGroupsNorCustomGroupsIsSet()
+        {
+            // arrange
+            var headerName = "Authorization";
+            var schemaIrrelForTest = TokenSchema.Cognito;
+
+            var grouplessToken = TokenTestsHelper.GenerateTestTokenObj(schemaIrrelForTest);
+            grouplessToken.Groups = null;
+            grouplessToken.CustomGroups = null;
+
+            var grouplessTokenJwtString = TokenTestsHelper.GenerateCleanJwt(grouplessToken, TokenTestsHelper.TestSecret);
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(x => x[headerName]).Returns(grouplessTokenJwtString);
+
+            // act 
+            var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
+
+            // assert
+            // parses fields that exist
+            decodedToken.Email.Should().Be(grouplessToken.Email);
+            decodedToken.Exp.Should().Be(grouplessToken.Exp);
+            decodedToken.Iat.Should().Be(grouplessToken.Iat);
+            decodedToken.Name.Should().Be(grouplessToken.Name);
+            decodedToken.Nbf.Should().Be(grouplessToken.Nbf);
+            decodedToken.Sub.Should().Be(grouplessToken.Sub);
+            // defaults to empty array when no groups are found
+            decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
         }
     }
 }
