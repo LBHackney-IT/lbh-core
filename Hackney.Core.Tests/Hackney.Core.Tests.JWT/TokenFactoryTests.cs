@@ -3,7 +3,6 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace Hackney.Core.Tests.JWT
@@ -151,10 +150,46 @@ namespace Hackney.Core.Tests.JWT
         }
 
         [Fact]
-        public void TokenFactory_DecodeJWTString_WithLiteralNullPayload_ReturnsNull()
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithLiteralNullPayload()
         {
             // Arrange
             var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
+
+            // Act
+            var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
+            var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+
+            // Assert
+            decodedNullTokenViaCreate.Should().BeNull();
+            decodedNullTokenViaDecode.Should().BeNull();
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithEmptyObjectPayload()
+        {
+            // Arrange
+            var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
+
+            // Act
+            var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
+            var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+
+            // Assert
+            decodedNullTokenViaCreate.Should().BeNull();
+            decodedNullTokenViaDecode.Should().BeNull();
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithRawStringPayload()
+        {
+            // Arrange
+            var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithRawStringPayload("Sheep Detectives 2026");
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);

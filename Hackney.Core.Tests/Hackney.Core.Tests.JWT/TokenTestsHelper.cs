@@ -107,7 +107,7 @@ namespace Hackney.Core.Tests.JWT
             };
         }
 
-        public static string GenerateTokenWithNullPayload()
+        public static string GenerateBasicGeneralPayloadToken(object payloadData)
         {
             var header = new JwtHeader
             {
@@ -118,12 +118,26 @@ namespace Hackney.Core.Tests.JWT
             var headerJson = JsonConvert.SerializeObject(header);
             var encodedHeader = Base64UrlEncoder.Encode(headerJson);
 
-            object nullReference = null!;
-            var payloadJson = JsonConvert.SerializeObject(nullReference);
+            var payloadJson = JsonConvert.SerializeObject(payloadData);
             var encodedPayload = Base64UrlEncoder.Encode(payloadJson);
 
             // algorithm is "none", so signature segment is deliberately empty
             return $"{encodedHeader}.{encodedPayload}.";
+        }
+
+        public static string GenerateTokenWithNullPayload()
+        {
+            return GenerateBasicGeneralPayloadToken(null!);
+        }
+
+        public static string GenerateTokenWithRawStringPayload(string payloadString)
+        {
+            return GenerateBasicGeneralPayloadToken(payloadString);
+        }
+
+        public static string GenerateTokenWithEmptyObjectPayload()
+        {
+            return GenerateBasicGeneralPayloadToken(new { });
         }
     }
 
