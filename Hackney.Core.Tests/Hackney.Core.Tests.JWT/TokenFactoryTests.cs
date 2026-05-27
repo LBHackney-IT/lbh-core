@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using System;
 using Xunit;
@@ -152,17 +153,17 @@ namespace Hackney.Core.Tests.JWT
         [Fact]
         public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithLiteralNullPayload()
         {
-            // Arrange
+            // arrange
             var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
 
-            // Act
+            // act
             var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
             var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
 
-            // Assert
+            // assert
             decodedNullTokenViaCreate.Should().BeNull();
             decodedNullTokenViaDecode.Should().BeNull();
         }
@@ -170,17 +171,17 @@ namespace Hackney.Core.Tests.JWT
         [Fact]
         public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithEmptyObjectPayload()
         {
-            // Arrange
+            // arrange
             var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
 
-            // Act
+            // act
             var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
             var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
 
-            // Assert
+            // assert
             decodedNullTokenViaCreate.Should().BeNull();
             decodedNullTokenViaDecode.Should().BeNull();
         }
@@ -188,19 +189,48 @@ namespace Hackney.Core.Tests.JWT
         [Fact]
         public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithRawStringPayload()
         {
-            // Arrange
+            // arrange
             var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithRawStringPayload("Sheep Detectives 2026");
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
 
-            // Act
+            // act
             var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
             var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
 
-            // Assert
+            // assert
             decodedNullTokenViaCreate.Should().BeNull();
             decodedNullTokenViaDecode.Should().BeNull();
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_AreCapableOfHandlingStingValuesPrimitivesFromHeaderDict()
+        {
+            // arrange
+            var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+            var headerName = "Authorization";
+            var headersDict = new HeaderDictionary
+            {
+                { headerName, cognitoToken.JwtString }
+            };
+
+            StringValues strValPrimitiveHeaderVal = headersDict[headerName];
+
+            // act 
+            var decodedTokenViaCreate = _sut.Create(headersDict, headerName);
+            var decodedTokenViaDecode = _sut.DecodeJWTString(strValPrimitiveHeaderVal);
+
+            // assert
+            decodedTokenViaCreate.Should().NotBeNull();
+            decodedTokenViaDecode.Should().NotBeNull();
+
+            // only asserting a few fields as if even 1 field was decoded, it means
+            // that the JWT parser didn't fall over by creating an empty object with no data.
+            var expectedEmail = cognitoToken.TokenObj?.Email;
+            decodedTokenViaCreate.Email.Should().Be(expectedEmail);
+            decodedTokenViaDecode.Email.Should().Be(expectedEmail);
         }
 
         [Theory]
@@ -208,7 +238,7 @@ namespace Hackney.Core.Tests.JWT
         [InlineData("")]
         [InlineData("    ")]
         [InlineData("Bearer   ")]
-        [InlineData("Bearer of-the-one-ring")]
+        [InlineData("Bearer [object Object]")]
         public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
         {
             // arrange

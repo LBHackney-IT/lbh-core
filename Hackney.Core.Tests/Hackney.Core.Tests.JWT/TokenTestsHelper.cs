@@ -76,7 +76,7 @@ namespace Hackney.Core.Tests.JWT
             {
                 claims.Add("groups", token.Groups);
             }
-            else
+            else if (token.CustomGroups != null)
             {
                 claims.Add("custom:groups", token.CustomGroups);
             }
