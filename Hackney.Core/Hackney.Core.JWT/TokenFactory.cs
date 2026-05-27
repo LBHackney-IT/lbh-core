@@ -28,10 +28,24 @@ namespace Hackney.Core.JWT
             if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(headerName);
 
             var encodedStringValueToken = headerDictionary[headerName];
-            if (encodedStringValueToken.Count == 0)
+
+            return DecodeJWTString(encodedStringValueToken);
+        }
+
+        /// <summary>
+        /// Decodes a JWT string from both Legacy and Cognito schemas and maps it to the Token schema.
+        /// </summary>
+        /// <param name="tokenHeaderValue">
+        /// The base64 encoded user's JWT StringValues primitive
+        /// </param>
+        /// <returns>The deserialised Token or null</returns>
+        /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
+        public Token DecodeJWTString(Microsoft.Extensions.Primitives.StringValues tokenHeaderValue)
+        {
+            if (tokenHeaderValue.Count == 0)
                 return null;
 
-            var encodedString = encodedStringValueToken.ToArray().First().Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
+            var encodedString = tokenHeaderValue.ToArray().First().Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(encodedString);
