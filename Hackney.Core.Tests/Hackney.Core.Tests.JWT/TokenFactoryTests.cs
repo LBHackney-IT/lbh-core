@@ -150,6 +150,24 @@ namespace Hackney.Core.Tests.JWT
             decodedCognitoToken.Email.Should().Be(legacyToken.TokenObj?.Email);
         }
 
+        [Fact]
+        public void TokenFactory_DecodeJWTString_WithLiteralNullPayload_ReturnsNull()
+        {
+            // Arrange
+            var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
+
+            // Act
+            var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
+            var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+
+            // Assert
+            decodedNullTokenViaCreate.Should().BeNull();
+            decodedNullTokenViaDecode.Should().BeNull();
+        }
+
         [Theory]
         [InlineData("invalid-token-value")]
         [InlineData("")]

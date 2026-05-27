@@ -5,6 +5,7 @@ using AutoFixture;
 using Hackney.Core.JWT;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Newtonsoft.Json;
 using AutoFixture.Dsl;
 using System;
 
@@ -104,6 +105,25 @@ namespace Hackney.Core.Tests.JWT
                 JwtString = GenerateCleanJwt(presentationToken, TestSecret),
                 TokenObj = presentationToken
             };
+        }
+
+        public static string GenerateTokenWithNullPayload()
+        {
+            var header = new JwtHeader
+            {
+                { "alg", SecurityAlgorithms.None },
+                { "typ", "JWT" }
+            };
+
+            var headerJson = JsonConvert.SerializeObject(header);
+            var encodedHeader = Base64UrlEncoder.Encode(headerJson);
+
+            object nullReference = null!;
+            var payloadJson = JsonConvert.SerializeObject(nullReference);
+            var encodedPayload = Base64UrlEncoder.Encode(payloadJson);
+
+            // algorithm is "none", so signature segment is deliberately empty
+            return $"{encodedHeader}.{encodedPayload}.";
         }
     }
 
