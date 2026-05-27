@@ -47,7 +47,7 @@ namespace Hackney.Core.Tests.JWT
         [Theory]
         [InlineData(null)]
         [InlineData("some-header")]
-        public void TokenFactoryCreateTestReturnsToken(string headerName)
+        public void TokenFactory_CreateMethod_MapsLegacyTokenCorrectly_AndDefaultsToCorrectHeaderNameWhenItIsMissing(string headerName)
         {
             // arrange
             var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
