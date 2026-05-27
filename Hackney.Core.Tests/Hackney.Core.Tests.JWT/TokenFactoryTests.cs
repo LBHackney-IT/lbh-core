@@ -125,6 +125,31 @@ namespace Hackney.Core.Tests.JWT
             decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
         }
 
+        [Fact]
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_CanSafelyHandleBearerPrefix()
+        {
+            // arrange
+            var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+            var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+            var bearerPrefix = "Bearer ";
+            legacyToken.JwtString = bearerPrefix + legacyToken.JwtString;
+            cognitoToken.JwtString = bearerPrefix + cognitoToken.JwtString;
+
+            // act 
+            var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString);
+            var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
+
+            // assert
+            decodedLegacyToken.Should().NotBeNull();
+            decodedCognitoToken.Should().NotBeNull();
+
+            // only asserting a few fields as if even 1 field was decoded, it means
+            // that the JWT parser didn't fall over by creating an empty object with no data.
+            decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj?.Email);
+            decodedCognitoToken.Email.Should().Be(legacyToken.TokenObj?.Email);
+        }
+
         [Theory]
         [InlineData("invalid-token-value")]
         [InlineData("")]
