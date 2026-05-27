@@ -28,7 +28,7 @@ namespace Hackney.Core.JWT
             if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(headerName);
 
             var encodedStringValueToken = headerDictionary[headerName];
-            if (tokenHeaderValue.Count == 0)
+            if (encodedStringValueToken.Count == 0)
                 return null;
 
             return DecodeJWTString(encodedStringValueToken);
