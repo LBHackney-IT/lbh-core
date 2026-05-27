@@ -125,6 +125,29 @@ namespace Hackney.Core.Tests.JWT
             decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
         }
 
+        [Theory]
+        [InlineData("invalid-token-value")]
+        [InlineData("")]
+        [InlineData("    ")]
+        [InlineData("Bearer   ")]
+        [InlineData("Bearer of-the-one-ring")]
+        public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
+        {
+            // arrange
+            var invalidToken = new TestToken(invalidJwtString, null);
+
+            _mockHeaders.Reset();
+            _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(invalidJwtString);
+
+            // act
+            var decodeMethodResult = _sut.DecodeJWTString(invalidJwtString);
+            var createMethodResult = _sut.Create(_mockHeaders.Object);
+
+            // assert
+            decodeMethodResult.Should().BeNull();
+            createMethodResult.Should().BeNull();
+        }
+
         [Fact]
         public void TokenFactory_DecodeJWTStringMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64StringIsProvided()
         {

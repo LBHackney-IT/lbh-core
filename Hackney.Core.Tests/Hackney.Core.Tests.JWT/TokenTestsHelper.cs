@@ -109,8 +109,15 @@ namespace Hackney.Core.Tests.JWT
 
     internal class TestToken
     {
-        public string JwtString { get; set; }
-        public TokenPresentation TokenObj { get; set; }
+        public string? JwtString { get; set; }
+        public TokenPresentation? TokenObj { get; set; }
+
+        public TestToken() { }
+        public TestToken(string? jwtString, TokenPresentation? tokenObject)
+        {
+            JwtString = jwtString;
+            TokenObj = tokenObject;
+        }
 
         public IEnumerable<string> GetCognitoTestUserGroups()
         {
