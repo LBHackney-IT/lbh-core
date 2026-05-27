@@ -61,13 +61,13 @@ namespace Hackney.Core.Tests.JWT
             var decodedToken = _sut.Create(_mockHeaders.Object, actualHeader);
 
             // assert
-            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
-            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Email.Should().Be(testToken.TokenObj?.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj?.Exp);
             decodedToken.Groups.Should().BeEquivalentTo(expectedLegacyTokenGroups);
-            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
-            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
-            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
-            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
+            decodedToken.Iat.Should().Be(testToken.TokenObj?.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj?.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj?.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj?.Sub);
         }
 
         [Fact]
@@ -85,13 +85,13 @@ namespace Hackney.Core.Tests.JWT
             var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
 
             // assert
-            decodedToken.Email.Should().Be(testToken.TokenObj.Email);
-            decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
+            decodedToken.Email.Should().Be(testToken.TokenObj?.Email);
+            decodedToken.Exp.Should().Be(testToken.TokenObj?.Exp);
             decodedToken.Groups.Should().BeEquivalentTo(expectedGroupsArray);
-            decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
-            decodedToken.Name.Should().Be(testToken.TokenObj.Name);
-            decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
-            decodedToken.Sub.Should().Be(testToken.TokenObj.Sub);
+            decodedToken.Iat.Should().Be(testToken.TokenObj?.Iat);
+            decodedToken.Name.Should().Be(testToken.TokenObj?.Name);
+            decodedToken.Nbf.Should().Be(testToken.TokenObj?.Nbf);
+            decodedToken.Sub.Should().Be(testToken.TokenObj?.Sub);
         }
 
         [Fact]
@@ -185,20 +185,20 @@ namespace Hackney.Core.Tests.JWT
             var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
 
             // assert
-            decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj.Email);
-            decodedLegacyToken.Exp.Should().Be(legacyToken.TokenObj.Exp);
-            decodedLegacyToken.Iat.Should().Be(legacyToken.TokenObj.Iat);
-            decodedLegacyToken.Name.Should().Be(legacyToken.TokenObj.Name);
-            decodedLegacyToken.Nbf.Should().Be(legacyToken.TokenObj.Nbf);
-            decodedLegacyToken.Sub.Should().Be(legacyToken.TokenObj.Sub);
+            decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj?.Email);
+            decodedLegacyToken.Exp.Should().Be(legacyToken.TokenObj?.Exp);
+            decodedLegacyToken.Iat.Should().Be(legacyToken.TokenObj?.Iat);
+            decodedLegacyToken.Name.Should().Be(legacyToken.TokenObj?.Name);
+            decodedLegacyToken.Nbf.Should().Be(legacyToken.TokenObj?.Nbf);
+            decodedLegacyToken.Sub.Should().Be(legacyToken.TokenObj?.Sub);
             decodedLegacyToken.Groups.Should().BeEquivalentTo(legacyToken.GetLegacyTestUserGroups());
 
-            decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj.Email);
-            decodedCognitoToken.Exp.Should().Be(cognitoToken.TokenObj.Exp);
-            decodedCognitoToken.Iat.Should().Be(cognitoToken.TokenObj.Iat);
-            decodedCognitoToken.Name.Should().Be(cognitoToken.TokenObj.Name);
-            decodedCognitoToken.Nbf.Should().Be(cognitoToken.TokenObj.Nbf);
-            decodedCognitoToken.Sub.Should().Be(cognitoToken.TokenObj.Sub);
+            decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj?.Email);
+            decodedCognitoToken.Exp.Should().Be(cognitoToken.TokenObj?.Exp);
+            decodedCognitoToken.Iat.Should().Be(cognitoToken.TokenObj?.Iat);
+            decodedCognitoToken.Name.Should().Be(cognitoToken.TokenObj?.Name);
+            decodedCognitoToken.Nbf.Should().Be(cognitoToken.TokenObj?.Nbf);
+            decodedCognitoToken.Sub.Should().Be(cognitoToken.TokenObj?.Sub);
             decodedCognitoToken.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
         }
     }
