@@ -51,6 +51,7 @@ namespace Hackney.Core.Tests.JWT
         {
             // arrange
             var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+            var expectedLegacyTokenGroups = testToken.GetLegacyTestUserGroups();
             var actualHeader = headerName ?? ITokenFactory.DefaultHeaderName;
 
             _mockHeaders.Reset();
@@ -62,7 +63,7 @@ namespace Hackney.Core.Tests.JWT
             // assert
             decodedToken.Email.Should().Be(testToken.TokenObj.Email);
             decodedToken.Exp.Should().Be(testToken.TokenObj.Exp);
-            decodedToken.Groups.Should().BeEquivalentTo(testToken.TokenObj.Groups);
+            decodedToken.Groups.Should().BeEquivalentTo(expectedLegacyTokenGroups);
             decodedToken.Iat.Should().Be(testToken.TokenObj.Iat);
             decodedToken.Name.Should().Be(testToken.TokenObj.Name);
             decodedToken.Nbf.Should().Be(testToken.TokenObj.Nbf);
@@ -75,7 +76,7 @@ namespace Hackney.Core.Tests.JWT
             // arrange
             var headerName = "Authorization";
             var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-            var expectedGroupsArray = testToken.TokenObj.CustomGroups?.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray();
+            var expectedGroupsArray = testToken.GetCognitoTestUserGroups();
 
             _mockHeaders.Reset();
             _mockHeaders.Setup(x => x[headerName]).Returns(testToken.JwtString);
@@ -122,6 +123,35 @@ namespace Hackney.Core.Tests.JWT
             decodedToken.Sub.Should().Be(grouplessToken.Sub);
             // defaults to empty array when no groups are found
             decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTStringMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64StringIsProvided()
+        {
+            // arrange
+            var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+            var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+            // act 
+            var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString);
+            var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
+
+            // assert
+            decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj.Email);
+            decodedLegacyToken.Exp.Should().Be(legacyToken.TokenObj.Exp);
+            decodedLegacyToken.Iat.Should().Be(legacyToken.TokenObj.Iat);
+            decodedLegacyToken.Name.Should().Be(legacyToken.TokenObj.Name);
+            decodedLegacyToken.Nbf.Should().Be(legacyToken.TokenObj.Nbf);
+            decodedLegacyToken.Sub.Should().Be(legacyToken.TokenObj.Sub);
+            decodedLegacyToken.Groups.Should().BeEquivalentTo(legacyToken.GetLegacyTestUserGroups());
+
+            decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj.Email);
+            decodedCognitoToken.Exp.Should().Be(cognitoToken.TokenObj.Exp);
+            decodedCognitoToken.Iat.Should().Be(cognitoToken.TokenObj.Iat);
+            decodedCognitoToken.Name.Should().Be(cognitoToken.TokenObj.Name);
+            decodedCognitoToken.Nbf.Should().Be(cognitoToken.TokenObj.Nbf);
+            decodedCognitoToken.Sub.Should().Be(cognitoToken.TokenObj.Sub);
+            decodedCognitoToken.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
         }
     }
 }

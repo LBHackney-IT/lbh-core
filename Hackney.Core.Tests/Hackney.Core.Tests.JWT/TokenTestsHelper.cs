@@ -111,6 +111,18 @@ namespace Hackney.Core.Tests.JWT
     {
         public string JwtString { get; set; }
         public TokenPresentation TokenObj { get; set; }
+
+        public IEnumerable<string> GetCognitoTestUserGroups()
+        {
+            return !string.IsNullOrWhiteSpace(TokenObj?.CustomGroups) ?
+                TokenObj.CustomGroups.Split(TokenTestsHelper.CognitoTokenGoogleGroupsSeparator).ToArray() :
+                Array.Empty<string>();
+        }
+
+        public IEnumerable<string> GetLegacyTestUserGroups()
+        {
+            return TokenObj?.Groups ?? Array.Empty<string>();
+        }
     }
 
     internal enum TokenSchema

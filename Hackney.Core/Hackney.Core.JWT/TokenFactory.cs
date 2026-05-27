@@ -35,7 +35,7 @@ namespace Hackney.Core.JWT
         }
 
         /// <summary>
-        /// Decodes a JWT string from both Legacy and Cognito schemas and maps it to the Token schema.
+        /// Decodes a JWT string from both Legacy and Cognito schemas and maps it to the Legacy Domain schema.
         /// </summary>
         /// <param name="jwtBase64Str">
         /// The base64 encoded user's JWT.
