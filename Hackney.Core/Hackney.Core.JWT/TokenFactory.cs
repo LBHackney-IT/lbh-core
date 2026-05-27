@@ -28,6 +28,8 @@ namespace Hackney.Core.JWT
             if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(headerName);
 
             var encodedStringValueToken = headerDictionary[headerName];
+            if (tokenHeaderValue.Count == 0)
+                return null;
 
             return DecodeJWTString(encodedStringValueToken);
         }
@@ -35,17 +37,19 @@ namespace Hackney.Core.JWT
         /// <summary>
         /// Decodes a JWT string from both Legacy and Cognito schemas and maps it to the Token schema.
         /// </summary>
-        /// <param name="tokenHeaderValue">
-        /// The base64 encoded user's JWT StringValues primitive
+        /// <param name="jwtBase64Str">
+        /// The base64 encoded user's JWT.
+        /// If a header value of type (Microsoft.Extensions.Primitives.StringValues) that is pulled from the IHeaderDictionary is passed
+        /// then an implicit conversion "StringValues.ToString()" will get triggered (only works with 1-valued headers)
+        /// (see https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.primitives.stringvalues.tostring)
         /// </param>
         /// <returns>The deserialised Token or null</returns>
         /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
-        public Token DecodeJWTString(Microsoft.Extensions.Primitives.StringValues tokenHeaderValue)
+        public Token DecodeJWTString(string jwtBase64Str)
         {
-            if (tokenHeaderValue.Count == 0)
-                return null;
+            if (string.IsNullOrEmpty(jwtBase64Str)) throw new ArgumentNullException(jwtBase64Str);
 
-            var encodedString = tokenHeaderValue.ToArray().First().Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
+            var encodedString = jwtBase64Str.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(encodedString);
