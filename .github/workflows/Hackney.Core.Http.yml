@@ -1,4 +1,8 @@
 name: Hackney.Core.Http-publish
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:

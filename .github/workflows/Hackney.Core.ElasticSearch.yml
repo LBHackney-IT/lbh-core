@@ -1,4 +1,8 @@
 name: Hackney.Core.ElasticSearch-publish
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:

@@ -1,4 +1,8 @@
 name: Hackney.Core.Testing.PactBroker-publish
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
