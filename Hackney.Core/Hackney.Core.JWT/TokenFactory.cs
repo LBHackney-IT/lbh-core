@@ -16,7 +16,11 @@ namespace Hackney.Core.JWT
     public class TokenFactory : ITokenFactory
     {
         // Separator aws cognito pre-token lambda uses to join Google group names with
-        public char CognitoTokenGoogleGroupsSeparator => ';';
+        private char CognitoTokenGoogleGroupsSeparator => ';';
+        // While a version of this with whitespace in between "{}" is possible and would be decoded in much the same way,
+        // it's unlikely to happen naturally. Cases like accidentally JSON serializing an unawaited promise instead of data
+        // it would return typically return the spaceless version like specified here.
+        private string EmptyObjectJsonPayload => "{}";
 
         /// <summary>
         /// Extracts a JWT from the supplied Http headers and creates a token object from it.
@@ -61,6 +65,9 @@ namespace Hackney.Core.JWT
                 var jwtToken = handler.ReadJwtToken(encodedString);
 
                 var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
+
+                if (decodedPayload == this.EmptyObjectJsonPayload)
+                    return null;
 
                 // clean architecture principles - separate out presentation concern from domain logic 
                 presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
