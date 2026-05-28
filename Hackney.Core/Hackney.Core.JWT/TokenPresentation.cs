@@ -1,3 +1,5 @@
+// omg it's being pulled as transitive dependency
+// TODO: investigate Nuget conflicts with consumer repos, and fix this
 using Newtonsoft.Json;
 
 namespace Hackney.Core.JWT

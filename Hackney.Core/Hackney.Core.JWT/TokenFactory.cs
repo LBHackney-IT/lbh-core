@@ -3,6 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+
+// There's no NewtonSoft in this project?!
+//Was it depended on as a transitive dependency?
 using Newtonsoft.Json;
 
 namespace Hackney.Core.JWT
@@ -51,13 +54,22 @@ namespace Hackney.Core.JWT
 
             var encodedString = jwtBase64Str.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(encodedString);
+            TokenPresentation presentationToken = null;
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(encodedString);
 
-            var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
+                var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
 
-            // clean architecture principles - separate out presentation concern from domain logic 
-            var presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
+                // clean architecture principles - separate out presentation concern from domain logic 
+                presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
+            }
+            catch
+            {
+                // triggers on gibberish token strings, or raw string JSON payloads within the token
+                return null;
+            }
 
             if (presentationToken == null)
                 return null;
