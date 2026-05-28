@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using System;
@@ -11,6 +12,7 @@ namespace Hackney.Core.Tests.JWT
     public class TokenFactoryTests
     {
         private readonly Mock<IHeaderDictionary> _mockHeaders;
+        private readonly Mock<ILogger<TokenFactory>> _mockLogger;
         private readonly TokenFactory _sut;
 
         public TokenFactoryTests()
@@ -19,25 +21,79 @@ namespace Hackney.Core.Tests.JWT
             _mockHeaders = new Mock<IHeaderDictionary>();
             _mockHeaders.Setup(x => x["Authorization"]).Returns(nonEmptyToken.JwtString);
 
-            _sut = new TokenFactory();
+            _mockLogger = new Mock<ILogger<TokenFactory>>();
+
+            _sut = new TokenFactory(_mockLogger.Object);
         }
 
         [Fact]
-        public void TokenFactoryCreateTestNullHeadersThrows()
+        public void TokenFactory_DecodeJWTString_LogsWarning_WhenNoJwtProvided()
+        {
+            // act
+            _sut.DecodeJWTString("");
+
+            // assert
+            VerifyLog(_mockLogger, LogLevel.Warning, "No JWT token was provided.", Times.Once());
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTString_LogsWarning_WhenPayloadIsEmptyObject()
+        {
+            // arrange
+            var tokenWithEmptyObject = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
+
+            // act
+            var result = _sut.DecodeJWTString(tokenWithEmptyObject);
+
+            // assert
+            result.Should().BeNull();
+            VerifyLog(_mockLogger, LogLevel.Warning, "JWT payload is empty JSON object.", Times.Once());
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTString_LogsWarning_OnMalformedToken()
+        {
+            // arrange
+            var invalidToken = "invalid-token-value";
+
+            // act
+            var result = _sut.DecodeJWTString(invalidToken);
+
+            // assert
+            result.Should().BeNull();
+            VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected or Malformed token:", Times.Once());
+        }
+
+        [Fact]
+        public void TokenFactory_DecodeJWTString_LogsWarning_WhenDeserialisationProducesNull()
+        {
+            // arrange
+            var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
+
+            // act
+            var result = _sut.DecodeJWTString(tokenWithNullPayload);
+
+            // assert
+            result.Should().BeNull();
+            VerifyLog(_mockLogger, LogLevel.Warning, "Token decoded to null:", Times.Once());
+        }
+
+        [Fact]
+        public void TokenFactory_CreateMethod_Throws_GivenNullHeaders()
         {
             Action act = () => _sut.Create(null);
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void TokenFactoryCreateTestEmptyHeaderNameThrows()
+        public void TokenFactory_CreateMethod_Throws_GivenEmptyHeaderName()
         {
             Action act = () => _sut.Create(_mockHeaders.Object, "");
             act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void TokenFactoryCreateTestReturnsNullWhenNoAuthorizationHeader()
+        public void TokenFactory_CreateMethod_ReturnsNull_GivenNoAuthorizationHeader()
         {
             _mockHeaders.Reset();
 
@@ -95,7 +151,7 @@ namespace Hackney.Core.Tests.JWT
         }
 
         [Fact]
-        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArrayWhenNeitherGroupsNorCustomGroupsIsSet()
+        public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArray_WhenNeitherGroupsNorCustomGroupsIsSet()
         {
             // arrange
             var headerName = "Authorization";
@@ -284,6 +340,18 @@ namespace Hackney.Core.Tests.JWT
             decodedCognitoToken.Nbf.Should().Be(cognitoToken.TokenObj?.Nbf);
             decodedCognitoToken.Sub.Should().Be(cognitoToken.TokenObj?.Sub);
             decodedCognitoToken.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
+        }
+
+        private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)
+        {
+            mockLogger.Verify(
+                x => x.Log(
+                    level,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v != null && v.ToString().Contains(expectedMessage)),
+                    It.IsAny<Exception>(),
+                    (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
+                times);
         }
     }
 }

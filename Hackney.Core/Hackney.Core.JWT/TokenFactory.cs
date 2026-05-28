@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
 
 // There's no NewtonSoft in this project?!
 //Was it depended on as a transitive dependency?
@@ -21,6 +21,12 @@ namespace Hackney.Core.JWT
         // it's unlikely to happen naturally. Cases like accidentally JSON serializing an unawaited promise instead of data
         // it would return typically return the spaceless version like specified here.
         private string EmptyObjectJsonPayload => "{}";
+        private readonly ILogger<TokenFactory> _logger;
+
+        public TokenFactory(ILogger<TokenFactory> logger)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// Extracts a JWT from the supplied Http headers and creates a token object from it.
@@ -57,12 +63,13 @@ namespace Hackney.Core.JWT
             // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.
             if (string.IsNullOrEmpty(jwtBase64Str))
             {
+                _logger.LogWarning("No JWT token was provided.");
                 return null;
             }
 
             var encodedString = jwtBase64Str.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
-            TokenPresentation presentationToken = null;
+            TokenPresentation presentationToken;
             try
             {
                 var handler = new JwtSecurityTokenHandler();
@@ -71,22 +78,26 @@ namespace Hackney.Core.JWT
                 var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
 
                 if (decodedPayload == this.EmptyObjectJsonPayload)
+                {
+                    _logger.LogWarning("JWT payload is empty JSON object.");
                     return null;
+                }
 
                 // clean architecture principles - separate out presentation concern from domain logic 
                 presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
             }
-            catch
+            catch (Exception ex)
             {
-                //(Exception ex)
-                // Console.WriteLine($"Warning! Unexpected or Malformed token: {jwtBase64Str}.");
-                // Console.WriteLine(ex.Message);
-                // triggers on gibberish token strings, or raw string JSON payloads within the token
+                // triggers on gibberish token strings, or JWTs with raw text string payloads (technically allowed JSON)
+                _logger.LogWarning(ex, "Unexpected or Malformed token: {InvalidToken}.", jwtBase64Str);
                 return null;
             }
 
             if (presentationToken == null)
+            {
+                _logger.LogWarning("Token decoded to null: {NullToken}.", jwtBase64Str);
                 return null;
+            }
 
             // preserve the model that domain logic expects
             return MapToDomain(presentationToken);
