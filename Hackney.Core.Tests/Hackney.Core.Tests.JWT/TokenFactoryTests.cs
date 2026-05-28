@@ -147,7 +147,7 @@ namespace Hackney.Core.Tests.JWT
             // only asserting a few fields as if even 1 field was decoded, it means
             // that the JWT parser didn't fall over by creating an empty object with no data.
             decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj?.Email);
-            decodedCognitoToken.Email.Should().Be(legacyToken.TokenObj?.Email);
+            decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj?.Email);
         }
 
         [Fact]
