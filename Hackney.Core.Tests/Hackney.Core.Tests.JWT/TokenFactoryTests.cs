@@ -234,8 +234,9 @@ namespace Hackney.Core.Tests.JWT
         }
 
         [Theory]
-        [InlineData("invalid-token-value")]
         [InlineData("")]
+        [InlineData("Bearer ")]
+        [InlineData("invalid-token-value")]
         [InlineData("    ")]
         [InlineData("Bearer   ")]
         [InlineData("Bearer [object Object]")]

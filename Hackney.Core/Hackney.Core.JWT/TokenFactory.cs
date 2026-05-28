@@ -54,7 +54,11 @@ namespace Hackney.Core.JWT
         /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
         public Token DecodeJWTString(string jwtBase64Str)
         {
-            if (string.IsNullOrEmpty(jwtBase64Str)) throw new ArgumentNullException(jwtBase64Str);
+            // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.
+            if (string.IsNullOrEmpty(jwtBase64Str))
+            {
+                return null;
+            }
 
             var encodedString = jwtBase64Str.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
@@ -74,6 +78,9 @@ namespace Hackney.Core.JWT
             }
             catch
             {
+                //(Exception ex)
+                // Console.WriteLine($"Warning! Unexpected or Malformed token: {jwtBase64Str}.");
+                // Console.WriteLine(ex.Message);
                 // triggers on gibberish token strings, or raw string JSON payloads within the token
                 return null;
             }
