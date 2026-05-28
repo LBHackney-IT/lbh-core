@@ -1,0 +1,110 @@
+name: Reusable Publish
+on:
+  workflow_call:
+    inputs:
+      project_root:
+        required: true
+        type: string
+      pack_project:
+        required: true
+        type: string
+      package_name:
+        required: true
+        type: string
+      publish_dir:
+        required: true
+        type: string
+      docker_service:
+        required: false
+        type: string
+        default: ""
+      format_root:
+        required: false
+        type: string
+        default: "Hackney.Core"
+      skip_tests:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  calculate-version:
+    name: Calculate Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: "5.x"
+      - id: gitversion
+        name: Determine package version
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
+      - name: Display package version
+        run: |
+          echo "Version: $GITVERSION_NUGETVERSIONV2"
+
+  check-code-formatting:
+    name: Check code formatting
+    runs-on: ubuntu-latest
+    needs: calculate-version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet format
+        run: |
+          cd ${{ inputs.format_root }}
+          dotnet tool install dotnet-format --tool-path ./dotnet-format-local/
+      - name: Run formatter check
+        run: |
+          cd ${{ inputs.format_root }}
+          ./dotnet-format-local/dotnet-format --check ${{ inputs.pack_project }}
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    needs: calculate-version
+    outputs:
+      version: ${{ needs.calculate-version.outputs.version }}
+    env:
+      LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and/or Run Tests
+        run: |
+          if [ "${{ inputs.docker_service }}" = "" ] || [ "${{ inputs.skip_tests }}" = "true" ]; then
+            echo "Skipping build-and-test for ${{ inputs.pack_project }}"
+          else
+            docker compose build ${{ inputs.docker_service }}
+            docker compose run ${{ inputs.docker_service }}
+          fi
+
+  publish-package:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    needs:
+      - calculate-version
+      - check-code-formatting
+      - build-and-test
+    env:
+      VERSION: ${{ needs.calculate-version.outputs.version }}
+      LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build the Package
+        run: |
+          cd ${{ inputs.project_root }}
+          dotnet pack ${{ inputs.pack_project }} -p:PackageVersion=$VERSION --configuration Release
+      - name: Publish the Package
+        run: |
+          cd ${{ inputs.publish_dir }}
+          dotnet nuget push ${{ inputs.package_name }}.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
