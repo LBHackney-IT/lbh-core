@@ -61,7 +61,7 @@ public class TokenFactoryTests
 
         // assert
         result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected, Null, or Malformed token:", Times.Once());
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {invalidToken}.", Times.Once());
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class TokenFactoryTests
 
         // assert
         result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected, Null, or Malformed token:", Times.Once());
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {tokenWithNullPayload}.", Times.Once());
     }
 
     [Fact]
@@ -387,7 +387,7 @@ public class TokenFactoryTests
             x => x.Log(
                 level,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v != null && v.ToString().Contains(expectedMessage)),
+                It.Is<It.IsAnyType>((v, t) => v != null && (string.Empty + v.ToString()).Contains(expectedMessage)),
                 It.IsAny<Exception>(),
                 (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
             times);

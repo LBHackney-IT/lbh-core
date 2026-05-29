@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using Xunit;
+using HackneySCExtensions = Hackney.Core.JWT.ServiceCollectionExtensions;
 
 namespace Hackney.Core.Tests.JWT;
 
@@ -13,8 +14,8 @@ public class ServiceCollectionExtensionsTests
     [Fact]
     public void AddTokenFactoryTestNullServicesThrows()
     {
-        IServiceCollection services = null;
-        Action act = () => Hackney.Core.JWT.ServiceCollectionExtensions.AddTokenFactory(services);
+        IServiceCollection? services = null;
+        Action act = () => HackneySCExtensions.AddTokenFactory(services);
         act.Should().Throw<ArgumentNullException>();
     }
 
