@@ -35,7 +35,7 @@ public class TokenFactory : ITokenFactory
     public Token Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
     {
         if (headerDictionary is null) throw new ArgumentNullException(nameof(headerDictionary));
-        if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(headerName);
+        if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
 
         var encodedStringValueToken = headerDictionary[headerName];
         if (encodedStringValueToken.Count == 0)
