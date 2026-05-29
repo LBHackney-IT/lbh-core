@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Linq;
 using AutoFixture;
 using Hackney.Core.JWT;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 using AutoFixture.Dsl;
 using System;
 
@@ -92,9 +92,8 @@ namespace Hackney.Core.Tests.JWT
                 IssuedAt = DateTimeOffset.FromUnixTimeSeconds(token.Iat).UtcDateTime
             };
 
-            var handler = new JwtSecurityTokenHandler();
-            var securityToken = handler.CreateToken(descriptor);
-            return handler.WriteToken(securityToken);
+            var handler = new JsonWebTokenHandler();
+            return handler.CreateToken(descriptor);
         }
 
         public static TestToken GenerateTestTokenPresentationJWT(TokenSchema tokenSchema)
@@ -107,18 +106,18 @@ namespace Hackney.Core.Tests.JWT
             };
         }
 
-        public static string GenerateBasicGeneralPayloadToken(object payloadData)
+        public static string GenerateBasicGeneralPayloadToken(object? payloadData)
         {
-            var header = new JwtHeader
+            var header = new Dictionary<string, object>
             {
-                { "alg", SecurityAlgorithms.None },
-                { "typ", "JWT" }
+                ["alg"] = SecurityAlgorithms.None,
+                ["typ"] = "JWT"
             };
 
-            var headerJson = JsonConvert.SerializeObject(header);
+            var headerJson = JsonSerializer.Serialize(header);
             var encodedHeader = Base64UrlEncoder.Encode(headerJson);
 
-            var payloadJson = JsonConvert.SerializeObject(payloadData);
+            var payloadJson = JsonSerializer.Serialize(payloadData);
             var encodedPayload = Base64UrlEncoder.Encode(payloadJson);
 
             // algorithm is "none", so signature segment is deliberately empty
@@ -127,7 +126,7 @@ namespace Hackney.Core.Tests.JWT
 
         public static string GenerateTokenWithNullPayload()
         {
-            return GenerateBasicGeneralPayloadToken(null!);
+            return GenerateBasicGeneralPayloadToken(null);
         }
 
         public static string GenerateTokenWithRawStringPayload(string payloadString)

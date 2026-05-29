@@ -61,7 +61,7 @@ namespace Hackney.Core.Tests.JWT
 
             // assert
             result.Should().BeNull();
-            VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected or Malformed token:", Times.Once());
+            VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected, Null, or Malformed token:", Times.Once());
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace Hackney.Core.Tests.JWT
 
             // assert
             result.Should().BeNull();
-            VerifyLog(_mockLogger, LogLevel.Warning, "Token decoded to null:", Times.Once());
+            VerifyLog(_mockLogger, LogLevel.Warning, "Unexpected, Null, or Malformed token:", Times.Once());
         }
 
         [Fact]

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
-
-// There's no NewtonSoft in this project?!
-//Was it depended on as a transitive dependency?
-using Newtonsoft.Json;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Hackney.Core.JWT
 {
@@ -72,8 +69,8 @@ namespace Hackney.Core.JWT
             TokenPresentation presentationToken;
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(encodedString);
+                var handler = new JsonWebTokenHandler();
+                var jwtToken = handler.ReadJsonWebToken(encodedString);
 
                 var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
 
@@ -83,19 +80,13 @@ namespace Hackney.Core.JWT
                     return null;
                 }
 
-                // clean architecture principles - separate out presentation concern from domain logic 
-                presentationToken = JsonConvert.DeserializeObject<TokenPresentation>(decodedPayload);
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                presentationToken = JsonSerializer.Deserialize<TokenPresentation>(decodedPayload, options);
             }
             catch (Exception ex)
             {
                 // triggers on gibberish token strings, or JWTs with raw text string payloads (technically allowed JSON)
-                _logger.LogWarning(ex, "Unexpected or Malformed token: {InvalidToken}.", jwtBase64Str);
-                return null;
-            }
-
-            if (presentationToken == null)
-            {
-                _logger.LogWarning("Token decoded to null: {NullToken}.", jwtBase64Str);
+                _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtBase64Str);
                 return null;
             }
 

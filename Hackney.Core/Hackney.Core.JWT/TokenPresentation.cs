@@ -1,6 +1,4 @@
-// omg it's being pulled as transitive dependency
-// TODO: investigate Nuget conflicts with consumer repos, and fix this
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Hackney.Core.JWT
 {
@@ -17,7 +15,7 @@ namespace Hackney.Core.JWT
         public string[]? Groups { get; set; }
 
         // New cognito token format field
-        [JsonProperty("custom:groups")]
+        [JsonPropertyName("custom:groups")]
         public string? CustomGroups { get; set; }
 
         public string Email { get; set; }
