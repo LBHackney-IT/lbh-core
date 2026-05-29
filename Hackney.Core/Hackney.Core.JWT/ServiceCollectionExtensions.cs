@@ -16,7 +16,12 @@ public static class ServiceCollectionExtensions
     {
         if (serviceCollection is null) throw new ArgumentNullException(nameof(serviceCollection));
 
+        // Used to register ILogger<TokenFactory> if it hasn't been registered already
+        // together with other core logging services by package the consuming API's startup.
+        serviceCollection.AddLogging();
+
         serviceCollection.TryAddScoped<ITokenFactory, TokenFactory>();
+
         return serviceCollection;
     }
 }
