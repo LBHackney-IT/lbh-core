@@ -35,19 +35,21 @@ jobs:
       version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
-          versionSpec: "5.x"
+          versionSpec: "6.x"
+
       - id: gitversion
         name: Determine package version
-        uses: gittools/actions/gitversion/execute@v0.9.7
+        uses: gittools/actions/gitversion/execute@v4.5.0
         with:
           useConfigFile: true
-      - name: Display package version
+
         run: |
           echo "Version: $GITVERSION_NUGETVERSIONV2"
 
@@ -57,7 +59,7 @@ jobs:
     needs: calculate-version
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Install dotnet format
         run: |
           cd ${{ inputs.format_root }}
@@ -77,7 +79,7 @@ jobs:
       LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Build and/or Run Tests
         run: |
           if [ "${{ inputs.docker_service }}" = "" ] || [ "${{ inputs.skip_tests }}" = "true" ]; then
@@ -99,7 +101,7 @@ jobs:
       LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
       - name: Build the Package
         run: |
           cd ${{ inputs.project_root }}
