@@ -4,13 +4,20 @@ branches:
   master:
     regex: ^master$|^main$|^release$
     increment: Minor
-    is-source-branch-for: ['feature']
+    is-source-branch-for: ["major", "minor", "patch"]
     is-mainline: true
-  feature:
-    regex: feature[/-]
-    tag: "feat-{BranchName}"
+  major:
+    regex: ^major[/-]
+    increment: Major
+    source-branches: ["master", "main", "release"]
+  minor:
+    regex: ^minor[/-]
     increment: Minor
-    source-branches: ['master', 'main', 'release']
+    source-branches: ["master", "main", "release"]
+  patch:
+    regex: ^patch[/-]
+    increment: Patch
+    source-branches: ["master", "main", "release"]
 ignore:
   sha: []
 merge-message-formats: {}
