@@ -7,7 +7,9 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
       - AddedSolutionFile
     paths:
       - "Hackney.Shared/Hackney.Shared.Strings/**"
