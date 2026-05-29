@@ -9,15 +9,15 @@ branches:
   major:
     regex: ^major[/-]
     increment: Major
-    source-branches: ["master", "main", "release"]
+    source-branches: ["release"]
   minor:
     regex: ^minor[/-]
     increment: Minor
-    source-branches: ["master", "main", "release"]
+    source-branches: ["release"]
   patch:
     regex: ^patch[/-]
     increment: Patch
-    source-branches: ["master", "main", "release"]
+    source-branches: ["release"]
 ignore:
   sha: []
 merge-message-formats: {}
