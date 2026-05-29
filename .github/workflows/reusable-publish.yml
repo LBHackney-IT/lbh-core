@@ -32,7 +32,7 @@ jobs:
     name: Calculate Version
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      version: ${{ steps.calc_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -50,8 +50,22 @@ jobs:
         with:
           useConfigFile: true
 
+      - id: calc_version
+        name: Calculate and display package version
         run: |
-          echo "Version: $GITVERSION_NUGETVERSIONV2"
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          MAJ_MIN_PATCH="${{ steps.gitversion.outputs.majorMinorPatch }}"
+          SHORT_SHA="${{ steps.gitversion.outputs.shortSha }}"
+          COMMIT_DISTANCE="${{ steps.gitversion.outputs.versionSourceDistance }}"
+
+          if [[ "$BRANCH_NAME" == major/* ]] || [[ "$BRANCH_NAME" == minor/* ]] || [[ "$BRANCH_NAME" == patch/* ]]; then
+            FINAL_VERSION="${MAJ_MIN_PATCH}-${SHORT_SHA}-p${COMMIT_DISTANCE}"
+          else
+            FINAL_VERSION="${MAJ_MIN_PATCH}"
+          fi
+
+          echo "Version: $FINAL_VERSION"
+          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
   check-code-formatting:
     name: Check code formatting
