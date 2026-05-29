@@ -37,11 +37,20 @@ public class TokenFactory : ITokenFactory
         if (headerDictionary is null) throw new ArgumentNullException(nameof(headerDictionary));
         if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
 
-        var encodedStringValueToken = headerDictionary[headerName];
-        if (encodedStringValueToken.Count == 0)
-            return null;
+        var headerStringValues = headerDictionary[headerName];
 
-        return DecodeJWTString(encodedStringValueToken);
+        if (headerStringValues.Count == 0)
+        {
+            _logger.LogWarning("Provided header '{HeaderName}' is empty.", headerName);
+            return null;
+        }
+
+        if (headerStringValues.Count > 1)
+        {
+            _logger.LogWarning("Multiple (count: {Count}) header values detected, using the first one.", headerStringValues.Count);
+        }
+
+        return DecodeJWTString(headerStringValues[0]);
     }
 
     /// <summary>

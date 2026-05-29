@@ -100,6 +100,45 @@ public class TokenFactoryTests
         _sut.Create(_mockHeaders.Object).Should().BeNull();
     }
 
+    [Fact]
+    public void TokenFactory_CreateMethod_LogsWarning_WhenHeaderIsEmpty()
+    {
+        // arrange
+        var headerName = "Authorization";
+
+        _mockHeaders.Reset();
+        _mockHeaders.Setup(x => x[headerName]).Returns(StringValues.Empty);
+
+        // act
+        var result = _sut.Create(_mockHeaders.Object, headerName);
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Provided header '{headerName}' is empty.", Times.Once());
+    }
+
+    [Fact]
+    public void TokenFactory_CreateMethod_UsesFirstHeaderValueAndLogsWarning_WhenMultipleHeaderValuesProvided()
+    {
+        // arrange
+        var headerName = "Authorization";
+        var firstToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+        var secondToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+        var multiValHeaderValues = new StringValues(new[] { firstToken.JwtString, secondToken.JwtString });
+
+        _mockHeaders.Reset();
+        _mockHeaders.Setup(x => x[headerName]).Returns(multiValHeaderValues);
+
+        // act
+        var decoded = _sut.Create(_mockHeaders.Object, headerName);
+
+        // assert
+        decoded.Should().NotBeNull();
+        decoded.Sub.Should().Be(firstToken.TokenObj?.Sub);
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Multiple (count: {multiValHeaderValues.Count}) header values detected, using the first one.", Times.Once());
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("some-header")]
