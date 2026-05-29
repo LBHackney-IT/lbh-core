@@ -16,7 +16,6 @@ on:
 jobs:
   call:
     uses: ./.github/workflows/reusable-publish.yml
-
     with:
       project_root: Hackney.Core
       pack_project: Hackney.Core.Http

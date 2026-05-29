@@ -15,7 +15,6 @@ on:
 jobs:
   call:
     uses: ./.github/workflows/reusable-publish.yml
-
     with:
       project_root: Hackney.Core/Hackney.Core.Testing
       pack_project: Hackney.Core.Testing.Shared
