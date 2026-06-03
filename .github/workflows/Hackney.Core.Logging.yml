@@ -17,8 +17,6 @@ on:
 jobs:
   call:
     uses: ./.github/workflows/reusable-publish.yml
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       project_root: Hackney.Core
       pack_project: Hackney.Core.Logging
