@@ -12,7 +12,6 @@ on:
       - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/**"
-      - ".github/workflows/Hackney.Core.Testing.Shared.yml"
 
 jobs:
   call:

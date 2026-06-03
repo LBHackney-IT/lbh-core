@@ -13,7 +13,6 @@ on:
     paths:
       - "Hackney.Core/Hackney.Core.DynamoDb/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/**"
-      - ".github/workflows/Hackney.Core.DynamoDb.yml"
 
 jobs:
   call:

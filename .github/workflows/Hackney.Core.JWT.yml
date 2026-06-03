@@ -13,7 +13,6 @@ on:
     paths:
       - "Hackney.Core/Hackney.Core.JWT/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.JWT/**"
-      - ".github/workflows/Hackney.Core.JWT.yml"
 
 jobs:
   call:

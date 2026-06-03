@@ -12,7 +12,6 @@ on:
       - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/**"
-      - ".github/workflows/Hackney.Core.Testing.DynamoDb.yml"
 
 jobs:
   call:

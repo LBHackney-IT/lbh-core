@@ -13,7 +13,6 @@ on:
     paths:
       - "Hackney.Core/Hackney.Core.Enums/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Enums/**"
-      - ".github/workflows/Hackney.Core.Enums.yml"
 
 jobs:
   call:

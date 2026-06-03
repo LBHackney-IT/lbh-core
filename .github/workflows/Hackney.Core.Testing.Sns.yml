@@ -12,7 +12,6 @@ on:
       - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/**"
-      - ".github/workflows/Hackney.Core.Testing.Sns.yml"
 
 jobs:
   call:
