@@ -68,3 +68,5 @@ Hackney.Core/Hackney.Core.Testing/Properties/launchSettings.json
 testresults/
 .vscode/
 *.binlog
+
+dotnet-format

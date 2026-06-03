@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Sns/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Sns/**"
-      - ".github/workflows/Hackney.Core.Sns.yml"
 
 jobs:
   call:

@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Authorization/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Authorization/**"
-      - ".github/workflows/Hackney.Core.Authorization.yml"
 
 jobs:
   call:

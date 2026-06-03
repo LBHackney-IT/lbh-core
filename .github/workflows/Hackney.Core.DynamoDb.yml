@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.DynamoDb/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/**"
-      - ".github/workflows/Hackney.Core.DynamoDb.yml"
 
 jobs:
   call:

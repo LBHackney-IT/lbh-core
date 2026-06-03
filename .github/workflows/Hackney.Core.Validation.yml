@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Validation/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Validation/**"
-      - ".github/workflows/Hackney.Core.Validation.yml"
 
 jobs:
   call:

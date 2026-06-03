@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.Middleware/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Middleware/**"
-      - ".github/workflows/Hackney.Core.Middleware.yml"
 
 jobs:
   call:

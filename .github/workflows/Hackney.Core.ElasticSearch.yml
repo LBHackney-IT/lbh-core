@@ -7,11 +7,12 @@ on:
   push:
     branches:
       - release
-      - feature/**
+      - major/**
+      - minor/**
+      - patch/**
     paths:
       - "Hackney.Core/Hackney.Core.ElasticSearch/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/**"
-      - ".github/workflows/Hackney.Core.ElasticSearch.yml"
 
 jobs:
   call:
