@@ -50,8 +50,8 @@ get_bump_type_and_distance() {
     elif [[ "$source_branch" == patch/* ]]; then
       bump_type="patch"
     else
-      echo "Warning: Could not determine standard bump from branch '$source_branch'. Defaulting to patch." >&2
-      bump_type="patch" 
+      echo "Notice: Source branch '$source_branch' is not major/minor/patch. Skipping publish." >&2
+      bump_type="skip" 
     fi
   fi
 
@@ -91,7 +91,6 @@ format_output_version() {
   fi
 }
 
-
 main() {
   local package_name="$1"
   local owner="${GITHUB_REPOSITORY%/*}"
@@ -103,6 +102,13 @@ main() {
   echo "Base production version found: $latest_version"
 
   read -r bump_type distance <<< "$(get_bump_type_and_distance "$branch_name" "$GITHUB_SHA" "$GITHUB_REPOSITORY")"
+  
+  if [ "$bump_type" == "skip" ]; then
+    echo "should_publish=false" >> "$GITHUB_OUTPUT"
+    echo "Aborting version calculation."
+    exit 0
+  fi
+
   echo "Bump type resolved to: $bump_type (Distance: $distance)"
 
   local new_base_version=$(calculate_next_version "$latest_version" "$bump_type")
@@ -111,8 +117,9 @@ main() {
   local final_version=$(format_output_version "$new_base_version" "$branch_name" "$distance")
   echo "Calculated Version: $final_version"
 
-  # preserve calculated version to the next Github Actions step
+  # mechanism for preserving variables to next Github Actions step
   echo "version=$final_version" >> "$GITHUB_OUTPUT"
+  echo "should_publish=true" >> "$GITHUB_OUTPUT"
 }
 
 PACKAGE_NAME="$1"

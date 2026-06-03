@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.calc_version.outputs.version }}
+      should_publish: ${{ steps.calc_version.outputs.should_publish }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -89,6 +90,7 @@ jobs:
       - calculate-version
       - check-code-formatting
       - build-and-test
+    if: needs.calculate-version.outputs.should_publish == 'true'
     env:
       VERSION: ${{ needs.calculate-version.outputs.version }}
       LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
