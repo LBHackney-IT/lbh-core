@@ -103,3 +103,10 @@ jobs:
         run: |
           cd ${{ inputs.publish_dir }}
           dotnet nuget push ${{ inputs.package_name }}.*.nupkg -s https://nuget.pkg.github.com/LBHackney-IT/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete Old Preview Packages
+        if: github.ref == 'refs/heads/release'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x .github/scripts/delete-previews.sh
+          ./.github/scripts/delete-previews.sh "${{ inputs.package_name }}"
