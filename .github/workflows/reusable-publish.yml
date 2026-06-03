@@ -105,4 +105,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./.github/scripts/delete-previews.sh "${{ inputs.package_name }}" "$VERSION"
+          ./.github/scripts/delete-preview-versions.sh "${{ inputs.package_name }}" "$VERSION"
