@@ -41,8 +41,10 @@ jobs:
 
       - id: calc_version
         name: Calculate and display package version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "TODO: replace with a proper custom script"
+          ./.github/scripts/monorepo-versioning-script.sh "${{ inputs.package_name }}"
 
   check-code-formatting:
     name: Check code formatting
