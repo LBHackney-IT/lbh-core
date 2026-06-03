@@ -6,6 +6,11 @@ PACKAGE_NAME="$1"
 BASE_VERSION="$2"
 OWNER="${GITHUB_REPOSITORY%/*}"
 
+if [ -z "$PACKAGE_NAME" ] || [ -z "$BASE_VERSION" ]; then
+  echo "Notice: Package name or base version is unset. Skipping preview cleanup."
+  exit 0
+fi
+
 echo "Searching for preview versions of $PACKAGE_NAME tied to v$BASE_VERSION..."
 
 VERSION_IDS=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" \

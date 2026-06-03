@@ -108,5 +108,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          chmod +x .github/scripts/delete-previews.sh
           ./.github/scripts/delete-previews.sh "${{ inputs.package_name }}"
