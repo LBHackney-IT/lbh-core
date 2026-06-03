@@ -1,29 +1,51 @@
 # Hackney.Core NuGet Packages
+
 At Hackney, we have created NuGet Packages to prevent the duplication of common code when implementing our APIs.
-Hence this NuGet package will store common code that can then be used in relevant projects. 
+Hence this NuGet package will store common code that can then be used in relevant projects.
 
 ## Contributing
 
-### Automated Versioning
-The pipeline automatically updates the version number for all packages in Hackney.Core.
+### Semi-automated Versioning & Branching Strategy
 
-Any specific version number follows the form `Major.Minor.Patch[-Suffix]`, where the components have the following meanings:
+The CI/CD pipeline semi-automatically calculates and bumps the version number for all packages in Hackney.Core based on your branch name.
+Semi-automatically because in the end you as developer need to specify what kind of version change it will be.
 
-* *Major*: Breaking changes
-* *Minor*: New features, but backward compatible
-* *Patch*: Backwards compatible bug fixes only
-* *Suffix (optional)*: a hyphen followed by a string denoting a pre-release version
+We follow Semantic Versioning (`Major.Minor.Patch[-Suffix]`):
 
-### Branching Strategy
+- **Major**: Breaking changes _(renamed constructor, changed method signatures, modified enums, etc.)_
+- **Minor**: New features, but backward compatible _(new methods or classes added that don't change inputs/outputs/behaviours of old ones)_
+- **Patch**: Backwards compatible bug fixes only
 
-In order for the pipeline to be able to run automated tests and create preview versions of packages, you must name your branch correctly.
+**⚠️ IMPORTANT: Branch Naming Update**
+The old `feature/<name>` convention has been **retired**! In order for the pipeline to run automated tests and publish preview packages, you **must** prefix your branch with the type of version bump your changes represent:
 
-**Name your branch following the convention of `feature/<some-feature>`.** This will allow the pipeline to work correctly. 
-If all tests pass, a new version of your package will be publised on every commit. You can see published versions of packages [here](https://github.com/orgs/LBHackney-IT/packages?repo_name=lbh-core).
+- `major/<your-branch-name>`
+- `minor/<your-branch-name>`
+- `patch/<your-branch-name>`
 
-All preview versions of packages will have the suffix **`-feat-<branch-name>-<number>`**.
+If you push to a branch without one of these prefixes, the pipeline will run formatting and tests, but it will **skip** calculating a version and publishing a package to the registry _(this includes the preview versions of a package)_.
 
-This branch name in the package version has a character limit of **12 characters**, so try to name your branch accordingly, otherwise it will be cut off.
+### Preview Versions
+
+When working on a correctly prefixed branch (e.g., `minor/add-new-logging`), every push will automatically publish a preview version of your package.
+
+Preview packages are now formatted using the calculated base version, your commit's short SHA, and the commit distance from the release branch:
+
+- **Format:** `{BaseVersion}-{ShortSha}-p{CommitDistance}`
+- **Example:** `1.5.0-f04c5a4-p3`
+
+_(Note: The old 12-character branch name limit no longer applies! It was replaced due to often getting excessively truncated. Name your branch whatever makes the most sense)._
+
+### Production Releases
+
+To publish a stable production package, open a Pull Request and merge your branch into the `release` branch.
+
+Upon merging:
+
+1. The pipeline will publish the clean, stable version _(e.g., `1.5.0`)_.
+2. It will automatically **delete all preview versions** tied to that specific base version _(e.g., `1.5.0-f04c5a4-p3`)_ from the registry to ensure no APIs stay permanently bound to preview versions that were forgotten to be changed in the API's `.csproj` _(this actually did used to happen)_.
+
+---
 
 ## Building the package
 After cloning the repo, you may find many errors relating to the `Hackney.Core.Testing.PactBroker` project similar to the one below when attempting to build the solution **_on a Windows machine_**:
