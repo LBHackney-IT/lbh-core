@@ -14,12 +14,15 @@ public interface ITokenFactory
     public const string DefaultHeaderName = "Authorization";
 
     /// <summary>
-    /// Extracts a JWT from the supplied Http headers and creates a token object from it.
+    /// Creates a domain <see cref="Token"/> by extracting a JWT from the specified header and decoding it.
     /// </summary>
-    /// <param name="headerDictionary">The Http headers</param>
-    /// <param name="headerName">The header key name used. Default: "Authorization"</param>
-    /// <returns>The deserialised Token or null</returns>
-    /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
+    /// <param name="headerDictionary">Request headers.</param>
+    /// <param name="headerName">Header key to read (default: <c>Authorization</c>).</param>
+    /// <returns>
+    /// The decoded <see cref="Token"/>, or <c>null</c> when the header is missing, empty,
+    /// or decoding fails. Implementations should log decoding failures and not throw for bad tokens.
+    /// </returns>
+    /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="headerDictionary"/> is null or <paramref name="headerName"/> is null or empty.</exception>
     [Obsolete("Deprecated to decouple token parsing from HTTP abstractions. This method will be removed entirely in the next major version. Extract the token string in the consuming API and use Decode instead.", error: false, DiagnosticId = "HACKNEY_DEPRECATED_TOKEN_CREATE")]
     Token? Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
     Token? DecodeStandardToken(string jwtStr);
