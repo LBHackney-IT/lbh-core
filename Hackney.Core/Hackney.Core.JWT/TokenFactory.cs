@@ -63,7 +63,7 @@ public class TokenFactory : ITokenFactory
             return null;
         }
 
-        return DecodeJWTString(firstHeaderValue);
+        return DecodeStandardToken(firstHeaderValue);
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public class TokenFactory : ITokenFactory
     /// (see https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.primitives.stringvalues.tostring)
     /// </param>
     /// <returns>The deserialised Token or null</returns>
-    public Token? DecodeJWTString(string jwtBase64Str)
+    public Token? DecodeStandardToken(string jwtBase64Str)
     {
         try
         {

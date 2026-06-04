@@ -27,23 +27,23 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTString_LogsWarning_WhenNoJwtProvided()
+    public void TokenFactory_DecodeStandardToken_LogsWarning_WhenNoJwtProvided()
     {
         // act
-        _sut.DecodeJWTString("");
+        _sut.DecodeStandardToken("");
 
         // assert
         VerifyLog(_mockLogger, LogLevel.Warning, "No JWT token was provided.", Times.Once());
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTString_LogsWarning_WhenPayloadIsEmptyObject()
+    public void TokenFactory_DecodeStandardToken_LogsWarning_WhenPayloadIsEmptyObject()
     {
         // arrange
         var tokenWithEmptyObject = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
 
         // act
-        var result = _sut.DecodeJWTString(tokenWithEmptyObject);
+        var result = _sut.DecodeStandardToken(tokenWithEmptyObject);
 
         // assert
         result.Should().BeNull();
@@ -51,13 +51,13 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTString_LogsWarning_OnMalformedToken()
+    public void TokenFactory_DecodeStandardToken_LogsWarning_OnMalformedToken()
     {
         // arrange
         var invalidToken = "invalid-token-value";
 
         // act
-        var result = _sut.DecodeJWTString(invalidToken);
+        var result = _sut.DecodeStandardToken(invalidToken);
 
         // assert
         result.Should().BeNull();
@@ -65,13 +65,13 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTString_LogsWarning_WhenDeserialisationProducesNull()
+    public void TokenFactory_DecodeStandardToken_LogsWarning_WhenDeserialisationProducesNull()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
 
         // act
-        var result = _sut.DecodeJWTString(tokenWithNullPayload);
+        var result = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
         result.Should().BeNull();
@@ -255,7 +255,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_CanSafelyHandleBearerPrefix()
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_CanSafelyHandleBearerPrefix()
     {
         // arrange
         var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
@@ -266,8 +266,8 @@ public class TokenFactoryTests
         cognitoToken.JwtString = bearerPrefix + cognitoToken.JwtString;
 
         // act 
-        var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString!);
-        var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString!);
+        var decodedLegacyToken = _sut.DecodeStandardToken(legacyToken.JwtString!);
+        var decodedCognitoToken = _sut.DecodeStandardToken(cognitoToken.JwtString!);
 
         // assert
         decodedLegacyToken.Should().NotBeNull();
@@ -280,7 +280,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithLiteralNullPayload()
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithLiteralNullPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
@@ -290,7 +290,7 @@ public class TokenFactoryTests
 
         // act
         var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
-        var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+        var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
         decodedNullTokenViaCreate.Should().BeNull();
@@ -298,7 +298,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithEmptyObjectPayload()
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithEmptyObjectPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
@@ -308,7 +308,7 @@ public class TokenFactoryTests
 
         // act
         var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
-        var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+        var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
         decodedNullTokenViaCreate.Should().BeNull();
@@ -316,7 +316,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnsNull_GivenTokenWithRawStringPayload()
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithRawStringPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithRawStringPayload("Sheep Detectives 2026");
@@ -326,7 +326,7 @@ public class TokenFactoryTests
 
         // act
         var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
-        var decodedNullTokenViaDecode = _sut.DecodeJWTString(tokenWithNullPayload);
+        var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
         decodedNullTokenViaCreate.Should().BeNull();
@@ -334,7 +334,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_AreCapableOfHandlingStingValuesPrimitivesFromHeaderDict()
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_AreCapableOfHandlingStingValuesPrimitivesFromHeaderDict()
     {
         // arrange
         var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
@@ -349,7 +349,7 @@ public class TokenFactoryTests
 
         // act 
         var decodedTokenViaCreate = _sut.Create(headersDict, headerName);
-        var decodedTokenViaDecode = _sut.DecodeJWTString(strValPrimitiveHeaderVal!);
+        var decodedTokenViaDecode = _sut.DecodeStandardToken(strValPrimitiveHeaderVal!);
 
         // assert
         decodedTokenViaCreate.Should().NotBeNull();
@@ -369,14 +369,14 @@ public class TokenFactoryTests
     [InlineData("    ")]
     [InlineData("Bearer   ")]
     [InlineData("Bearer [object Object]")]
-    public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
+    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
     {
         // arrange
         _mockHeaders.Reset();
         _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(invalidJwtString);
 
         // act
-        var decodeMethodResult = _sut.DecodeJWTString(invalidJwtString);
+        var decodeMethodResult = _sut.DecodeStandardToken(invalidJwtString);
         var createMethodResult = _sut.Create(_mockHeaders.Object);
 
         // assert
@@ -385,15 +385,15 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeJWTStringMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64StringIsProvided()
+    public void TokenFactory_DecodeStandardTokenMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64StringIsProvided()
     {
         // arrange
         var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
         var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
 
         // act 
-        var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString);
-        var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
+        var decodedLegacyToken = _sut.DecodeStandardToken(legacyToken.JwtString);
+        var decodedCognitoToken = _sut.DecodeStandardToken(cognitoToken.JwtString);
 
         // assert
         decodedLegacyToken.Should().NotBeNull();
