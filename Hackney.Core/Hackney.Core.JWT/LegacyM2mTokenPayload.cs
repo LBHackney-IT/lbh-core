@@ -2,6 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Hackney.Core.JWT;
 
+/// <summary>
+/// Presentation (and Domain for the time being) model representing the
+/// Machine to Machine (M2M) token schema used by the Hackney's legacy
+/// "Service" authentication flow.
+/// </summary>
 public class LegacyM2mTokenPayload
 {
     [JsonPropertyName("id")]
