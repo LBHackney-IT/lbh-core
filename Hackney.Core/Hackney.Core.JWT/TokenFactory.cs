@@ -19,6 +19,10 @@ public class TokenFactory : ITokenFactory
     // it would return typically return the spaceless version like specified here.
     private string EmptyObjectJsonPayload => "{}";
     private readonly ILogger<TokenFactory> _logger;
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public TokenFactory(ILogger<TokenFactory> logger)
     {
@@ -73,14 +77,35 @@ public class TokenFactory : ITokenFactory
     /// <returns>The deserialised Token or null</returns>
     public Token? DecodeJWTString(string jwtBase64Str)
     {
+        try
+        {
+            var presentationToken = this.Decode<TokenPresentation>(jwtBase64Str);
+
+            if (presentationToken is null)
+            {
+                _logger.LogWarning("Failed to deserialize JWT payload.");
+                return null;
+            }
+
+            return MapToDomain(presentationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtBase64Str);
+            return null;
+        }
+    }
+
+    public T? Decode<T>(string? jwtStr) where T : class
+    {
         // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.
-        if (string.IsNullOrEmpty(jwtBase64Str))
+        if (string.IsNullOrEmpty(jwtStr))
         {
             _logger.LogWarning("No JWT token was provided.");
             return null;
         }
 
-        var encodedString = jwtBase64Str.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
+        var encodedString = jwtStr.Replace("Bearer ", "", StringComparison.CurrentCultureIgnoreCase);
 
         try
         {
@@ -95,20 +120,11 @@ public class TokenFactory : ITokenFactory
                 return null;
             }
 
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var presentationToken = JsonSerializer.Deserialize<TokenPresentation>(decodedPayload, options);
-
-            if (presentationToken is null)
-            {
-                _logger.LogWarning("Failed to deserialize JWT payload.");
-                return null;
-            }
-
-            return MapToDomain(presentationToken);
+            return JsonSerializer.Deserialize<T>(decodedPayload, _jsonOptions);
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtBase64Str);
+            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtStr);
             return null;
         }
     }
