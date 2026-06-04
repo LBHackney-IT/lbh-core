@@ -78,23 +78,15 @@ public class TokenFactory : ITokenFactory
     /// <returns>The deserialised Token or null</returns>
     public Token? DecodeStandardToken(string jwtBase64Str)
     {
-        try
-        {
-            var presentationToken = this.Decode<TokenPresentation>(jwtBase64Str);
+        var presentationToken = this.Decode<TokenPresentation>(jwtBase64Str);
 
-            if (presentationToken is null)
-            {
-                _logger.LogWarning("Failed to deserialize JWT payload.");
-                return null;
-            }
-
-            return MapToDomain(presentationToken);
-        }
-        catch (Exception ex)
+        if (presentationToken is null)
         {
-            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtBase64Str);
+            _logger.LogWarning("Failed to deserialize JWT payload.");
             return null;
         }
+
+        return MapToDomain(presentationToken);
     }
 
     public T? Decode<T>(string jwtStr) where T : class
