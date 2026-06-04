@@ -9,6 +9,7 @@ namespace Hackney.Core.JWT;
 /// </summary>
 public class TokenPresentation
 {
+    [JsonPropertyName("sub")]
     public required string Sub { get; set; }
     // Nullable due to transition period
     // The old token format groups field
@@ -19,9 +20,18 @@ public class TokenPresentation
     [JsonPropertyName("custom:groups")]
     public string? CustomGroups { get; set; }
 
+    [JsonPropertyName("email")]
     public required string Email { get; set; }
+
+    [JsonPropertyName("name")]
     public required string Name { get; set; }
+
+    [JsonPropertyName("nbf")]
     public required long Nbf { get; set; }
+
+    [JsonPropertyName("exp")]
     public required long Exp { get; set; }
+
+    [JsonPropertyName("iat")]
     public required long Iat { get; set; }
 }
