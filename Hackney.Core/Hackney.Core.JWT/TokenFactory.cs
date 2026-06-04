@@ -36,6 +36,7 @@ public class TokenFactory : ITokenFactory
     /// <param name="headerName">The header key name used. Default: "Authorization"</param>
     /// <returns>The deserialised Token or null</returns>
     /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
+    [Obsolete("Deprecated to decouple token parsing from HTTP abstractions. This method will be removed entirely in the next major version. Extract the token string in the consuming API and use DecodeMmhToken instead.", error: false)]
     public Token? Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
     {
         if (headerDictionary is null) throw new ArgumentNullException(nameof(headerDictionary));
