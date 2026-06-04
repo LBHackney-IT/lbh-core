@@ -151,7 +151,8 @@ public class TokenFactory : ITokenFactory
         var cleanJwt = jwtStr.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase);
         var parts = cleanJwt.Split('.');
 
-        if (parts.Length != 3)
+        // if signature part is missing or exists, but is empty - it's an unknown token as all Hackney tokens are signed.
+        if (parts.Length != 3 || string.IsNullOrEmpty(parts[2]))
             return HackneyTokenType.Unknown;
 
         try

@@ -558,13 +558,14 @@ public class TokenFactoryTests
         var m2mPayload = TokenTestsHelper.GenerateLegacyM2mTokenObj();
         var m2mUnsignedJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(m2mPayload, isSigned: false);
 
-        var twoPartJwt = m2mUnsignedJwt.TrimEnd('.');
-
         // act
-        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+        var twoPartJwt = m2mUnsignedJwt.TrimEnd('.');
+        var resultTwoPart = _sut.IdentifyHackneyToken(twoPartJwt);
+        var resultWithTrailingDot = _sut.IdentifyHackneyToken(m2mUnsignedJwt); // 3rd part empty
 
         // assert
-        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+        resultTwoPart.Should().Be(HackneyTokenType.Unknown);
+        resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
     }
 
     [Fact]
@@ -572,15 +573,16 @@ public class TokenFactoryTests
     {
         // arrange
         var userTokenObj = TokenTestsHelper.GenerateTestTokenObj(TokenSchema.Old);
-        var unsignedUserJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(userTokenObj, isSigned: false);
-
-        var twoPartJwt = unsignedUserJwt.TrimEnd('.');
+        var unsignedJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(userTokenObj, isSigned: false);
 
         // act
-        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+        var twoPartJwt = unsignedJwt.TrimEnd('.');
+        var resultTwoPart = _sut.IdentifyHackneyToken(twoPartJwt);
+        var resultWithTrailingDot = _sut.IdentifyHackneyToken(unsignedJwt); // 3rd part empty
 
         // assert
-        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+        resultTwoPart.Should().Be(HackneyTokenType.Unknown);
+        resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
     }
 
     [Fact]
@@ -589,13 +591,15 @@ public class TokenFactoryTests
         // arrange
         var unknownPayload = new { Title = "Sheep Detectives", Year = 2026 };
         var unsignedJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(unknownPayload, isSigned: false);
-        var twoPartJwt = unsignedJwt.TrimEnd('.');
 
         // act
-        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+        var twoPartJwt = unsignedJwt.TrimEnd('.');
+        var resultTwoPart = _sut.IdentifyHackneyToken(twoPartJwt);
+        var resultWithTrailingDot = _sut.IdentifyHackneyToken(unsignedJwt); // 3rd part empty
 
         // assert
-        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+        resultTwoPart.Should().Be(HackneyTokenType.Unknown);
+        resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
     }
 
     private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)
