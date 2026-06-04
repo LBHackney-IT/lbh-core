@@ -7,6 +7,8 @@ using Moq;
 using System;
 using Xunit;
 
+#pragma warning disable HACKNEY_DEPRECATED_TOKEN_CREATE
+
 namespace Hackney.Core.Tests.JWT;
 
 public class TokenFactoryTests
