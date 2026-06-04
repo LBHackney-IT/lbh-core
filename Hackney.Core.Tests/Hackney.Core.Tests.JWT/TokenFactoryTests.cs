@@ -387,7 +387,7 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeStandardTokenMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64StringIsProvided()
+    public void TokenFactory_DecodeStandardTokenMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64String()
     {
         // arrange
         var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
@@ -417,6 +417,79 @@ public class TokenFactoryTests
         decodedCognitoToken!.Nbf.Should().Be(cognitoToken.TokenObj.Nbf);
         decodedCognitoToken!.Sub.Should().Be(cognitoToken.TokenObj.Sub);
         decodedCognitoToken!.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
+    }
+
+    [Fact]
+    public void TokenFactory_GenericDecode_CanDecodeToken_GivenTheRawJwtBase64String()
+    {
+        // arrange
+        var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+        var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+        // act 
+        var decodedLegacy = _sut.Decode<TokenPresentation>(legacyToken.JwtString);
+        var decodedCognito = _sut.Decode<TokenPresentation>(cognitoToken.JwtString);
+
+        // assert
+        decodedLegacy.Should().NotBeNull();
+        decodedLegacy!.Email.Should().Be(legacyToken.TokenObj.Email);
+        decodedLegacy!.Exp.Should().Be(legacyToken.TokenObj.Exp);
+        decodedLegacy!.Iat.Should().Be(legacyToken.TokenObj.Iat);
+        decodedLegacy!.Name.Should().Be(legacyToken.TokenObj.Name);
+        decodedLegacy!.Nbf.Should().Be(legacyToken.TokenObj.Nbf);
+        decodedLegacy!.Sub.Should().Be(legacyToken.TokenObj.Sub);
+        decodedLegacy!.Groups.Should().BeEquivalentTo(legacyToken.GetLegacyTestUserGroups());
+        decodedLegacy!.CustomGroups.Should().BeEquivalentTo(null);
+
+        decodedCognito.Should().NotBeNull();
+        decodedCognito!.Email.Should().Be(cognitoToken.TokenObj.Email);
+        decodedCognito!.Exp.Should().Be(cognitoToken.TokenObj.Exp);
+        decodedCognito!.Iat.Should().Be(cognitoToken.TokenObj.Iat);
+        decodedCognito!.Name.Should().Be(cognitoToken.TokenObj.Name);
+        decodedCognito!.Nbf.Should().Be(cognitoToken.TokenObj.Nbf);
+        decodedCognito!.Sub.Should().Be(cognitoToken.TokenObj.Sub);
+        decodedCognito!.Groups.Should().BeEquivalentTo(null);
+        decodedCognito!.CustomGroups.Should().BeEquivalentTo(string.Join(';', cognitoToken.GetCognitoTestUserGroups()));
+    }
+
+    [Fact]
+    public void TokenFactory_Decode_HandlesBearerPrefix()
+    {
+        // arrange
+        var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+        var bearer = "Bearer ";
+
+        // act
+        var decoded = _sut.Decode<TokenPresentation>(bearer + legacyToken.JwtString);
+
+        // assert
+        decoded.Should().NotBeNull();
+        decoded!.Email.Should().Be(legacyToken.TokenObj.Email);
+    }
+
+    [Fact]
+    public void TokenFactory_Decode_LogsWarning_WhenNoJwtProvided_Generic()
+    {
+        // act
+        var result = _sut.Decode<TokenPresentation>("");
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, "No JWT token was provided.", Times.Once());
+    }
+
+    [Fact]
+    public void TokenFactory_Decode_LogsWarning_OnMalformedToken_Generic()
+    {
+        // arrange
+        var invalidToken = "invalid-token-value";
+
+        // act
+        var result = _sut.Decode<TokenPresentation>(invalidToken);
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {invalidToken}.", Times.Once());
     }
 
     private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)
