@@ -96,9 +96,10 @@ public class TokenFactory : ITokenFactory
         }
     }
 
-    public T? Decode<T>(string? jwtStr) where T : class
+    public T? Decode<T>(string jwtStr) where T : class
     {
         // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.
+        // Defensive check kept for consumers without nullable contexts, but the signature now enforces intent.
         if (string.IsNullOrEmpty(jwtStr))
         {
             _logger.LogWarning("No JWT token was provided.");
