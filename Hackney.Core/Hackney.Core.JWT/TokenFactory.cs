@@ -76,9 +76,9 @@ public class TokenFactory : ITokenFactory
     /// (see https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.primitives.stringvalues.tostring)
     /// </param>
     /// <returns>The deserialised Token or null</returns>
-    public Token? DecodeStandardToken(string jwtBase64Str)
+    public Token? DecodeStandardToken(string jwtStr)
     {
-        var presentationToken = this.Decode<TokenPresentation>(jwtBase64Str);
+        var presentationToken = this.Decode<TokenPresentation>(jwtStr);
 
         if (presentationToken is null)
         {

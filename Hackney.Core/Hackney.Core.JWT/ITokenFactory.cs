@@ -22,4 +22,6 @@ public interface ITokenFactory
     /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
     [Obsolete("Deprecated to decouple token parsing from HTTP abstractions. This method will be removed entirely in the next major version. Extract the token string in the consuming API and use Decode instead.", error: false, DiagnosticId = "HACKNEY_DEPRECATED_TOKEN_CREATE")]
     Token? Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
+    Token? DecodeStandardToken(string jwtStr);
+    T? Decode<T>(string jwtStr) where T : class;
 }
