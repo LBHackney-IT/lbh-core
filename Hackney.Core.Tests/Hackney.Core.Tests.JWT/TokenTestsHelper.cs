@@ -99,11 +99,10 @@ internal static class TokenTestsHelper
     public static TestToken GenerateTestTokenPresentationJWT(TokenSchema tokenSchema)
     {
         var presentationToken = GenerateTestTokenObj(tokenSchema);
-        return new TestToken
-        {
-            JwtString = GenerateCleanJwt(presentationToken, TestSecret),
-            TokenObj = presentationToken
-        };
+        return new TestToken(
+            jwtString: GenerateCleanJwt(presentationToken, TestSecret),
+            tokenObject: presentationToken
+        );
     }
 
     public static string GenerateBasicGeneralPayloadToken(object? payloadData)
@@ -133,11 +132,10 @@ internal static class TokenTestsHelper
 
 internal class TestToken
 {
-    public string? JwtString { get; set; }
-    public TokenPresentation? TokenObj { get; set; }
+    public string JwtString { get; set; }
+    public TokenPresentation TokenObj { get; set; }
 
-    public TestToken() { }
-    public TestToken(string? jwtString, TokenPresentation? tokenObject)
+    public TestToken(string jwtString, TokenPresentation tokenObject)
     {
         JwtString = jwtString;
         TokenObj = tokenObject;
@@ -152,7 +150,7 @@ internal class TestToken
 
     public IEnumerable<string> GetLegacyTestUserGroups()
     {
-        return TokenObj?.Groups ?? Array.Empty<string>();
+        return TokenObj.Groups ?? Array.Empty<string>();
     }
 }
 

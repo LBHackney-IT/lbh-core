@@ -32,7 +32,7 @@ public class TokenFactory : ITokenFactory
     /// <param name="headerName">The header key name used. Default: "Authorization"</param>
     /// <returns>The deserialised Token or null</returns>
     /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
-    public Token Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
+    public Token? Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
     {
         if (headerDictionary is null) throw new ArgumentNullException(nameof(headerDictionary));
         if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
@@ -50,7 +50,15 @@ public class TokenFactory : ITokenFactory
             _logger.LogWarning("Multiple (count: {Count}) header values detected, using the first one.", headerStringValues.Count);
         }
 
-        return DecodeJWTString(headerStringValues[0]);
+        string? firstHeaderValue = headerStringValues[0];
+
+        if (string.IsNullOrEmpty(firstHeaderValue))
+        {
+            _logger.LogWarning("First extracted HeaderDictionary StringValues primitive value is empty.");
+            return null;
+        }
+
+        return DecodeJWTString(firstHeaderValue);
     }
 
     /// <summary>
@@ -63,7 +71,7 @@ public class TokenFactory : ITokenFactory
     /// (see https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.primitives.stringvalues.tostring)
     /// </param>
     /// <returns>The deserialised Token or null</returns>
-    public Token DecodeJWTString(string jwtBase64Str)
+    public Token? DecodeJWTString(string jwtBase64Str)
     {
         // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.
         if (string.IsNullOrEmpty(jwtBase64Str))

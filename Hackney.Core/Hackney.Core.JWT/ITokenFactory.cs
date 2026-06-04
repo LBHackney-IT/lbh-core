@@ -19,5 +19,5 @@ public interface ITokenFactory
     /// <param name="headerName">The header key name used. Default: "Authorization"</param>
     /// <returns>The deserialised Token or null</returns>
     /// <exception cref="System.ArgumentNullException">If the headerDictionary is null, or the header name is empty.</exception>
-    Token Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
+    Token? Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
 }

@@ -9,6 +9,7 @@
     <Copyright>2021</Copyright>
     <Description>Common library providing functionality to retrieve a JWT token from a HTTP request. Used in LBH Web API services.</Description>
     <NoWarn>S1066;S4457</NoWarn>
+    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

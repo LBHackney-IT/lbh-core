@@ -81,7 +81,7 @@ public class TokenFactoryTests
     [Fact]
     public void TokenFactory_CreateMethod_Throws_GivenNullHeaders()
     {
-        Action act = () => _sut.Create(null);
+        Action act = () => _sut.Create(null!);
         act.Should().Throw<ArgumentNullException>();
     }
 
@@ -118,6 +118,40 @@ public class TokenFactoryTests
     }
 
     [Fact]
+    public void TokenFactory_CreateMethod_LogsWarning_WhenFirstHeaderValueIsEmpty()
+    {
+        // arrange
+        var headerName = "Authorization";
+
+        _mockHeaders.Reset();
+        _mockHeaders.Setup(x => x[headerName]).Returns(new StringValues(new[] { string.Empty }));
+
+        // act
+        var result = _sut.Create(_mockHeaders.Object, headerName);
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, "First extracted HeaderDictionary StringValues primitive value is empty.", Times.Once());
+    }
+
+    [Fact]
+    public void TokenFactory_CreateMethod_LogsWarning_WhenFirstHeaderValueIsNull()
+    {
+        // arrange
+        var headerName = "Authorization";
+
+        _mockHeaders.Reset();
+        _mockHeaders.Setup(x => x[headerName]).Returns(new StringValues(new[] { (string?)null }));
+
+        // act
+        var result = _sut.Create(_mockHeaders.Object, headerName);
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, "First extracted HeaderDictionary StringValues primitive value is empty.", Times.Once());
+    }
+
+    [Fact]
     public void TokenFactory_CreateMethod_UsesFirstHeaderValueAndLogsWarning_WhenMultipleHeaderValuesProvided()
     {
         // arrange
@@ -135,7 +169,7 @@ public class TokenFactoryTests
 
         // assert
         decoded.Should().NotBeNull();
-        decoded.Sub.Should().Be(firstToken.TokenObj?.Sub);
+        decoded!.Sub.Should().Be(firstToken.TokenObj.Sub);
         VerifyLog(_mockLogger, LogLevel.Warning, $"Multiple (count: {multiValHeaderValues.Count}) header values detected, using the first one.", Times.Once());
     }
 
@@ -156,13 +190,13 @@ public class TokenFactoryTests
         var decodedToken = _sut.Create(_mockHeaders.Object, actualHeader);
 
         // assert
-        decodedToken.Email.Should().Be(testToken.TokenObj?.Email);
-        decodedToken.Exp.Should().Be(testToken.TokenObj?.Exp);
-        decodedToken.Groups.Should().BeEquivalentTo(expectedLegacyTokenGroups);
-        decodedToken.Iat.Should().Be(testToken.TokenObj?.Iat);
-        decodedToken.Name.Should().Be(testToken.TokenObj?.Name);
-        decodedToken.Nbf.Should().Be(testToken.TokenObj?.Nbf);
-        decodedToken.Sub.Should().Be(testToken.TokenObj?.Sub);
+        decodedToken!.Email.Should().Be(testToken.TokenObj.Email);
+        decodedToken!.Exp.Should().Be(testToken.TokenObj.Exp);
+        decodedToken!.Groups.Should().BeEquivalentTo(expectedLegacyTokenGroups);
+        decodedToken!.Iat.Should().Be(testToken.TokenObj.Iat);
+        decodedToken!.Name.Should().Be(testToken.TokenObj.Name);
+        decodedToken!.Nbf.Should().Be(testToken.TokenObj.Nbf);
+        decodedToken!.Sub.Should().Be(testToken.TokenObj.Sub);
     }
 
     [Fact]
@@ -180,13 +214,13 @@ public class TokenFactoryTests
         var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
 
         // assert
-        decodedToken.Email.Should().Be(testToken.TokenObj?.Email);
-        decodedToken.Exp.Should().Be(testToken.TokenObj?.Exp);
-        decodedToken.Groups.Should().BeEquivalentTo(expectedGroupsArray);
-        decodedToken.Iat.Should().Be(testToken.TokenObj?.Iat);
-        decodedToken.Name.Should().Be(testToken.TokenObj?.Name);
-        decodedToken.Nbf.Should().Be(testToken.TokenObj?.Nbf);
-        decodedToken.Sub.Should().Be(testToken.TokenObj?.Sub);
+        decodedToken!.Email.Should().Be(testToken.TokenObj.Email);
+        decodedToken!.Exp.Should().Be(testToken.TokenObj.Exp);
+        decodedToken!.Groups.Should().BeEquivalentTo(expectedGroupsArray);
+        decodedToken!.Iat.Should().Be(testToken.TokenObj.Iat);
+        decodedToken!.Name.Should().Be(testToken.TokenObj.Name);
+        decodedToken!.Nbf.Should().Be(testToken.TokenObj.Nbf);
+        decodedToken!.Sub.Should().Be(testToken.TokenObj.Sub);
     }
 
     [Fact]
@@ -210,14 +244,14 @@ public class TokenFactoryTests
 
         // assert
         // parses fields that exist
-        decodedToken.Email.Should().Be(grouplessToken.Email);
-        decodedToken.Exp.Should().Be(grouplessToken.Exp);
-        decodedToken.Iat.Should().Be(grouplessToken.Iat);
-        decodedToken.Name.Should().Be(grouplessToken.Name);
-        decodedToken.Nbf.Should().Be(grouplessToken.Nbf);
-        decodedToken.Sub.Should().Be(grouplessToken.Sub);
+        decodedToken!.Email.Should().Be(grouplessToken.Email);
+        decodedToken!.Exp.Should().Be(grouplessToken.Exp);
+        decodedToken!.Iat.Should().Be(grouplessToken.Iat);
+        decodedToken!.Name.Should().Be(grouplessToken.Name);
+        decodedToken!.Nbf.Should().Be(grouplessToken.Nbf);
+        decodedToken!.Sub.Should().Be(grouplessToken.Sub);
         // defaults to empty array when no groups are found
-        decodedToken.Groups.Should().BeEquivalentTo(Array.Empty<string>());
+        decodedToken!.Groups.Should().BeEquivalentTo(Array.Empty<string>());
     }
 
     [Fact]
@@ -232,8 +266,8 @@ public class TokenFactoryTests
         cognitoToken.JwtString = bearerPrefix + cognitoToken.JwtString;
 
         // act 
-        var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString);
-        var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
+        var decodedLegacyToken = _sut.DecodeJWTString(legacyToken.JwtString!);
+        var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString!);
 
         // assert
         decodedLegacyToken.Should().NotBeNull();
@@ -241,8 +275,8 @@ public class TokenFactoryTests
 
         // only asserting a few fields as if even 1 field was decoded, it means
         // that the JWT parser didn't fall over by creating an empty object with no data.
-        decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj?.Email);
-        decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj?.Email);
+        decodedLegacyToken!.Email.Should().Be(legacyToken.TokenObj.Email);
+        decodedCognitoToken!.Email.Should().Be(cognitoToken.TokenObj.Email);
     }
 
     [Fact]
@@ -315,7 +349,7 @@ public class TokenFactoryTests
 
         // act 
         var decodedTokenViaCreate = _sut.Create(headersDict, headerName);
-        var decodedTokenViaDecode = _sut.DecodeJWTString(strValPrimitiveHeaderVal);
+        var decodedTokenViaDecode = _sut.DecodeJWTString(strValPrimitiveHeaderVal!);
 
         // assert
         decodedTokenViaCreate.Should().NotBeNull();
@@ -323,9 +357,9 @@ public class TokenFactoryTests
 
         // only asserting a few fields as if even 1 field was decoded, it means
         // that the JWT parser didn't fall over by creating an empty object with no data.
-        var expectedEmail = cognitoToken.TokenObj?.Email;
-        decodedTokenViaCreate.Email.Should().Be(expectedEmail);
-        decodedTokenViaDecode.Email.Should().Be(expectedEmail);
+        var expectedEmail = cognitoToken.TokenObj.Email;
+        decodedTokenViaCreate!.Email.Should().Be(expectedEmail);
+        decodedTokenViaDecode!.Email.Should().Be(expectedEmail);
     }
 
     [Theory]
@@ -338,8 +372,6 @@ public class TokenFactoryTests
     public void TokenFactory_DecodeJWTStringAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
     {
         // arrange
-        var invalidToken = new TestToken(invalidJwtString, null);
-
         _mockHeaders.Reset();
         _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(invalidJwtString);
 
@@ -364,21 +396,25 @@ public class TokenFactoryTests
         var decodedCognitoToken = _sut.DecodeJWTString(cognitoToken.JwtString);
 
         // assert
-        decodedLegacyToken.Email.Should().Be(legacyToken.TokenObj?.Email);
-        decodedLegacyToken.Exp.Should().Be(legacyToken.TokenObj?.Exp);
-        decodedLegacyToken.Iat.Should().Be(legacyToken.TokenObj?.Iat);
-        decodedLegacyToken.Name.Should().Be(legacyToken.TokenObj?.Name);
-        decodedLegacyToken.Nbf.Should().Be(legacyToken.TokenObj?.Nbf);
-        decodedLegacyToken.Sub.Should().Be(legacyToken.TokenObj?.Sub);
-        decodedLegacyToken.Groups.Should().BeEquivalentTo(legacyToken.GetLegacyTestUserGroups());
+        decodedLegacyToken.Should().NotBeNull();
 
-        decodedCognitoToken.Email.Should().Be(cognitoToken.TokenObj?.Email);
-        decodedCognitoToken.Exp.Should().Be(cognitoToken.TokenObj?.Exp);
-        decodedCognitoToken.Iat.Should().Be(cognitoToken.TokenObj?.Iat);
-        decodedCognitoToken.Name.Should().Be(cognitoToken.TokenObj?.Name);
-        decodedCognitoToken.Nbf.Should().Be(cognitoToken.TokenObj?.Nbf);
-        decodedCognitoToken.Sub.Should().Be(cognitoToken.TokenObj?.Sub);
-        decodedCognitoToken.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
+        decodedLegacyToken!.Email.Should().Be(legacyToken.TokenObj.Email);
+        decodedLegacyToken!.Exp.Should().Be(legacyToken.TokenObj.Exp);
+        decodedLegacyToken!.Iat.Should().Be(legacyToken.TokenObj.Iat);
+        decodedLegacyToken!.Name.Should().Be(legacyToken.TokenObj.Name);
+        decodedLegacyToken!.Nbf.Should().Be(legacyToken.TokenObj.Nbf);
+        decodedLegacyToken!.Sub.Should().Be(legacyToken.TokenObj.Sub);
+        decodedLegacyToken!.Groups.Should().BeEquivalentTo(legacyToken.GetLegacyTestUserGroups());
+
+        decodedCognitoToken.Should().NotBeNull();
+
+        decodedCognitoToken!.Email.Should().Be(cognitoToken.TokenObj.Email);
+        decodedCognitoToken!.Exp.Should().Be(cognitoToken.TokenObj.Exp);
+        decodedCognitoToken!.Iat.Should().Be(cognitoToken.TokenObj.Iat);
+        decodedCognitoToken!.Name.Should().Be(cognitoToken.TokenObj.Name);
+        decodedCognitoToken!.Nbf.Should().Be(cognitoToken.TokenObj.Nbf);
+        decodedCognitoToken!.Sub.Should().Be(cognitoToken.TokenObj.Sub);
+        decodedCognitoToken!.Groups.Should().BeEquivalentTo(cognitoToken.GetCognitoTestUserGroups());
     }
 
     private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)

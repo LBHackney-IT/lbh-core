@@ -15,7 +15,7 @@ public class ServiceCollectionExtensionsTests
     public void AddTokenFactoryTestNullServicesThrows()
     {
         IServiceCollection? services = null;
-        Action act = () => HackneySCExtensions.AddTokenFactory(services);
+        Action act = () => HackneySCExtensions.AddTokenFactory(services!);
         act.Should().Throw<ArgumentNullException>();
     }
 

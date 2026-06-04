@@ -9,18 +9,19 @@ namespace Hackney.Core.JWT;
 /// </summary>
 public class TokenPresentation
 {
-    public string Sub { get; set; }
-
+    public required string Sub { get; set; }
+    // Nullable due to transition period
     // The old token format groups field
     public string[]? Groups { get; set; }
 
+    // Nullable due to transition period
     // New cognito token format field
     [JsonPropertyName("custom:groups")]
     public string? CustomGroups { get; set; }
 
-    public string Email { get; set; }
-    public string Name { get; set; }
-    public long Nbf { get; set; }
-    public long Exp { get; set; }
-    public long Iat { get; set; }
+    public required string Email { get; set; }
+    public required string Name { get; set; }
+    public required long Nbf { get; set; }
+    public required long Exp { get; set; }
+    public required long Iat { get; set; }
 }
