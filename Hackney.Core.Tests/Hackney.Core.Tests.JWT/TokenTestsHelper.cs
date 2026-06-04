@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using AutoFixture.Dsl;
 using System;
+using System.Security.Cryptography;
 
 namespace Hackney.Core.Tests.JWT;
 
@@ -105,11 +106,11 @@ internal static class TokenTestsHelper
         );
     }
 
-    public static string GenerateBasicGeneralPayloadToken(object? payloadData)
+    public static string GenerateBasicGeneralPayloadToken(object? payloadData, bool isSigned = false)
     {
         var header = new Dictionary<string, object>
         {
-            ["alg"] = SecurityAlgorithms.None,
+            ["alg"] = isSigned ? SecurityAlgorithms.HmacSha256 : SecurityAlgorithms.None,
             ["typ"] = "JWT"
         };
 
@@ -119,8 +120,21 @@ internal static class TokenTestsHelper
         var payloadJson = JsonSerializer.Serialize(payloadData);
         var encodedPayload = Base64UrlEncoder.Encode(payloadJson);
 
-        // algorithm is "none", so signature segment is deliberately empty
-        return $"{encodedHeader}.{encodedPayload}.";
+        var signingInput = encodedHeader + "." + encodedPayload;
+
+        if (!isSigned)
+        {
+            // unsigned token: include empty signature segment for compatibility
+            return signingInput + ".";
+        }
+
+        // signed token: compute HMACSHA256 over signingInput using TestSecret
+        var keyBytes = Encoding.UTF8.GetBytes(TestSecret);
+        using var hmac = new HMACSHA256(keyBytes);
+        var signatureBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(signingInput));
+        var signature = Base64UrlEncoder.Encode(signatureBytes);
+
+        return signingInput + "." + signature;
     }
 
     public static string GenerateTokenWithNullPayload() => GenerateBasicGeneralPayloadToken(null);
@@ -128,6 +142,24 @@ internal static class TokenTestsHelper
     public static string GenerateTokenWithRawStringPayload(string payloadString) => GenerateBasicGeneralPayloadToken(payloadString);
 
     public static string GenerateTokenWithEmptyObjectPayload() => GenerateBasicGeneralPayloadToken(new { });
+
+    public static LegacyM2mTokenPayload GenerateLegacyM2mTokenObj()
+    {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        return new LegacyM2mTokenPayload
+        {
+            Id = Guid.NewGuid().ToString(),
+            ConsumerName = "TestConsumer",
+            ConsumerType = "test",
+            Nbf = now,
+            Exp = now + 3600,
+            Iat = now
+        };
+    }
+
+    public static string GenerateLegacyM2mJwt(LegacyM2mTokenPayload payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: true);
+
+    public static string GenerateUnknownTokenWithPayload(object payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: false);
 }
 
 internal class TestToken

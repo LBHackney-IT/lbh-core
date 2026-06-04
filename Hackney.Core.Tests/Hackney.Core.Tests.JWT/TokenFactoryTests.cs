@@ -492,6 +492,112 @@ public class TokenFactoryTests
         VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {invalidToken}.", Times.Once());
     }
 
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsMachineLegacyType_ForLegacyM2mPayload()
+    {
+        // arrange
+        var m2mPayload = TokenTestsHelper.GenerateLegacyM2mTokenObj();
+        var m2mJwtStr = TokenTestsHelper.GenerateLegacyM2mJwt(m2mPayload);
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(m2mJwtStr);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.MachineLegacy);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsUserType_ForUserToken()
+    {
+        // arrange
+        var legacyUserToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
+        var cognitoUserToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
+
+        // act
+        var legacyInputTokenTypeResult = _sut.IdentifyHackneyToken(legacyUserToken.JwtString);
+        var cognitoInputTokenTypeResult = _sut.IdentifyHackneyToken(cognitoUserToken.JwtString);
+
+        // assert
+        legacyInputTokenTypeResult.Should().Be(HackneyTokenType.User);
+        cognitoInputTokenTypeResult.Should().Be(HackneyTokenType.User);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsUnknown_ForArbitraryPayload()
+    {
+        // arrange
+        var unknownPayload = new { Title = "Sheep Detectives", Year = 2026 };
+        var unknownJwtStr = TokenTestsHelper.GenerateUnknownTokenWithPayload(unknownPayload);
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(unknownJwtStr);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_HandlesBearerPrefix()
+    {
+        // arrange
+        var irrelevantPayload = TokenTestsHelper.GenerateLegacyM2mTokenObj();
+        var irrelevantValidJwt = TokenTestsHelper.GenerateLegacyM2mJwt(irrelevantPayload);
+        var bearerJwt = "Bearer " + irrelevantValidJwt;
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(bearerJwt);
+
+        // assert
+        resultTokenType.Should().NotBe(HackneyTokenType.Unknown);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsUnknownType_ForUnsignedLegacyM2mJwt()
+    {
+        // arrange
+        var m2mPayload = TokenTestsHelper.GenerateLegacyM2mTokenObj();
+        var m2mUnsignedJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(m2mPayload, isSigned: false);
+
+        var twoPartJwt = m2mUnsignedJwt.TrimEnd('.');
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsUnknownType_ForUnsignedUserJwt()
+    {
+        // arrange
+        var userTokenObj = TokenTestsHelper.GenerateTestTokenObj(TokenSchema.Old);
+        var unsignedUserJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(userTokenObj, isSigned: false);
+
+        var twoPartJwt = unsignedUserJwt.TrimEnd('.');
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsUnknown_ForTwoPartArbitraryPayload()
+    {
+        // arrange
+        var unknownPayload = new { Title = "Sheep Detectives", Year = 2026 };
+        var unsignedJwt = TokenTestsHelper.GenerateBasicGeneralPayloadToken(unknownPayload, isSigned: false);
+        var twoPartJwt = unsignedJwt.TrimEnd('.');
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(twoPartJwt);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.Unknown);
+    }
+
     private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)
     {
         mockLogger.Verify(

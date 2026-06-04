@@ -24,4 +24,5 @@ public interface ITokenFactory
     Token? Create(IHeaderDictionary headerDictionary, string headerName = DefaultHeaderName);
     Token? DecodeStandardToken(string jwtStr);
     T? Decode<T>(string jwtStr) where T : class;
+    HackneyTokenType IdentifyHackneyToken(string jwtStr);
 }

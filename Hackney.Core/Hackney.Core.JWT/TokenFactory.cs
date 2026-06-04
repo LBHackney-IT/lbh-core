@@ -142,4 +142,37 @@ public class TokenFactory : ITokenFactory
             Iat = presentation.Iat
         };
     }
+
+    /// <summary>
+    /// Efficiently peeks into the JWT payload without full deserialization to identify the token type based on structural markers.
+    /// </summary>
+    public HackneyTokenType IdentifyHackneyToken(string jwtStr)
+    {
+        var cleanJwt = jwtStr.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase);
+        var parts = cleanJwt.Split('.');
+
+        if (parts.Length != 3)
+            return HackneyTokenType.Unknown;
+
+        try
+        {
+            var jwtPayload = parts[1];
+            var decodedJson = Base64UrlEncoder.Decode(jwtPayload);
+
+            using var document = JsonDocument.Parse(decodedJson);
+            var root = document.RootElement;
+
+            if (root.TryGetProperty("consumerName", out _))
+                return HackneyTokenType.MachineLegacy;
+
+            if (root.TryGetProperty("email", out _))
+                return HackneyTokenType.User;
+
+            return HackneyTokenType.Unknown;
+        }
+        catch
+        {
+            return HackneyTokenType.Unknown;
+        }
+    }
 }
