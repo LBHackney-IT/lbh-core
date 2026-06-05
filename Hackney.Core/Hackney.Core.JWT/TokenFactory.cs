@@ -151,7 +151,10 @@ public class TokenFactory : ITokenFactory
 
         // if signature part is missing or exists, but is empty - it's an unknown token as all Hackney tokens are signed.
         if (parts.Length != 3 || string.IsNullOrEmpty(parts[2]))
+        {
+            _logger.LogWarning("JWT is not signed. Hackney tokens are always signed.");
             return HackneyTokenType.Unknown;
+        }
 
         try
         {
@@ -167,10 +170,12 @@ public class TokenFactory : ITokenFactory
             if (root.TryGetProperty("email", out _))
                 return HackneyTokenType.User;
 
+            _logger.LogWarning("Provided JWT did not match any known and expected token schema fields.");
             return HackneyTokenType.Unknown;
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogWarning(ex, "Token identification failed due to error or unknown token format.");
             return HackneyTokenType.Unknown;
         }
     }

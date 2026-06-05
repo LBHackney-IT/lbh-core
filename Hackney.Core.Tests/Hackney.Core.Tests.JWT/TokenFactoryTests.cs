@@ -552,13 +552,14 @@ public class TokenFactoryTests
     {
         // arrange
         var unknownPayload = new { Title = "Sheep Detectives", Year = 2026 };
-        var unknownJwtStr = TokenTestsHelper.GenerateUnknownTokenWithPayload(unknownPayload);
+        var unknownJwtStr = TokenTestsHelper.GenerateBasicGeneralPayloadToken(unknownPayload, isSigned: true);
 
         // act
         var resultTokenType = _sut.IdentifyHackneyToken(unknownJwtStr);
 
         // assert
         resultTokenType.Should().Be(HackneyTokenType.Unknown);
+        VerifyLog(_mockLogger, LogLevel.Warning, "Provided JWT did not match any known and expected token schema fields.", Times.Once());
     }
 
     [Fact]
@@ -591,6 +592,7 @@ public class TokenFactoryTests
         // assert
         resultTwoPart.Should().Be(HackneyTokenType.Unknown);
         resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
+        VerifyLog(_mockLogger, LogLevel.Warning, "JWT is not signed. Hackney tokens are always signed.", Times.Exactly(2));
     }
 
     [Fact]
@@ -608,6 +610,7 @@ public class TokenFactoryTests
         // assert
         resultTwoPart.Should().Be(HackneyTokenType.Unknown);
         resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
+        VerifyLog(_mockLogger, LogLevel.Warning, "JWT is not signed. Hackney tokens are always signed.", Times.Exactly(2));
     }
 
     [Fact]
@@ -625,6 +628,23 @@ public class TokenFactoryTests
         // assert
         resultTwoPart.Should().Be(HackneyTokenType.Unknown);
         resultWithTrailingDot.Should().Be(HackneyTokenType.Unknown);
+        VerifyLog(_mockLogger, LogLevel.Warning, "JWT is not signed. Hackney tokens are always signed.", Times.Exactly(2));
+    }
+
+    [Fact]
+    public void TokenFactory_IdentifyHackneyToken_LogsWarning_OnExceptionDuringIdentification()
+    {
+        // arrange
+        // craft a 3-part JWT where the payload part is invalid base64, causing an exception in Decode/Parse
+        var badPayload = "!!!invalid-base64!!!";
+        var badJwt = $"header.{badPayload}.signature";
+
+        // act
+        var result = _sut.IdentifyHackneyToken(badJwt);
+
+        // assert
+        result.Should().Be(HackneyTokenType.Unknown);
+        VerifyLog(_mockLogger, LogLevel.Warning, "Token identification failed due to error or unknown token format.", Times.Once());
     }
 
     private static void VerifyLog(Mock<ILogger<TokenFactory>> mockLogger, LogLevel level, string expectedMessage, Times times)
