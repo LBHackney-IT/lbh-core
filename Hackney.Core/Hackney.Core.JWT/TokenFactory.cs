@@ -16,6 +16,7 @@ public class TokenFactory : ITokenFactory
     // it's unlikely to happen naturally. Cases like accidentally JSON serializing an unawaited promise instead of data
     // it would return typically return the spaceless version like specified here.
     private string EmptyObjectJsonPayload => "{}";
+    private int LoggedTokenTruncateLimit => 30;
     private readonly ILogger<TokenFactory> _logger;
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -102,9 +103,19 @@ public class TokenFactory : ITokenFactory
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", jwtStr);
+            var truncatedToken = TruncateLoggedToken(jwtStr);
+            _logger.LogWarning(ex, "Unexpected, Null, or Malformed token: {InvalidToken}.", truncatedToken);
             return null;
         }
+    }
+
+    private string TruncateLoggedToken(string? jwtStr)
+    {
+        string sanitizedToken = (jwtStr ?? "null").Replace("\r", "").Replace("\n", "");
+        // Truncating to prevent leaking into logs in case it's a proper token with unexpected characters attached.
+        return sanitizedToken.Length > this.LoggedTokenTruncateLimit
+            ? $"{sanitizedToken[..this.LoggedTokenTruncateLimit]}..."
+            : sanitizedToken;
     }
 
     /// <summary>

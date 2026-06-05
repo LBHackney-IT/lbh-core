@@ -16,6 +16,7 @@ public class TokenFactoryTests
     private readonly Mock<IHeaderDictionary> _mockHeaders;
     private readonly Mock<ILogger<TokenFactory>> _mockLogger;
     private readonly TokenFactory _sut;
+    private readonly int LoggedTokenTruncateLimit = 30;
 
     public TokenFactoryTests()
     {
@@ -57,13 +58,14 @@ public class TokenFactoryTests
     {
         // arrange
         var invalidToken = "invalid-token-value";
+        var expectedToken = invalidToken[..Math.Min(invalidToken.Length, LoggedTokenTruncateLimit)];
 
         // act
         var result = _sut.DecodeStandardToken(invalidToken);
 
         // assert
         result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {invalidToken}.", Times.Once());
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {expectedToken}", Times.Once());
     }
 
     [Fact]
@@ -71,13 +73,36 @@ public class TokenFactoryTests
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
+        var expectedToken = tokenWithNullPayload[..Math.Min(tokenWithNullPayload.Length, LoggedTokenTruncateLimit)];
 
         // act
         var result = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
         result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {tokenWithNullPayload}.", Times.Once());
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {expectedToken}", Times.Once());
+    }
+
+    [Fact]
+    public void TokenFactory_DecodeStandardToken_LogsWarning_WhenDeserialisationProducesNull_WhileSanitizingAndTruncatingToken()
+    {
+        // arrange
+        var tokenWithNullPayload = new string[]
+        {
+            "fakeToken",
+            "[Info] User barbastella.barbastellus@moccas-hill-wood.co.uk has been granted access.",
+            "[Info] Consult an ecologist before doing any development or maintenance on this API."
+        };
+
+        var fullTokenPayload = string.Join("\r\n", tokenWithNullPayload);
+        var expectedToken = string.Join(string.Empty, tokenWithNullPayload)[..LoggedTokenTruncateLimit];
+
+        // act
+        var result = _sut.DecodeStandardToken(fullTokenPayload);
+
+        // assert
+        result.Should().BeNull();
+        VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {expectedToken}", Times.Once());
     }
 
     [Fact]
