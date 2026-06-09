@@ -11,8 +11,10 @@ public class TokenPresentation
 {
     [JsonPropertyName("sub")]
     public required string Sub { get; set; }
+
     // Nullable due to transition period
     // The old token format groups field
+    [JsonPropertyName("groups")]
     public string[]? Groups { get; set; }
 
     // Nullable due to transition period
