@@ -1,15 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+  <PropertyGroup Label="Targeting">
     <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>12.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
     <Description>Common library providing functionality to retrieve a JWT token from a HTTP request. Used in LBH Web API services.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compilation">
     <NoWarn>S1066;S4457</NoWarn>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
