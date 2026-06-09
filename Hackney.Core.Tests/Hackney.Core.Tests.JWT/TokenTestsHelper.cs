@@ -88,8 +88,13 @@ internal static class TokenTestsHelper
             SigningCredentials = credentials,
 
             // converts 'long' unix timestamps to date times
-            Expires = DateTimeOffset.FromUnixTimeSeconds(token.Exp).UtcDateTime,
-            NotBefore = DateTimeOffset.FromUnixTimeSeconds(token.Nbf).UtcDateTime,
+            Expires = token.Exp.HasValue
+                ? DateTimeOffset.FromUnixTimeSeconds(token.Exp.Value).UtcDateTime
+                : null,
+            NotBefore = token.Nbf.HasValue
+                ? DateTimeOffset.FromUnixTimeSeconds(token.Nbf.Value).UtcDateTime
+                : null,
+
             IssuedAt = DateTimeOffset.FromUnixTimeSeconds(token.Iat).UtcDateTime
         };
 
