@@ -11,13 +11,18 @@
     <NoWarn>S1066;S4457</NoWarn>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="Nuget Dependencies">
 	 <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 	 <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
 	 <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
 	 <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Packaging">
+   <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
