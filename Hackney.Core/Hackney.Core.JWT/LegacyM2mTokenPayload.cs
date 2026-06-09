@@ -19,10 +19,10 @@ public class LegacyM2mTokenPayload
     public required string ConsumerType { get; set; }
 
     [JsonPropertyName("nbf")]
-    public long Nbf { get; set; }
+    public long? Nbf { get; set; }
 
     [JsonPropertyName("exp")]
-    public long Exp { get; set; }
+    public long? Exp { get; set; }
 
     [JsonPropertyName("iat")]
     public long Iat { get; set; }
