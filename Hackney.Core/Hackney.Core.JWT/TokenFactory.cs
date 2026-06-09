@@ -109,7 +109,7 @@ public class TokenFactory : ITokenFactory
         }
     }
 
-    private string TruncateLoggedToken(string? jwtStr)
+    private static string TruncateLoggedToken(string? jwtStr)
     {
         string sanitizedToken = (jwtStr ?? "null").Replace("\r", "").Replace("\n", "");
         // Truncating to prevent leaking into logs in case it's a proper token with unexpected characters attached.
@@ -123,7 +123,7 @@ public class TokenFactory : ITokenFactory
     /// </summary>
     /// <param name="presentation">The deserialised token presentation DTO.</param>
     /// <returns>The mapped domain <see cref="Token"/>.</returns>
-    private Token MapToDomain(TokenPresentation presentation)
+    private static Token MapToDomain(TokenPresentation presentation)
     {
         var parsedGroups = presentation.Groups ?? (
             !string.IsNullOrWhiteSpace(presentation.CustomGroups)

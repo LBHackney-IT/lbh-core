@@ -14,7 +14,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Compilation">
-    <NoWarn>S1066;S4457;CS1591</NoWarn>
+    <!--
+      CS1591 Missing XML comment for publicly visible type or member 'ClassName.PropertyName' - disabled because needlessly marking up every field will bloat the codebase.
+    -->
+    <NoWarn>CS1591</NoWarn>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
