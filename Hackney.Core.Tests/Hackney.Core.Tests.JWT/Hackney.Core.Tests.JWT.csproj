@@ -6,7 +6,13 @@
 
   <PropertyGroup Label="Compilation">
     <Nullable>enable</Nullable>
-    <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307;CA1707</NoWarn>s
+    <!--
+      CA1707 suppresses the warnings about undescores within test names
+      CA1873 false positive on logger assertion: Evaluation of this argument may be expensive and unnecessary if logging is disabled
+    -->
+    <NoWarn>CA1707;CA1873</NoWarn>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging">

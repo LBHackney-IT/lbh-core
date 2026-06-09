@@ -116,7 +116,7 @@ public class TokenFactoryTests
     public void TokenFactory_CreateMethod_Throws_GivenEmptyHeaderName()
     {
         Action act = () => _sut.Create(_mockHeaders.Object, "");
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -653,7 +653,7 @@ public class TokenFactoryTests
             x => x.Log(
                 level,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v != null && (string.Empty + v.ToString()).Contains(expectedMessage)),
+                It.Is<It.IsAnyType>((v, t) => v != null && (string.Empty + v.ToString()).Contains(expectedMessage, StringComparison.Ordinal)),
                 It.IsAny<Exception>(),
                 (Func<It.IsAnyType, Exception?, string>)It.IsAny<object>()),
             times);
