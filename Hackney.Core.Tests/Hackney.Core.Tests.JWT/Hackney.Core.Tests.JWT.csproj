@@ -1,19 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+  <PropertyGroup Label="Targeting">
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
-	  <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307;CA1707</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
+  <PropertyGroup Label="Compilation">
+    <Nullable>enable</Nullable>
+    <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307;CA1707</NoWarn>s
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup Label="TestFileExcludes">
     <Compile Remove="TestResults\**" />
     <EmbeddedResource Remove="TestResults\**" />
     <None Remove="TestResults\**" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="Test Dependencies">
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.0.3">
@@ -31,7 +37,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.JWT\Hackney.Core.JWT.csproj" />
     <ProjectReference Include="..\..\Hackney.Core\Hackney.Core.Testing\Hackney.Core.Testing.Shared\Hackney.Core.Testing.Shared.csproj" />
   </ItemGroup>
