@@ -7,7 +7,7 @@ namespace Hackney.Core.JWT;
 /// Machine to Machine (M2M) token schema used by the Hackney's legacy
 /// "Service" authentication flow.
 /// </summary>
-public class LegacyM2mTokenPayload
+public class LegacyMachineToken
 {
     [JsonPropertyName("id")]
     public required string Id { get; set; }

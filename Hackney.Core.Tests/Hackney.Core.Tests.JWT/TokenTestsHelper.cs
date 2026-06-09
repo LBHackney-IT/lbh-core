@@ -148,10 +148,10 @@ internal static class TokenTestsHelper
 
     public static string GenerateTokenWithEmptyObjectPayload() => GenerateBasicGeneralPayloadToken(new { });
 
-    public static LegacyM2mTokenPayload GenerateLegacyM2mTokenObj()
+    public static LegacyMachineToken GenerateLegacyM2mTokenObj()
     {
         long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        return new LegacyM2mTokenPayload
+        return new LegacyMachineToken
         {
             Id = Guid.NewGuid().ToString(),
             ConsumerName = "TestConsumer",
@@ -162,7 +162,7 @@ internal static class TokenTestsHelper
         };
     }
 
-    public static string GenerateLegacyM2mJwt(LegacyM2mTokenPayload payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: true);
+    public static string GenerateLegacyM2mJwt(LegacyMachineToken payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: true);
 
     public static string GenerateUnknownTokenWithPayload(object payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: false);
 }
