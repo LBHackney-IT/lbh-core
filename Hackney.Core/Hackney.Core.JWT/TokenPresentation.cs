@@ -28,11 +28,12 @@ public class TokenPresentation
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
+    // Nbf and Exp would ideally be required, that's not compatible with the Legacy token
     [JsonPropertyName("nbf")]
-    public required long Nbf { get; set; }
+    public long? Nbf { get; set; }
 
     [JsonPropertyName("exp")]
-    public required long Exp { get; set; }
+    public long? Exp { get; set; }
 
     [JsonPropertyName("iat")]
     public required long Iat { get; set; }
