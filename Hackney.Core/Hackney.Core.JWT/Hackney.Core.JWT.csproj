@@ -14,11 +14,12 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Compilation">
-    <NoWarn>S1066;S4457</NoWarn>
+    <NoWarn>S1066;S4457;CS1591</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
