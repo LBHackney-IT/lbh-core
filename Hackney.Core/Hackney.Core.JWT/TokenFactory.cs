@@ -11,12 +11,12 @@ namespace Hackney.Core.JWT;
 public class TokenFactory : ITokenFactory
 {
     // Separator aws cognito pre-token lambda uses to join Google group names with
-    private char CognitoTokenGoogleGroupsSeparator => ';';
+    private static char CognitoTokenGoogleGroupsSeparator => ';';
     // While a version of this with whitespace in between "{}" is possible and would be decoded in much the same way,
     // it's unlikely to happen naturally. Cases like accidentally JSON serializing an unawaited promise instead of data
     // it would return typically return the spaceless version like specified here.
-    private string EmptyObjectJsonPayload => "{}";
-    private int LoggedTokenTruncateLimit => 30;
+    private static string EmptyObjectJsonPayload => "{}";
+    private static int LoggedTokenTruncateLimit => 30;
     private readonly ILogger<TokenFactory> _logger;
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -32,8 +32,8 @@ public class TokenFactory : ITokenFactory
     [Obsolete("Deprecated to decouple token parsing from HTTP abstractions. This method will be removed entirely in the next major version. Extract the token string in the consuming API and use Decode instead.", error: false, DiagnosticId = "HACKNEY_DEPRECATED_TOKEN_CREATE")]
     public Token? Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
     {
-        if (headerDictionary is null) throw new ArgumentNullException(nameof(headerDictionary));
-        if (string.IsNullOrEmpty(headerName)) throw new ArgumentNullException(nameof(headerName));
+        ArgumentNullException.ThrowIfNull(headerDictionary);
+        ArgumentException.ThrowIfNullOrEmpty(headerName);
 
         var headerStringValues = headerDictionary[headerName];
 
@@ -62,7 +62,7 @@ public class TokenFactory : ITokenFactory
     /// <inheritdoc/>
     public Token? DecodeStandardToken(string jwtStr)
     {
-        var presentationToken = this.Decode<TokenPresentation>(jwtStr);
+        var presentationToken = Decode<TokenPresentation>(jwtStr);
 
         if (presentationToken is null)
         {
@@ -93,7 +93,7 @@ public class TokenFactory : ITokenFactory
 
             var decodedPayload = Base64UrlEncoder.Decode(jwtToken.EncodedPayload);
 
-            if (decodedPayload == this.EmptyObjectJsonPayload)
+            if (decodedPayload == EmptyObjectJsonPayload)
             {
                 _logger.LogWarning("JWT payload is empty JSON object.");
                 return null;
@@ -113,8 +113,8 @@ public class TokenFactory : ITokenFactory
     {
         string sanitizedToken = (jwtStr ?? "null").Replace("\r", "").Replace("\n", "");
         // Truncating to prevent leaking into logs in case it's a proper token with unexpected characters attached.
-        return sanitizedToken.Length > this.LoggedTokenTruncateLimit
-            ? $"{sanitizedToken[..this.LoggedTokenTruncateLimit]}..."
+        return sanitizedToken.Length > LoggedTokenTruncateLimit
+            ? $"{sanitizedToken[..LoggedTokenTruncateLimit]}..."
             : sanitizedToken;
     }
 
@@ -127,7 +127,7 @@ public class TokenFactory : ITokenFactory
     {
         var parsedGroups = presentation.Groups ?? (
             !string.IsNullOrWhiteSpace(presentation.CustomGroups)
-                ? presentation.CustomGroups.Split(this.CognitoTokenGoogleGroupsSeparator, StringSplitOptions.RemoveEmptyEntries)
+                ? presentation.CustomGroups.Split(CognitoTokenGoogleGroupsSeparator, StringSplitOptions.RemoveEmptyEntries)
                 : Array.Empty<string>()
             );
 

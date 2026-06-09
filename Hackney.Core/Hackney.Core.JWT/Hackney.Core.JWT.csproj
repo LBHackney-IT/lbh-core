@@ -16,6 +16,8 @@
   <PropertyGroup Label="Compilation">
     <NoWarn>S1066;S4457;CS1591</NoWarn>
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging">
