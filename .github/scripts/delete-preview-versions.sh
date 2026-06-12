@@ -3,7 +3,8 @@
 set -e 
 
 PACKAGE_NAME="$1"
-BASE_VERSION="$2"
+# doubly-ensure the base version is 3 dot separated numbers
+BASE_VERSION="${2%%-*}"
 OWNER="${GITHUB_REPOSITORY%/*}"
 
 if [ -z "$PACKAGE_NAME" ] || [ -z "$BASE_VERSION" ]; then
@@ -14,7 +15,7 @@ fi
 echo "Searching for preview versions of $PACKAGE_NAME tied to v$BASE_VERSION..."
 
 VERSION_IDS=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" \
-  --jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix)) | .id' 2>/dev/null || echo "")
+  | jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix)) | .id' 2>/dev/null || echo "")
 
 if [ -z "$VERSION_IDS" ]; then
   echo "No preview packages found for v$BASE_VERSION to clean up."
