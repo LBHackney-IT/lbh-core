@@ -10,13 +10,9 @@ on:
       - major/**
       - minor/**
       - patch/**
-      - fix-preview-v-delete
     paths:
       - "Hackney.Core/Hackney.Core.JWT/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.JWT/**"
-      - ".github/workflows/Hackney.Core.JWT.yml"
-      - ".github/workflows/reusable-publish.yml"
-      - ".github/scripts/delete-preview-versions.sh"
 
 jobs:
   call:
