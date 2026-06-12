@@ -10,6 +10,7 @@ on:
       - major/**
       - minor/**
       - patch/**
+      - fix-preview-v-delete
     paths:
       - "Hackney.Core/Hackney.Core.JWT/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.JWT/**"
