@@ -3,7 +3,7 @@
 set -e 
 
 PACKAGE_NAME="$1"
-BASE_VERSION="$2"
+BASE_VERSION="${2%%-*}"
 OWNER="${GITHUB_REPOSITORY%/*}"
 
 echo "Detected owner: *$OWNER*, from: *$GITHUB_REPOSITORY*"
