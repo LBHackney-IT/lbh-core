@@ -26,14 +26,14 @@ VR_JQ=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" | jq --arg p
 echo "$VR_JQ"
 echo "##############"
 echo "### VR FILTER ###"
-VR_FILTER=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" | jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix))')
+VR_FILTER=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" | jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix)) | .id')
 echo "$VR_FILTER"
 echo "### Done ###"
 
 
 # 2>/dev/null || echo ""
 VERSION_IDS=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" \
-  --jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix)) | .id')
+  | jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix)) | .id')
 
 if [ -z "$VERSION_IDS" ]; then
   echo "No preview packages found for v$BASE_VERSION to clean up."
