@@ -15,6 +15,7 @@ on:
       - "Hackney.Core/Hackney.Core.JWT/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.JWT/**"
       - ".github/workflows/Hackney.Core.JWT.yml"
+      - ".github/workflows/reusable-publish.yml"
 
 jobs:
   call:
