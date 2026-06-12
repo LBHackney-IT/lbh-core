@@ -7,8 +7,6 @@ PACKAGE_NAME="$1"
 BASE_VERSION="${2%%-*}"
 OWNER="${GITHUB_REPOSITORY%/*}"
 
-echo "Detected owner: *$OWNER*, from: *$GITHUB_REPOSITORY*"
-
 if [ -z "$PACKAGE_NAME" ] || [ -z "$BASE_VERSION" ]; then
   echo "Notice: Package name or base version is unset. Skipping preview cleanup."
   exit 0
