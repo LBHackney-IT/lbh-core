@@ -71,30 +71,31 @@ Please refer to [our documentation](https://docs.google.com/document/d/1aJzhNxmS
 ## Features
 
 The following features are implemented within this package (Alphabetical Order):
-* [Authorisation](/Hackney.Core/Hackney.Core.Authorization/README.md)
-* [DynamoDb](#DynamoDb)
-    * [Converters](#Converters)
-    * [Health check](#DynamoDb-Health-check)
-    * [Paged results](#Paged-results)
-* [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
-* [Enums](/Hackney.Core/Hackney.Core.Enums/README.md)
-* [Health check helpers](#Health-check-helpers)
-* [Http](/Hackney.Core/Hackney.Core.Http/README.md)
-* [JWT](#JWT)
-    * [Token Factory](#Token-Factory)
-* [Logging](#Logging)
-    * [Lambda logging](#Lambda-logging)
-* [MVC Middleware](#MVC-Middleware)
-    * [Correlation middleware](#correlation-middleware])
-    * [Exception middleware](#Exception-middleware)
-* [Sns](/Hackney.Core/Hackney.Core.Sns/README.md)
-* Testing
-    * [Hackney.Core.Testing.DynamoDb](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/README.md)
-    * [Hackney.Core.Testing.PactBroker](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/README.md)
-    * [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
-    * [Hackney.Core.Testing.Sns](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/README.md)
-* [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
-* [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
+
+- [Authorisation](/Hackney.Core/Hackney.Core.Authorization/README.md)
+- [DynamoDb](#DynamoDb)
+  - [Converters](#Converters)
+  - [Health check](#DynamoDb-Health-check)
+  - [Paged results](#Paged-results)
+- [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
+- [Enums](/Hackney.Core/Hackney.Core.Enums/README.md)
+- [Health check helpers](#Health-check-helpers)
+- [Http](/Hackney.Core/Hackney.Core.Http/README.md)
+- [JWT](Hackney.Core/Hackney.Core.JWT/README.md)
+    - [Token Factory](Hackney.Core.Hackney.Core.JWT/README.md#api-summary)
+- [Logging](#Logging)
+  - [Lambda logging](#Lambda-logging)
+- [MVC Middleware](#MVC-Middleware)
+  - [Correlation middleware](#correlation-middleware])
+  - [Exception middleware](#Exception-middleware)
+- [Sns](/Hackney.Core/Hackney.Core.Sns/README.md)
+- Testing
+  - [Hackney.Core.Testing.DynamoDb](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/README.md)
+  - [Hackney.Core.Testing.PactBroker](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/README.md)
+  - [Hackney.Core.Testing.Shared](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Shared/README.md)
+  - [Hackney.Core.Testing.Sns](/Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/README.md)
+- [Validation](/Hackney.Core/Hackney.Core.Validation/README.md)
+- [Validation.AspNet](/Hackney.Core/Hackney.Core.Validation.AspNet/ReadMe.md)
 
 ### MVC Middleware
 
@@ -473,29 +474,10 @@ namespace SomeApi
 **Project reference: `Hackney.Core.JWT`**
 
 #### Token Factory
-The `TokenFactory` implementation of the `ITokenFactory` interface is designed to easily retrieve a JWT token sent in the headers of an Http request.
-The `ITokenFactory` interface is made available by using the `AddTokenFactory()` extension method during your application start-up.
 
-Usage
-
-```csharp
-using Hackney.Core.JWT;
-
-namespace SomeApi
-{
-    public class Startup
-    {
-        ...
-        public void ConfigureServices(IServiceCollection services)
-        {
-            ...
-            services.AddTokenFactory();
-            ...
-        }
-    }
-}
-
-```
+See more details on:
+[JWT](Hackney.Core/Hackney.Core.JWT/README.md)
+[Token Factory](Hackney.Core/Hackney.Core.JWT/README.md#api-summary)
 
 ### Logging
 
