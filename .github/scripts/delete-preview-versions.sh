@@ -22,11 +22,11 @@ echo "------AV-----"
 
 echo "Now JQ!"
 echo " ####JQ ARR #### "
-VR_JQ=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" --jq --arg prefix "$BASE_VERSION-" '.[]')
+VR_JQ=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" | jq --arg prefix "$BASE_VERSION-" '.[]')
 echo "$VR_JQ"
 echo "##############"
 echo "### VR FILTER ###"
-VR_FILTER=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" --jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix))')
+VR_FILTER=$(gh api "/orgs/$OWNER/packages/nuget/$PACKAGE_NAME/versions" | jq --arg prefix "$BASE_VERSION-" '.[] | select(.name | startswith($prefix))')
 echo "$VR_FILTER"
 echo "### Done ###"
 
