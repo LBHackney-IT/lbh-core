@@ -65,7 +65,8 @@ public interface ITokenFactory
     /// <param name="jwtStr">JWT string to inspect. Leading <c>Bearer </c> prefix is accepted.</param>
     /// <returns>
     /// A <see cref="HackneyTokenType"/> value: <c>MachineLegacy</c> when payload contains <c>consumerName</c>,
-    /// <c>User</c> when payload contains <c>email</c>, otherwise <c>Unknown</c>.
+    /// <c>CognitoM2M</c> when payload contains <c>scope</c>, <c>User</c> when payload contains <c>email</c>,
+    /// otherwise <c>Unknown</c>.
     /// </returns>
     /// <remarks>
     /// Expects a three-part JWT with a non-empty signature segment. Two-part tokens

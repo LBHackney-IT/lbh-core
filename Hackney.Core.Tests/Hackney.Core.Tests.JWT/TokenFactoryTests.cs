@@ -532,6 +532,19 @@ public class TokenFactoryTests
     }
 
     [Fact]
+    public void TokenFactory_IdentifyHackneyToken_ReturnsCognitoM2MType_ForScopePayload()
+    {
+        // arrange
+        var jwt = TokenTestsHelper.GenerateCognitoM2mJwt("cognito-client-123", "2524go3mdg/tenures.post");
+
+        // act
+        var resultTokenType = _sut.IdentifyHackneyToken(jwt);
+
+        // assert
+        resultTokenType.Should().Be(HackneyTokenType.CognitoM2M);
+    }
+
+    [Fact]
     public void TokenFactory_IdentifyHackneyToken_ReturnsUserType_ForUserToken()
     {
         // arrange

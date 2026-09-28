@@ -41,7 +41,7 @@ The following methods are exposed via `ITokenFactory` (see the interface docs fo
 
 - `T? Decode<T>(string jwtStr)` — Decode the JWT payload JSON into `T`. Returns `null` for malformed tokens or empty payloads.
 - `Token? DecodeStandardToken(string jwtStr)` — Convenience wrapper that decodes a standard token payload into the project's legacy `Token` domain object.
-- `HackneyTokenType IdentifyHackneyToken(string jwtStr)` — Fast heuristic to identify `User`, `MachineLegacy`, or `Unknown` tokens. Requires a three-segment (signed) JWT to return `User` or `MachineLegacy`.
+- `HackneyTokenType IdentifyHackneyToken(string jwtStr)` — Fast heuristic to identify `User`, `MachineLegacy`, `CognitoM2M`, or `Unknown` tokens. Requires a three-segment JWT with a non-empty signature segment to return a recognized type.
 - `Token? Create(IHeaderDictionary headerDictionary, string headerName = "Authorization")` — Legacy helper (marked `[Obsolete]`) which extracts authorization header and delegates to `DecodeStandardToken`. Being deprecated as it violates this package's single responsibility principle by tapping into Http abstractions.
 
 ## Behavior & compatibility notes
@@ -49,7 +49,7 @@ The following methods are exposed via `ITokenFactory` (see the interface docs fo
 - Token formats: identification requires a three-part JWT: `header.payload.signature`. Two-part tokens (`header.payload`) or tokens with an empty signature segment (`header.payload.`) are considered unsigned and will be classified as `Unknown` by `IdentifyHackneyToken`.
 - The `Decode*` methods accept tokens prefixed with `Bearer ` (case-insensitive) and will strip that prefix.
 - An empty JSON payload (`{}`) is treated as non-meaningful — decoding returns `null` and a warning is logged.
-- `IdentifyHackneyToken` only inspects the decoded payload claims (it does not validate signatures). It returns `MachineLegacy` when `consumerName` claim is present, `User` when `email` or `sub` look like a user, otherwise `Unknown`.
+- `IdentifyHackneyToken` only inspects payload structure; it does not cryptographically validate signatures. It classifies payloads with `consumerName` as `MachineLegacy`, `scope` as `CognitoM2M`, and `email` as `User`, otherwise `Unknown`.
 
 ## Examples
 
@@ -78,6 +78,9 @@ switch (factory.IdentifyHackneyToken(jwt))
 {
     case HackneyTokenType.MachineLegacy:
         // legacy machine-to-machine token
+        break;
+    case HackneyTokenType.CognitoM2M:
+        // Cognito machine-to-machine token
         break;
     case HackneyTokenType.User:
         // user token

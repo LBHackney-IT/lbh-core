@@ -167,6 +167,9 @@ public class TokenFactory : ITokenFactory
             if (root.TryGetProperty("consumerName", out _))
                 return HackneyTokenType.MachineLegacy;
 
+            if (root.TryGetProperty("scope", out _))
+                return HackneyTokenType.CognitoM2M;
+
             if (root.TryGetProperty("email", out _))
                 return HackneyTokenType.User;
 

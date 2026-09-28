@@ -164,6 +164,9 @@ internal static class TokenTestsHelper
 
     public static string GenerateLegacyM2mJwt(LegacyMachineToken payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: true);
 
+    public static string GenerateCognitoM2mJwt(string clientId, string scope) =>
+        GenerateBasicGeneralPayloadToken(new { client_id = clientId, scope }, isSigned: true);
+
     public static string GenerateUnknownTokenWithPayload(object payload) => GenerateBasicGeneralPayloadToken(payload, isSigned: false);
 }
 
