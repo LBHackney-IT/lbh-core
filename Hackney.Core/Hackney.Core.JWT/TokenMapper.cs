@@ -60,8 +60,13 @@ internal static class TokenMapper
         var separatorIndex = scope.IndexOf(EndpointNameSeparator);
         var accessTypeSeparatorIndex = scope.LastIndexOf(AccessTypeSeparator);
 
-        if (separatorIndex <= 0 || scope.IndexOf(EndpointNameSeparator, separatorIndex + 1) >= 0 ||
-            accessTypeSeparatorIndex <= separatorIndex + 1 || accessTypeSeparatorIndex == scope.Length - 1)
+        bool apiGwAndEpNameSeparatorExists = separatorIndex <= 0;
+        bool multipleApiGwAndEpNameSeparatorsExist = scope.IndexOf(EndpointNameSeparator, separatorIndex + 1) >= 0;
+        bool separatorsAreInWrongOrder = accessTypeSeparatorIndex <= separatorIndex + 1;
+        bool accessTypeIsSpecified = accessTypeSeparatorIndex == scope.Length - 1;
+
+        if (apiGwAndEpNameSeparatorExists || multipleApiGwAndEpNameSeparatorsExist ||
+            separatorsAreInWrongOrder || accessTypeIsSpecified)
         {
             parsedScope = null!;
             return false;
