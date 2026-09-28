@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Hackney.Core.JWT;
 
-internal static class TokenMapper
+internal static partial class TokenMapper
 {
     // Separator aws cognito pre-token lambda uses to join Google group names with
     private const char CognitoTokenGoogleGroupsSeparator = ';';
     private const char AccessScopeSeparator = ' '; // separates access scopes
-    private const char EndpointNameSeparator = '/'; // separates API's api gateway id from its endpoint name
-    private const char AccessTypeSeparator = '.'; // seprates endpoint name from access type allowed for that endpoint
 
     /// <summary>
     /// Map the presentation DTO to the legacy domain <see cref="Token"/>, normalising group values.
@@ -57,16 +56,8 @@ internal static class TokenMapper
 
     private static bool TryParseAccessScope(string scope, out CognitoM2MAccessScope parsedScope)
     {
-        var separatorIndex = scope.IndexOf(EndpointNameSeparator);
-        var accessTypeSeparatorIndex = scope.LastIndexOf(AccessTypeSeparator);
-
-        bool apiGwAndEpNameSeparatorExists = separatorIndex <= 0;
-        bool multipleApiGwAndEpNameSeparatorsExist = scope.IndexOf(EndpointNameSeparator, separatorIndex + 1) >= 0;
-        bool separatorsAreInWrongOrder = accessTypeSeparatorIndex <= separatorIndex + 1;
-        bool accessTypeIsSpecified = accessTypeSeparatorIndex == scope.Length - 1;
-
-        if (apiGwAndEpNameSeparatorExists || multipleApiGwAndEpNameSeparatorsExist ||
-            separatorsAreInWrongOrder || accessTypeIsSpecified)
+        var match = AccessScopeRegex().Match(scope);
+        if (!match.Success)
         {
             parsedScope = null!;
             return false;
@@ -74,10 +65,13 @@ internal static class TokenMapper
 
         parsedScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = scope[..separatorIndex],
-            EndpointName = scope[(separatorIndex + 1)..accessTypeSeparatorIndex],
-            AccessType = scope[(accessTypeSeparatorIndex + 1)..]
+            ApiGatewayId = match.Groups["apiGatewayId"].Value,
+            EndpointName = match.Groups["endpointName"].Value,
+            AccessType = match.Groups["accessType"].Value
         };
         return true;
     }
+
+    [GeneratedRegex(@"\A(?<apiGatewayId>[A-Za-z0-9]+)/(?<endpointName>[A-Za-z0-9-]+)\.(?<accessType>[A-Za-z0-9]+)\z", RegexOptions.CultureInvariant)]
+    private static partial Regex AccessScopeRegex();
 }

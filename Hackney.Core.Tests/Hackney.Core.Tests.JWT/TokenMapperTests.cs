@@ -101,14 +101,14 @@ public class TokenMapperTests
 
         var sliferScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duel-academy-api",
+            ApiGatewayId = "duelacademyapi",
             EndpointName = "slifer-dorm",
             AccessType = "post"
         };
 
         var obelistScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duel-academy-api",
+            ApiGatewayId = "duelacademyapi",
             EndpointName = "obelisk-dorm",
             AccessType = "get"
         };
@@ -137,7 +137,7 @@ public class TokenMapperTests
         // arrange
         var expectedScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duel-academy-api",
+            ApiGatewayId = "duelacademyapi",
             EndpointName = "slifer-dorm",
             AccessType = "post"
         };
@@ -158,14 +158,17 @@ public class TokenMapperTests
         token.Scopes.Should().BeEquivalentTo(expectedScope);
     }
 
-    [Fact]
-    public void MapCognitoM2MToken_IgnoresScopeWithoutApiGatewayEndpointSeparator()
+    [Theory]
+    [InlineData("duelacademyapi/slifer_dorm.post")]
+    [InlineData("professorbanner.post")]
+    [InlineData("duelacademyapi/slifer-dorm/wingeddragon.get")]
+    public void MapCognitoM2MToken_IgnoresMalformedScopeValue(string scope)
     {
         // arrange
         var presentation = new CognitoM2MTokenPresentation
         {
-            ClientId = "jaden-yuki-client",
-            Scope = "professor-banner.post"
+            ClientId = "professor-banner-client",
+            Scope = scope
         };
 
         // act
@@ -175,65 +178,17 @@ public class TokenMapperTests
         token.Scopes.Should().BeEmpty();
     }
 
-    [Fact]
-    public void MapCognitoM2MToken_IgnoresScopeWithoutApiGatewayId()
+    [Theory]
+    [InlineData("/slifer-dorm.post")]
+    [InlineData("duelacademyapi/.post")]
+    [InlineData("duelacademyapi/slifer-dorm.")]
+    public void MapCognitoM2MToken_IgnoresScopeWithMissingComponent(string scope)
     {
         // arrange
         var presentation = new CognitoM2MTokenPresentation
         {
-            ClientId = "alexis-rhodes-client",
-            Scope = "/ra-yellow-dorm.post"
-        };
-
-        // act
-        var token = TokenMapper.MapCognitoM2MToken(presentation);
-
-        // assert
-        token.Scopes.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void MapCognitoM2MToken_IgnoresScopeWithMultipleApiGatewaySeparators()
-    {
-        // arrange
-        var presentation = new CognitoM2MTokenPresentation
-        {
-            ClientId = "zane-truesdale-client",
-            Scope = "duel-academy-api/obelisk-blue/arena.get"
-        };
-
-        // act
-        var token = TokenMapper.MapCognitoM2MToken(presentation);
-
-        // assert
-        token.Scopes.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void MapCognitoM2MToken_IgnoresScopeWithoutEndpointName()
-    {
-        // arrange
-        var presentation = new CognitoM2MTokenPresentation
-        {
-            ClientId = "bastion-misawa-client",
-            Scope = "professor-banner-api/.post"
-        };
-
-        // act
-        var token = TokenMapper.MapCognitoM2MToken(presentation);
-
-        // assert
-        token.Scopes.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void MapCognitoM2MToken_IgnoresScopeWithoutAccessType()
-    {
-        // arrange
-        var presentation = new CognitoM2MTokenPresentation
-        {
-            ClientId = "alexis-rhodes-client",
-            Scope = "professor-banner-class-api/obelisk-blue-dorm."
+            ClientId = "professor-banner-client",
+            Scope = scope
         };
 
         // act
