@@ -68,7 +68,7 @@ public class TokenFactory : ITokenFactory
             return null;
         }
 
-        return TokenMapper.Map(presentationToken);
+        return TokenMapper.MapStandardToken(presentationToken);
     }
 
     /// <inheritdoc/>
@@ -82,7 +82,7 @@ public class TokenFactory : ITokenFactory
             return null;
         }
 
-        return TokenMapper.Map(presentationToken);
+        return TokenMapper.MapCognitoM2MToken(presentationToken);
     }
 
     /// <inheritdoc/>

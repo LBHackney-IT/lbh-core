@@ -6,9 +6,15 @@ namespace Hackney.Core.JWT;
 
 internal static class TokenMapper
 {
+    // Separator aws cognito pre-token lambda uses to join Google group names with
     private const char CognitoTokenGoogleGroupsSeparator = ';';
 
-    internal static Token Map(TokenPresentation presentation)
+    /// <summary>
+    /// Map the presentation DTO to the legacy domain <see cref="Token"/>, normalising group values.
+    /// </summary>
+    /// <param name="presentation">The deserialised token presentation DTO.</param>
+    /// <returns>The mapped domain <see cref="Token"/>.</returns>
+    internal static Token MapStandardToken(TokenPresentation presentation)
     {
         var parsedGroups = presentation.Groups ?? (
             !string.IsNullOrWhiteSpace(presentation.CustomGroups)
@@ -28,7 +34,7 @@ internal static class TokenMapper
         };
     }
 
-    internal static CognitoM2MToken Map(CognitoM2MTokenPresentation presentation)
+    internal static CognitoM2MToken MapCognitoM2MToken(CognitoM2MTokenPresentation presentation)
     {
         var scopes = string.IsNullOrWhiteSpace(presentation.Scope)
             ? new List<CognitoM2MAccessScope>()
@@ -48,6 +54,7 @@ internal static class TokenMapper
 
     private static bool TryParseAccessScope(string scope, out CognitoM2MAccessScope parsedScope)
     {
+        // TODO: factor out the separators
         var separatorIndex = scope.IndexOf('/');
         var accessTypeSeparatorIndex = scope.LastIndexOf('.');
 
