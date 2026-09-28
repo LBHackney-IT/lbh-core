@@ -72,6 +72,10 @@ internal static partial class TokenMapper
         return true;
     }
 
-    [GeneratedRegex(@"\A(?<apiGatewayId>[A-Za-z0-9]+)/(?<endpointName>[A-Za-z0-9-]+)\.(?<accessType>[A-Za-z0-9]+)\z", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(
+        @"\A(?<apiGatewayId>[A-Za-z0-9]+)/(?<endpointName>[A-Za-z0-9-]+)\.(?<accessType>[A-Za-z0-9]+)\z",
+        RegexOptions.CultureInvariant,
+        matchTimeoutMilliseconds: 500
+    )]
     private static partial Regex AccessScopeRegex();
 }
