@@ -76,6 +76,20 @@ public class TokenFactory : ITokenFactory
     }
 
     /// <inheritdoc/>
+    public CognitoM2MToken? DecodeCognitoM2MToken(string jwtStr)
+    {
+        var presentationToken = Decode<CognitoM2MTokenPresentation>(jwtStr);
+
+        if (presentationToken is null)
+        {
+            _logger.LogWarning("Failed to deserialize Cognito M2M JWT payload.");
+            return null;
+        }
+
+        return MapToDomain(presentationToken);
+    }
+
+    /// <inheritdoc/>
     public T? Decode<T>(string jwtStr) where T : class
     {
         // Prevent misleading API consumers with 500 Internal Server Errors due to a bad token input. Fail gracefully.

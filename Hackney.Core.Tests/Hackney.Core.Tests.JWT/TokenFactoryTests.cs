@@ -532,6 +532,44 @@ public class TokenFactoryTests
     }
 
     [Fact]
+    public void TokenFactory_DecodeCognitoM2MToken_MapsClientIdAndScopes()
+    {
+        // arrange
+        const string clientId = "cognito-client-123";
+
+        var tenureScope = new CognitoM2MAccessScope
+        {
+            ApiGatewayId = "2524go3mdg",
+            EndpointName = "tenures",
+            AccessType = "post"
+        };
+
+        var repairsScope = new CognitoM2MAccessScope
+        {
+            ApiGatewayId = "8ab5v6",
+            EndpointName = "repairs",
+            AccessType = "get"
+        };
+
+        string tenureM2MScope = $"{tenureScope.ApiGatewayId}/{tenureScope.EndpointName}.{tenureScope.AccessType}";
+        string repairsM2MScope = $"{repairsScope.ApiGatewayId}/{repairsScope.EndpointName}.{repairsScope.AccessType}";
+
+        string validCognitoM2MScopes = $"{tenureM2MScope} {repairsM2MScope}";
+        const string malformedCognitoM2MScopes = "malformed 8ab5v6/.read";
+        string cognitoM2MScopes = $"{validCognitoM2MScopes} {malformedCognitoM2MScopes}";
+
+        var jwt = TokenTestsHelper.GenerateCognitoM2mJwt(clientId, cognitoM2MScopes);
+
+        // act
+        var decodedToken = _sut.DecodeCognitoM2MToken($"Bearer {jwt}");
+
+        // assert
+        decodedToken.Should().NotBeNull();
+        decodedToken!.ClientId.Should().Be(clientId);
+        decodedToken.Scopes.Should().BeEquivalentTo(tenureScope, repairsScope);
+    }
+
+    [Fact]
     public void TokenFactory_IdentifyHackneyToken_ReturnsCognitoM2MType_ForScopePayload()
     {
         // arrange
