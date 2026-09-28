@@ -21,6 +21,11 @@ public enum HackneyTokenType
     MachineLegacy,
 
     /// <summary>
+    /// Cognito machine-to-machine token (contains a <c>scope</c> claim).
+    /// </summary>
+    CognitoM2M,
+
+    /// <summary>
     /// Token that could not be identified (unsigned, malformed, or otherwise unrecognised).
     /// </summary>
     Unknown
