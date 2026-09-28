@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
@@ -141,6 +143,45 @@ public class TokenFactory : ITokenFactory
             Exp = presentation.Exp,
             Iat = presentation.Iat
         };
+    }
+
+    private static CognitoM2MToken MapToDomain(CognitoM2MTokenPresentation presentation)
+    {
+        var scopes = string.IsNullOrWhiteSpace(presentation.Scope)
+            ? new List<CognitoM2MAccessScope>()
+            : presentation.Scope
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(scope => TryParseAccessScope(scope, out var parsedScope) ? parsedScope : null)
+                .Where(scope => scope is not null)
+                .Select(scope => scope!)
+                .ToList();
+
+        return new CognitoM2MToken
+        {
+            ClientId = presentation.ClientId,
+            Scopes = scopes
+        };
+    }
+
+    private static bool TryParseAccessScope(string scope, out CognitoM2MAccessScope parsedScope)
+    {
+        var separatorIndex = scope.IndexOf('/');
+        var accessTypeSeparatorIndex = scope.LastIndexOf('.');
+
+        if (separatorIndex <= 0 || scope.IndexOf('/', separatorIndex + 1) >= 0 ||
+            accessTypeSeparatorIndex <= separatorIndex + 1 || accessTypeSeparatorIndex == scope.Length - 1)
+        {
+            parsedScope = null!;
+            return false;
+        }
+
+        parsedScope = new CognitoM2MAccessScope
+        {
+            ApiGatewayId = scope[..separatorIndex],
+            EndpointName = scope[(separatorIndex + 1)..accessTypeSeparatorIndex],
+            AccessType = scope[(accessTypeSeparatorIndex + 1)..]
+        };
+        return true;
     }
 
     /// <inheritdoc/>
