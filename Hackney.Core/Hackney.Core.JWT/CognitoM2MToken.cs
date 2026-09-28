@@ -4,7 +4,7 @@ namespace Hackney.Core.JWT;
 
 /// <summary>
 /// A Domain layer model representing a Cognito M2M token schema Hackney
-/// APIs rely on. This model does include any other JWT claim fields as
+/// APIs rely on. This model does not include any other JWT claim fields as
 /// those are validated by the lambda authorizer and do not get used in
 /// any way within individual APIs.
 /// </summary>
