@@ -10,8 +10,6 @@ namespace Hackney.Core.JWT;
 /// <inheritdoc/>
 public class TokenFactory : ITokenFactory
 {
-    // Separator aws cognito pre-token lambda uses to join Google group names with
-    private static char CognitoTokenGoogleGroupsSeparator => ';';
     // While a version of this with whitespace in between "{}" is possible and would be decoded in much the same way,
     // it's unlikely to happen naturally. Cases like accidentally JSON serializing an unawaited promise instead of data
     // it would return typically return the spaceless version like specified here.
@@ -70,7 +68,21 @@ public class TokenFactory : ITokenFactory
             return null;
         }
 
-        return MapToDomain(presentationToken);
+        return TokenMapper.MapStandardToken(presentationToken);
+    }
+
+    /// <inheritdoc/>
+    public CognitoM2MToken? DecodeCognitoM2MToken(string jwtStr)
+    {
+        var presentationToken = Decode<CognitoM2MTokenPresentation>(jwtStr);
+
+        if (presentationToken is null)
+        {
+            _logger.LogWarning("Failed to deserialize Cognito M2M JWT payload.");
+            return null;
+        }
+
+        return TokenMapper.MapCognitoM2MToken(presentationToken);
     }
 
     /// <inheritdoc/>
@@ -118,31 +130,6 @@ public class TokenFactory : ITokenFactory
             : sanitizedToken;
     }
 
-    /// <summary>
-    /// Map the presentation DTO to the legacy domain <see cref="Token"/>, normalising group values.
-    /// </summary>
-    /// <param name="presentation">The deserialised token presentation DTO.</param>
-    /// <returns>The mapped domain <see cref="Token"/>.</returns>
-    private static Token MapToDomain(TokenPresentation presentation)
-    {
-        var parsedGroups = presentation.Groups ?? (
-            !string.IsNullOrWhiteSpace(presentation.CustomGroups)
-                ? presentation.CustomGroups.Split(CognitoTokenGoogleGroupsSeparator, StringSplitOptions.RemoveEmptyEntries)
-                : Array.Empty<string>()
-            );
-
-        return new Token
-        {
-            Sub = presentation.Sub,
-            Groups = parsedGroups,
-            Email = presentation.Email,
-            Name = presentation.Name,
-            Nbf = presentation.Nbf,
-            Exp = presentation.Exp,
-            Iat = presentation.Iat
-        };
-    }
-
     /// <inheritdoc/>
     public HackneyTokenType IdentifyHackneyToken(string jwtStr)
     {
@@ -166,6 +153,9 @@ public class TokenFactory : ITokenFactory
 
             if (root.TryGetProperty("consumerName", out _))
                 return HackneyTokenType.MachineLegacy;
+
+            if (root.TryGetProperty("scope", out _))
+                return HackneyTokenType.CognitoM2M;
 
             if (root.TryGetProperty("email", out _))
                 return HackneyTokenType.User;

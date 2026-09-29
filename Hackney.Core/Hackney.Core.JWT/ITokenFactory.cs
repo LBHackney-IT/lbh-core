@@ -43,6 +43,14 @@ public interface ITokenFactory
     Token? DecodeStandardToken(string jwtStr);
 
     /// <summary>
+    /// Decodes a Cognito machine-to-machine JWT and maps its client identifier and scopes
+    /// to the publicly exposed domain <see cref="CognitoM2MToken"/> model.
+    /// </summary>
+    /// <param name="jwtStr">JWT string (may include a leading <c>Bearer </c> prefix).</param>
+    /// <returns>The mapped Cognito M2M token, or <c>null</c> when decoding fails.</returns>
+    CognitoM2MToken? DecodeCognitoM2MToken(string jwtStr);
+
+    /// <summary>
     /// Decodes the JWT payload and deserializes it into an instance of <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The target type to deserialize the JWT payload into.</typeparam>
@@ -65,7 +73,8 @@ public interface ITokenFactory
     /// <param name="jwtStr">JWT string to inspect. Leading <c>Bearer </c> prefix is accepted.</param>
     /// <returns>
     /// A <see cref="HackneyTokenType"/> value: <c>MachineLegacy</c> when payload contains <c>consumerName</c>,
-    /// <c>User</c> when payload contains <c>email</c>, otherwise <c>Unknown</c>.
+    /// <c>CognitoM2M</c> when payload contains <c>scope</c>, <c>User</c> when payload contains <c>email</c>,
+    /// otherwise <c>Unknown</c>.
     /// </returns>
     /// <remarks>
     /// Expects a three-part JWT with a non-empty signature segment. Two-part tokens

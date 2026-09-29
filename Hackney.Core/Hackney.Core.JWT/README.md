@@ -4,96 +4,88 @@
 
 Lightweight helpers for decoding, inspecting and identifying JWTs used across Hackney APIs and services.
 
-This package is tailored for read-only JWT handling in application code and tests — it does not provide token issuing or validation against public keys. Its primary goals are:
+This package is tailored for read-only JWT handling in application code. It does not issue tokens or validate signatures against public keys. Its primary goals are:
 
-- Decode token payloads into typed objects (`Decode<T>`).
-- Provide a convenience mapping to a legacy `Token` domain object (`DecodeStandardToken`).
-- Fast, dependency-light token-type identification (`IdentifyHackneyToken`).
+- Identify supported Hackney token types (`IdentifyHackneyToken`).
+- Decode user and Cognito machine-to-machine tokens into domain objects (`DecodeStandardToken`, `DecodeCognitoM2MToken`).
+- Decode other JWT payloads into caller-provided types (`Decode<T>`).
 
 The library favors defensive behaviour: malformed tokens and unsupported inputs log warnings and return safe values (`null` or `Unknown`) rather than throwing.
 
-## Install
+## Install and setup
 
-Install from NuGet (replace with actual package id/version):
+Install the package from NuGet:
 
 ```bash
 dotnet add package Hackney.Core.JWT --version <version>
 ```
 
-## Quick start
-
-Add the factory into your DI and use the provided decode helpers:
+Register the token factory during application startup:
 
 ```csharp
-// Startup.cs
-services.AddTokenFactory();
+using Hackney.Core.JWT;
 
-// usage
-var factory = serviceProvider.GetRequiredService<ITokenFactory>();
-var dto = factory.Decode<MyDto>(jwtString);
-var domainToken = factory.DecodeStandardToken(jwtString);
-var kind = factory.IdentifyHackneyToken(jwtString);
+builder.Services.AddTokenFactory();
 ```
 
-## API summary
-
-The following methods are exposed via `ITokenFactory` (see the interface docs for authoritative behaviour):
-
-- `T? Decode<T>(string jwtStr)` — Decode the JWT payload JSON into `T`. Returns `null` for malformed tokens or empty payloads.
-- `Token? DecodeStandardToken(string jwtStr)` — Convenience wrapper that decodes a standard token payload into the project's legacy `Token` domain object.
-- `HackneyTokenType IdentifyHackneyToken(string jwtStr)` — Fast heuristic to identify `User`, `MachineLegacy`, or `Unknown` tokens. Requires a three-segment (signed) JWT to return `User` or `MachineLegacy`.
-- `Token? Create(IHeaderDictionary headerDictionary, string headerName = "Authorization")` — Legacy helper (marked `[Obsolete]`) which extracts authorization header and delegates to `DecodeStandardToken`. Being deprecated as it violates this package's single responsibility principle by tapping into Http abstractions.
-
-## Behavior & compatibility notes
-
-- Token formats: identification requires a three-part JWT: `header.payload.signature`. Two-part tokens (`header.payload`) or tokens with an empty signature segment (`header.payload.`) are considered unsigned and will be classified as `Unknown` by `IdentifyHackneyToken`.
-- The `Decode*` methods accept tokens prefixed with `Bearer ` (case-insensitive) and will strip that prefix.
-- An empty JSON payload (`{}`) is treated as non-meaningful — decoding returns `null` and a warning is logged.
-- `IdentifyHackneyToken` only inspects the decoded payload claims (it does not validate signatures). It returns `MachineLegacy` when `consumerName` claim is present, `User` when `email` or `sub` look like a user, otherwise `Unknown`.
-
-## Examples
-
-Decode a typed payload:
+Inject `ITokenFactory` where token handling is required:
 
 ```csharp
-var payload = factory.Decode<Dictionary<string,object>>(jwt);
-if (payload != null && payload.ContainsKey("email")) {
-    // treat as user token
-}
-```
-
-Decode the standard token presentation into legacy `Token` domain object:
-
-```csharp
-var token = factory.DecodeStandardToken(jwt);
-if (token == null) {
-    // handle invalid token
-}
-```
-
-Identify token type cheaply:
-
-```csharp
-switch (factory.IdentifyHackneyToken(jwt))
+public sealed class MyService
 {
-    case HackneyTokenType.MachineLegacy:
-        // legacy machine-to-machine token
-        break;
+    private readonly ITokenFactory _tokenFactory;
+
+    public MyService(ITokenFactory tokenFactory)
+    {
+        _tokenFactory = tokenFactory;
+    }
+}
+```
+
+`AddTokenFactory` registers the factory and logging services with the dependency injection container.
+
+## Intended usage
+
+Identify a supported Hackney token before choosing a decoder. `IdentifyHackneyToken` recognizes payload markers for user, legacy machine-to-machine and Cognito machine-to-machine tokens. It returns `Unknown` for unsupported or unrecognized payloads.
+
+```csharp
+switch (tokenFactory.IdentifyHackneyToken(jwtString))
+{
     case HackneyTokenType.User:
-        // user token
+        var userToken = tokenFactory.DecodeStandardToken(jwtString);
         break;
+
+    case HackneyTokenType.MachineLegacy:
+        var legacyMachineToken = tokenFactory.Decode<LegacyMachineToken>(jwtString);
+        break;
+
+    case HackneyTokenType.CognitoM2M:
+        var cognitoMachineToken = tokenFactory.DecodeCognitoM2MToken(jwtString);
+        break;
+
+    case HackneyTokenType.Unknown:
     default:
-        // unknown/unsupported
+        // Handle unsupported or unrecognized token types.
         break;
 }
 ```
 
-## Testing helpers
+For JWT payloads that do not use one of these supported Hackney token formats, use `Decode<T>` with an application-defined payload type:
 
-The test project (`Hackney.Core.Tests`) contains `TokenTestsHelper` utilities used in unit tests to generate both signed and unsigned test tokens. The helper uses a test secret and produces base64url-encoded header.payload and an HMAC-SHA256 signature when requested — see tests for exact behaviour.
+```csharp
+var payload = tokenFactory.Decode<MyTokenPayload>(jwtString);
+```
 
-When writing tests that depend on `IdentifyHackneyToken`, prefer generating three-part signed tokens if you need the token to be recognised. Unsigned two-part tokens should be used to assert `Unknown` classification.
+## Token handling
+
+- `IdentifyHackneyToken` requires a three-part JWT with a non-empty signature segment to classify a token. This is a structural requirement only; it does not verify the signature cryptographically.
+- Identification checks `consumerName` for `MachineLegacy`, `scope` for `CognitoM2M`, and `email` for `User`, in that order. Other payloads are `Unknown`.
+- `DecodeStandardToken` maps the legacy and Cognito user token payloads to the `Token` domain model. Missing group claims produce an empty group list. The cognito token `customGroups` only get mapped when `groups` is not provided.
+- `DecodeCognitoM2MToken` maps Cognito's `client_id` and space-separated `scope` claims to `CognitoM2MToken`. Each valid scope in the form `{apiGatewayId}/{endpointName}.{accessType}` becomes a `CognitoM2MAccessScope`; malformed entries are ignored.
+- `Decode<T>` deserializes a JWT payload into the requested type. Use it for the legacy machine token or other payload formats not handled by a dedicated decoder.
+- Decode methods accept an optional `Bearer ` prefix and return `null` for malformed tokens, deserialization failures, or an empty JSON object payload.
+- `Create(IHeaderDictionary, ...)` is a deprecated HTTP-header convenience method. Extract the token string in application code, only then call a decoder.
 
 ## Security and limitations
 
-- This package does not perform cryptographic validation of tokens (no signature verification against public keys). It is intended for decoding and application-level light-weight classification only.
+This package decodes JWT payloads and performs lightweight structural classification only. It does not validate signatures, issuer, audience, expiry, or other security claims. Validate tokens through the appropriate authentication middleware or trusted authorizer before relying on their claims. This choice is a deliberate design decision as these checks are performed at a lambda authorizer level.

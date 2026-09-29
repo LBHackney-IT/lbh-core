@@ -40,4 +40,9 @@
    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!-- Needed to test the private logic internal to the package as the tests project is separate -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hackney.Core.Tests.JWT" />
+  </ItemGroup>
+
 </Project>
