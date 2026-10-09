@@ -35,7 +35,7 @@ public class GoogleGroupsAuthorizationMiddlewareTests
         var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
         Func<Task> act = () => sut.Invoke(httpContext, mockTokenFactory.Object);
 
-        await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'MyException')").ConfigureAwait(false);
+        await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'MyException')");
         mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
     }
 
@@ -58,13 +58,13 @@ public class GoogleGroupsAuthorizationMiddlewareTests
             .Returns(Task.FromResult(0));
 
         var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-        await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
+        await sut.Invoke(httpContext, mockTokenFactory.Object);
 
         httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
         httpContext.Response.Body.Position = 0;
         using (StreamReader streamReader = new(httpContext.Response.Body))
         {
-            string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+            string actualResponseText = await streamReader.ReadToEndAsync();
 
             var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
@@ -100,13 +100,13 @@ public class GoogleGroupsAuthorizationMiddlewareTests
             .Returns(Task.FromResult(0));
 
         var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-        await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
+        await sut.Invoke(httpContext, mockTokenFactory.Object);
 
         httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
         httpContext.Response.Body.Position = 0;
         using (StreamReader streamReader = new(httpContext.Response.Body))
         {
-            string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+            string actualResponseText = await streamReader.ReadToEndAsync();
 
             var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
@@ -142,13 +142,13 @@ public class GoogleGroupsAuthorizationMiddlewareTests
             .Returns(Task.FromResult(0));
 
         var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-        await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
+        await sut.Invoke(httpContext, mockTokenFactory.Object);
 
         httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
         httpContext.Response.Body.Position = 0;
         using (StreamReader streamReader = new(httpContext.Response.Body))
         {
-            string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+            string actualResponseText = await streamReader.ReadToEndAsync();
 
             var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
 
@@ -182,7 +182,7 @@ public class GoogleGroupsAuthorizationMiddlewareTests
             .Returns(Task.FromResult(0));
 
         var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-        await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
+        await sut.Invoke(httpContext, mockTokenFactory.Object);
 
         mockRequestDelegate.Verify(x => x.Invoke(httpContext), Times.Once);
     }
