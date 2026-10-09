@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using FluentAssertions;
 using Hackney.Core.Testing.Shared;
@@ -36,6 +36,7 @@ public class AuthorizeEndpointByIpWhitelistTests
         SetUpMockContextAndHeaders();
     }
 
+    [MemberNotNull(nameof(_context))]
     private void SetUpMockContextAndHeaders()
     {
         _mockHttpContext.Setup(x => x.Request.Headers).Returns(_requestHeaders);
@@ -66,8 +67,11 @@ public class AuthorizeEndpointByIpWhitelistTests
     public void OnAuthorization_ReturnsUnauthorizedResult_WhenRemoteIpIsNull()
     {
         // Arrange
-        _mockHttpContext.Setup(x => x.Connection.RemoteIpAddress)
-            .Returns((IPAddress)null);
+        // DefaultHttpContext leaves RemoteIpAddress unset, which is the null case this filter handles.
+        var httpContext = new DefaultHttpContext();
+        _context = new AuthorizationFilterContext(
+            new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),
+            []);
 
         // Act
         _classUnderTest.OnAuthorization(_context);

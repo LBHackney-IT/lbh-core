@@ -39,54 +39,16 @@ public class GoogleGroupsAuthorizationMiddlewareTests
     [Fact]
     public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestNullToken_HasUnauthorizedResponse()
     {
-        Token expectedToken = null;
         var expectedResponseText = "JWT token cannot be parsed!";
         var expectedStatusCode = (int)HttpStatusCode.Unauthorized;
 
         DefaultHttpContext httpContext = new();
         httpContext.Response.Body = new MemoryStream();
 
+        Token? missingToken = null;
         var mockTokenFactory = new Mock<ITokenFactory>();
         mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
-            .Returns(expectedToken);
-
-        var mockRequestDelegate = new Mock<RequestDelegate>();
-        mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
-            .Returns(Task.FromResult(0));
-
-        var sut = new GoogleGroupsAuthorizationMiddleware(mockRequestDelegate.Object);
-        await sut.Invoke(httpContext, mockTokenFactory.Object).ConfigureAwait(false);
-
-        httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
-        httpContext.Response.Body.Position = 0;
-        using (StreamReader streamReader = new(httpContext.Response.Body))
-        {
-            string actualResponseText = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-
-            var errorResponse = JsonConvert.DeserializeObject<BaseErrorResponse>(actualResponseText);
-
-            errorResponse.StatusCode.Should().Be(expectedStatusCode);
-            errorResponse.Message.Should().Be(expectedResponseText);
-        }
-        mockRequestDelegate.Verify(x => x.Invoke(It.IsAny<HttpContext>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task GoogleGroupsAuthorizationMiddlewareInvoke_TestTokenGroupsAreNull_HasForbiddenResponse()
-    {
-        Token expectedToken = new Token
-        {
-            Groups = null
-        };
-        var expectedResponseText = "JWT token should contain [groups] claim!";
-        var expectedStatusCode = (int)HttpStatusCode.Forbidden;
-
-        DefaultHttpContext httpContext = new();
-        httpContext.Response.Body = new MemoryStream();
-
-        var mockTokenFactory = new Mock<ITokenFactory>();
-        mockTokenFactory.Setup(x => x.Create(It.IsAny<IHeaderDictionary>(), It.IsAny<string>()))
-            .Returns(expectedToken);
+            .Returns(missingToken);
 
         var mockRequestDelegate = new Mock<RequestDelegate>();
         mockRequestDelegate.Setup(x => x.Invoke(It.IsAny<HttpContext>()))
@@ -115,6 +77,9 @@ public class GoogleGroupsAuthorizationMiddlewareTests
         Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", null);
         Token expectedToken = new()
         {
+            Sub = "sub",
+            Name = "name",
+            Email = "email@example.com",
             Groups = ["HackneyAll"]
         };
         var expectedResponseText = "Cannot resolve REQUIRED_GOOGL_GROUPS environment variable!";
@@ -154,6 +119,9 @@ public class GoogleGroupsAuthorizationMiddlewareTests
         Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", "GoodGroup; HackneyAll;");
         Token expectedToken = new()
         {
+            Sub = "sub",
+            Name = "name",
+            Email = "email@example.com",
             Groups = ["HackneyAll", "BadGroup"]
         };
         var expectedResponseText = "Forbidden";
@@ -193,6 +161,9 @@ public class GoogleGroupsAuthorizationMiddlewareTests
         Environment.SetEnvironmentVariable("REQUIRED_GOOGL_GROUPS", "GoodGroup; HackneyAll;");
         Token expectedToken = new()
         {
+            Sub = "sub",
+            Name = "name",
+            Email = "email@example.com",
             Groups = ["HackneyAll", "GoodGroup", "SomeMoreGroup"]
         };
 

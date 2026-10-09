@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using AutoFixture;
 using Hackney.Core.Authorization;
 using FluentAssertions;
@@ -36,6 +37,7 @@ public class AuthoriseEndpointByGroupsTests
         SetUpMockContextAndHeaders();
     }
 
+    [MemberNotNull(nameof(_context), nameof(_requestHeaders))]
     private void SetUpMockContextAndHeaders()
     {
         _requestHeaders = new HeaderDictionary(new Dictionary<string, StringValues> { { "Authorization", "abc" } });
@@ -61,14 +63,15 @@ public class AuthoriseEndpointByGroupsTests
     public void OnAuthorizationResultIsUnauthorizedIfTokenIsNull()
     {
         // Arrange
-        _mockTokenFactory.Setup(x => x.Create(_requestHeaders, "Authorization")).Returns((Token)null);
+        Token? missingToken = null;
+        _mockTokenFactory.Setup(x => x.Create(_requestHeaders, "Authorization")).Returns(missingToken);
 
         // Act
         _classUnderTest.OnAuthorization(_context);
 
         // Assert
-        _context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
-        (_context.Result as UnauthorizedObjectResult).Value.Should().Be("User  is not authorized to access this endpoint.");
+        _context.Result.Should().BeOfType<UnauthorizedObjectResult>()
+            .Which.Value.Should().Be("User  is not authorized to access this endpoint.");
         _mockTokenFactory.Verify(x => x.Create(_requestHeaders, "Authorization"), Times.Once);
     }
 
@@ -83,8 +86,8 @@ public class AuthoriseEndpointByGroupsTests
         _classUnderTest.OnAuthorization(_context);
 
         // Assert
-        _context.Result.Should().BeOfType(typeof(UnauthorizedObjectResult));
-        (_context.Result as UnauthorizedObjectResult).Value.Should().Be($"User {userToken.Name} is not authorized to access this endpoint.");
+        _context.Result.Should().BeOfType<UnauthorizedObjectResult>()
+            .Which.Value.Should().Be($"User {userToken.Name} is not authorized to access this endpoint.");
         _mockTokenFactory.Verify(x => x.Create(_requestHeaders, "Authorization"), Times.Once);
     }
 

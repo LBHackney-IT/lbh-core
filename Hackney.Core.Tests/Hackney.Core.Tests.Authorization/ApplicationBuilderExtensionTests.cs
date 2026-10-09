@@ -11,9 +11,9 @@ public class ApplicationBuilderExtensionTests
     [Fact]
     public void UseGoogleGroupAuthorizationTestNullAppThrows()
     {
-        IApplicationBuilder app = null;
+        IApplicationBuilder? app = null;
 
-        Action act = () => ApplicationBuilderExtension.UseGoogleGroupAuthorization(app);
+        Action act = () => app.UseGoogleGroupAuthorization();
 
         act.Should().Throw<ArgumentNullException>().WithMessage("Value cannot be null. (Parameter 'IApplicationBuilder')");
     }
