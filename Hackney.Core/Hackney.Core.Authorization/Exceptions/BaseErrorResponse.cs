@@ -25,11 +25,11 @@
         /// <example>
         /// Model cannot be null
         /// </example>>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
         /// <summary>
         /// Stack Trace of Exception
         /// </summary>
-        public string Details { get; set; }
+        public string Details { get; set; } = string.Empty;
     }
 }

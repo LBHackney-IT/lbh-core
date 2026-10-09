@@ -9,7 +9,7 @@ namespace Hackney.Core.Authorization
         /// Adds middleware to check in JWT token contains needed Google group
         /// </summary>
         /// <returns>The service collection</returns>
-        public static IApplicationBuilder UseGoogleGroupAuthorization(this IApplicationBuilder app)
+        public static IApplicationBuilder UseGoogleGroupAuthorization(this IApplicationBuilder? app)
         {
             if (app is null) throw new ArgumentNullException(nameof(IApplicationBuilder));
 

@@ -27,11 +27,6 @@ namespace Hackney.Core.Authorization
                 return;
             }
 
-            if (token.Groups == null)
-            {
-                await HandleResponseAsync(context, HttpStatusCode.Forbidden, "JWT token should contain [groups] claim!").ConfigureAwait(false);
-                return;
-            }
             var requiredGoogleGroupsVariable = Environment.GetEnvironmentVariable("REQUIRED_GOOGL_GROUPS");
             if (requiredGoogleGroupsVariable == null)
             {
