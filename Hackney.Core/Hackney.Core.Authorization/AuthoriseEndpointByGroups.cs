@@ -5,9 +5,6 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-// Will be addressed with the with version 2 of the package
-#pragma warning disable HACKNEY_DEPRECATED_TOKEN_CREATE
-
 namespace Hackney.Core.Authorization
 {
     public class AuthorizeEndpointByGroups : TypeFilterAttribute
@@ -20,7 +17,7 @@ namespace Hackney.Core.Authorization
         /// </param>
         public AuthorizeEndpointByGroups(string permittedGroupsVariable) : base(typeof(TokenGroupsFilter))
         {
-            Arguments = new object[] { permittedGroupsVariable };
+            Arguments = [permittedGroupsVariable];
         }
     }
 
@@ -41,11 +38,33 @@ namespace Hackney.Core.Authorization
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var token = _tokenFactory.Create(context.HttpContext.Request.Headers);
-            if (token is null || !token.Groups.Any(g => _requiredGoogleGroups.Contains(g)))
+            var tokenString = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Trim();
+
+            if (tokenString is null || tokenString == string.Empty)
             {
-                context.Result = new UnauthorizedObjectResult($"User {token?.Name} is not authorized to access this endpoint.");
+                context.Result = new UnauthorizedObjectResult($"Missing or empty Authorization header value.");
+                return;
             }
+
+            var tokenType = _tokenFactory.IdentifyHackneyToken(tokenString);
+
+            switch (tokenType)
+            {
+                case HackneyTokenType.User:
+                    Token? userToken = _tokenFactory.DecodeStandardToken(tokenString);
+                    if (userToken is null || !userToken.Groups.Any(g => _requiredGoogleGroups.Contains(g)))
+                        context.Result = new UnauthorizedObjectResult($"User {userToken?.Name} is not authorized to access this endpoint.");
+                    return;
+                case HackneyTokenType.MachineLegacy:
+                    // DO NOTHING. Legacy Machine tokens access is already authorized per-endpoint level at the lambda authorizer.
+                    // As such, there's nothing additional left to check at the API level.
+                    return;
+                default:
+                    context.Result = new UnauthorizedObjectResult($"Unknown token type has been encountered. Access denied!");
+                    return;
+            }
+            // TODO: this would ideally have some sort of logging setup, however, adding logger as injectable dependency will break public contract
+            // As such, this is left for the v2 of this package. For now, only the Machine Legacy token handling bug is fixed.
         }
     }
 }
