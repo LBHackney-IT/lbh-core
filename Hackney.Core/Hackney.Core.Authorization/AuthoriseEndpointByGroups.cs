@@ -5,6 +5,9 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
+// Will be addressed with the with version 2 of the package
+#pragma warning disable HACKNEY_DEPRECATED_TOKEN_CREATE
+
 namespace Hackney.Core.Authorization
 {
     public class AuthorizeEndpointByGroups : TypeFilterAttribute

@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using Hackney.Core.Authorization.Exceptions;
 using Xunit;
 
+// Will be addressed with the with version 2 of the package
+#pragma warning disable HACKNEY_DEPRECATED_TOKEN_CREATE
+
 namespace Hackney.Core.Tests.Authorization;
 
 public class GoogleGroupsAuthorizationMiddlewareTests
