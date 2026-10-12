@@ -70,3 +70,6 @@ testresults/
 *.binlog
 
 dotnet-format
+
+# Ignore code coverage reports
+Hackney.Core.Tests*/**/TestResults/
