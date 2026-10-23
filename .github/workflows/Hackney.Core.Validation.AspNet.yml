@@ -8,8 +8,8 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Validation.AspNet/**"
-      - "Hackney.Core.Tests.Validation.AspNet/**"
+      - 'Hackney.Core/Hackney.Core.Validation.AspNet/**'
+      - 'Hackney.Core.Tests.Validation.AspNet/**'
 
 jobs:
   call:

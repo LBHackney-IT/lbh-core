@@ -8,8 +8,8 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Enums/**"
-      - "Hackney.Core.Tests/Hackney.Core.Tests.Enums/**"
+      - 'Hackney.Core/Hackney.Core.Enums/**'
+      - 'Hackney.Core.Tests/Hackney.Core.Tests.Enums/**'
 
 jobs:
   call:

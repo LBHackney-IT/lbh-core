@@ -8,8 +8,8 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.DynamoDb/**"
-      - "Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/**"
+      - 'Hackney.Core/Hackney.Core.DynamoDb/**'
+      - 'Hackney.Core.Tests/Hackney.Core.Tests.DynamoDb/**'
 
 jobs:
   call:

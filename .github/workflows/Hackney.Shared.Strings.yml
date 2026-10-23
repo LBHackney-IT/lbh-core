@@ -8,7 +8,7 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Shared/Hackney.Shared.Strings/**"
+      - 'Hackney.Shared/Hackney.Shared.Strings/**'
 
 jobs:
   call:

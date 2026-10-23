@@ -8,7 +8,7 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/**"
+      - 'Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/**'
 
 jobs:
   call:

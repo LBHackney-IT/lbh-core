@@ -8,8 +8,8 @@ on:
     branches:
       - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Http/**"
-      - "Hackney.Core.Tests/Hackney.Core.Tests.Http/**"
+      - 'Hackney.Core/Hackney.Core.Http/**'
+      - 'Hackney.Core.Tests/Hackney.Core.Tests.Http/**'
 
 jobs:
   call:
