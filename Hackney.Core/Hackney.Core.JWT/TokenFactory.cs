@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -24,37 +23,6 @@ public class TokenFactory : ITokenFactory
     public TokenFactory(ILogger<TokenFactory> logger)
     {
         _logger = logger;
-    }
-
-    /// <inheritdoc/>
-    [Obsolete("Deprecated to decouple token parsing from HTTP abstractions. This method will be removed entirely in the next major version. Extract the token string in the consuming API and use Decode instead.", error: false, DiagnosticId = "HACKNEY_DEPRECATED_TOKEN_CREATE")]
-    public Token? Create(IHeaderDictionary headerDictionary, string headerName = ITokenFactory.DefaultHeaderName)
-    {
-        ArgumentNullException.ThrowIfNull(headerDictionary);
-        ArgumentException.ThrowIfNullOrEmpty(headerName);
-
-        var headerStringValues = headerDictionary[headerName];
-
-        if (headerStringValues.Count == 0)
-        {
-            _logger.LogWarning("Provided header '{HeaderName}' is empty.", headerName);
-            return null;
-        }
-
-        if (headerStringValues.Count > 1)
-        {
-            _logger.LogWarning("Multiple (count: {Count}) header values detected, using the first one.", headerStringValues.Count);
-        }
-
-        string? firstHeaderValue = headerStringValues[0];
-
-        if (string.IsNullOrEmpty(firstHeaderValue))
-        {
-            _logger.LogWarning("First extracted HeaderDictionary StringValues primitive value is empty.");
-            return null;
-        }
-
-        return DecodeStandardToken(firstHeaderValue);
     }
 
     /// <inheritdoc/>

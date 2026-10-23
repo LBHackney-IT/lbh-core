@@ -1,31 +1,21 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Hackney.Core.JWT;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using System;
 using Xunit;
-
-#pragma warning disable HACKNEY_DEPRECATED_TOKEN_CREATE
 
 namespace Hackney.Core.Tests.JWT;
 
 public class TokenFactoryTests
 {
-    private readonly Mock<IHeaderDictionary> _mockHeaders;
     private readonly Mock<ILogger<TokenFactory>> _mockLogger;
     private readonly TokenFactory _sut;
     private readonly int LoggedTokenTruncateLimit = 30;
 
     public TokenFactoryTests()
     {
-        var nonEmptyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
-        _mockHeaders = new Mock<IHeaderDictionary>();
-        _mockHeaders.Setup(x => x["Authorization"]).Returns(nonEmptyToken.JwtString);
-
         _mockLogger = new Mock<ILogger<TokenFactory>>();
-
         _sut = new TokenFactory(_mockLogger.Object);
     }
 
@@ -105,184 +95,9 @@ public class TokenFactoryTests
         VerifyLog(_mockLogger, LogLevel.Warning, $"Unexpected, Null, or Malformed token: {expectedToken}", Times.Once());
     }
 
-    [Fact]
-    public void TokenFactory_CreateMethod_Throws_GivenNullHeaders()
-    {
-        Action act = () => _sut.Create(null!);
-        act.Should().Throw<ArgumentNullException>();
-    }
 
     [Fact]
-    public void TokenFactory_CreateMethod_Throws_GivenEmptyHeaderName()
-    {
-        Action act = () => _sut.Create(_mockHeaders.Object, "");
-        act.Should().Throw<ArgumentException>();
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_ReturnsNull_GivenNoAuthorizationHeader()
-    {
-        _mockHeaders.Reset();
-
-        _sut.Create(_mockHeaders.Object).Should().BeNull();
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_LogsWarning_WhenHeaderIsEmpty()
-    {
-        // arrange
-        var headerName = "Authorization";
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(StringValues.Empty);
-
-        // act
-        var result = _sut.Create(_mockHeaders.Object, headerName);
-
-        // assert
-        result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, $"Provided header '{headerName}' is empty.", Times.Once());
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_LogsWarning_WhenFirstHeaderValueIsEmpty()
-    {
-        // arrange
-        var headerName = "Authorization";
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(new StringValues(new[] { string.Empty }));
-
-        // act
-        var result = _sut.Create(_mockHeaders.Object, headerName);
-
-        // assert
-        result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, "First extracted HeaderDictionary StringValues primitive value is empty.", Times.Once());
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_LogsWarning_WhenFirstHeaderValueIsNull()
-    {
-        // arrange
-        var headerName = "Authorization";
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(new StringValues(new[] { (string?)null }));
-
-        // act
-        var result = _sut.Create(_mockHeaders.Object, headerName);
-
-        // assert
-        result.Should().BeNull();
-        VerifyLog(_mockLogger, LogLevel.Warning, "First extracted HeaderDictionary StringValues primitive value is empty.", Times.Once());
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_UsesFirstHeaderValueAndLogsWarning_WhenMultipleHeaderValuesProvided()
-    {
-        // arrange
-        var headerName = "Authorization";
-        var firstToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-        var secondToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-
-        var multiValHeaderValues = new StringValues(new[] { firstToken.JwtString, secondToken.JwtString });
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(multiValHeaderValues);
-
-        // act
-        var decoded = _sut.Create(_mockHeaders.Object, headerName);
-
-        // assert
-        decoded.Should().NotBeNull();
-        decoded!.Sub.Should().Be(firstToken.TokenObj.Sub);
-        VerifyLog(_mockLogger, LogLevel.Warning, $"Multiple (count: {multiValHeaderValues.Count}) header values detected, using the first one.", Times.Once());
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("some-header")]
-    public void TokenFactory_CreateMethod_MapsLegacyTokenCorrectly_AndDefaultsToCorrectHeaderNameWhenItIsMissing(string headerName)
-    {
-        // arrange
-        var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
-        var expectedLegacyTokenGroups = testToken.GetLegacyTestUserGroups();
-        var actualHeader = headerName ?? ITokenFactory.DefaultHeaderName;
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[actualHeader]).Returns(testToken.JwtString);
-
-        // act 
-        var decodedToken = _sut.Create(_mockHeaders.Object, actualHeader);
-
-        // assert
-        decodedToken!.Email.Should().Be(testToken.TokenObj.Email);
-        decodedToken!.Exp.Should().Be(testToken.TokenObj.Exp);
-        decodedToken!.Groups.Should().BeEquivalentTo(expectedLegacyTokenGroups);
-        decodedToken!.Iat.Should().Be(testToken.TokenObj.Iat);
-        decodedToken!.Name.Should().Be(testToken.TokenObj.Name);
-        decodedToken!.Nbf.Should().Be(testToken.TokenObj.Nbf);
-        decodedToken!.Sub.Should().Be(testToken.TokenObj.Sub);
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_MapsTheCognitoTokenCorrectly()
-    {
-        // arrange
-        var headerName = "Authorization";
-        var testToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-        var expectedGroupsArray = testToken.GetCognitoTestUserGroups();
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(testToken.JwtString);
-
-        // act 
-        var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
-
-        // assert
-        decodedToken!.Email.Should().Be(testToken.TokenObj.Email);
-        decodedToken!.Exp.Should().Be(testToken.TokenObj.Exp);
-        decodedToken!.Groups.Should().BeEquivalentTo(expectedGroupsArray);
-        decodedToken!.Iat.Should().Be(testToken.TokenObj.Iat);
-        decodedToken!.Name.Should().Be(testToken.TokenObj.Name);
-        decodedToken!.Nbf.Should().Be(testToken.TokenObj.Nbf);
-        decodedToken!.Sub.Should().Be(testToken.TokenObj.Sub);
-    }
-
-    [Fact]
-    public void TokenFactory_CreateMethod_ReturnsEmptyGroupsArray_WhenNeitherGroupsNorCustomGroupsIsSet()
-    {
-        // arrange
-        var headerName = "Authorization";
-        var schemaIrrelForTest = TokenSchema.Cognito;
-
-        var grouplessToken = TokenTestsHelper.GenerateTestTokenObj(schemaIrrelForTest);
-        grouplessToken.Groups = null;
-        grouplessToken.CustomGroups = null;
-
-        var grouplessTokenJwtString = TokenTestsHelper.GenerateCleanJwt(grouplessToken, TokenTestsHelper.TestSecret);
-
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(x => x[headerName]).Returns(grouplessTokenJwtString);
-
-        // act 
-        var decodedToken = _sut.Create(headerDictionary: _mockHeaders.Object, headerName);
-
-        // assert
-        // parses fields that exist
-        decodedToken!.Email.Should().Be(grouplessToken.Email);
-        decodedToken!.Exp.Should().Be(grouplessToken.Exp);
-        decodedToken!.Iat.Should().Be(grouplessToken.Iat);
-        decodedToken!.Name.Should().Be(grouplessToken.Name);
-        decodedToken!.Nbf.Should().Be(grouplessToken.Nbf);
-        decodedToken!.Sub.Should().Be(grouplessToken.Sub);
-        // defaults to empty array when no groups are found
-        decodedToken!.Groups.Should().BeEquivalentTo(Array.Empty<string>());
-    }
-
-    [Fact]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_CanSafelyHandleBearerPrefix()
+    public void TokenFactory_DecodeStandardTokenMethod_CanSafelyHandleBearerPrefix()
     {
         // arrange
         var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);
@@ -307,86 +122,42 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithLiteralNullPayload()
+    public void TokenFactory_DecodeStandardTokenMethod_ReturnsNull_GivenTokenWithLiteralNullPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithNullPayload();
 
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
-
         // act
-        var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
         var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
-        decodedNullTokenViaCreate.Should().BeNull();
         decodedNullTokenViaDecode.Should().BeNull();
     }
 
     [Fact]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithEmptyObjectPayload()
+    public void TokenFactory_DecodeStandardTokenMethod_ReturnsNull_GivenTokenWithEmptyObjectPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithEmptyObjectPayload();
 
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
-
         // act
-        var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
         var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
-        decodedNullTokenViaCreate.Should().BeNull();
         decodedNullTokenViaDecode.Should().BeNull();
     }
 
     [Fact]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnsNull_GivenTokenWithRawStringPayload()
+    public void TokenFactory_DecodeStandardTokenMethod_ReturnsNull_GivenTokenWithRawStringPayload()
     {
         // arrange
         var tokenWithNullPayload = TokenTestsHelper.GenerateTokenWithRawStringPayload("Sheep Detectives 2026");
 
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(tokenWithNullPayload);
-
         // act
-        var decodedNullTokenViaCreate = _sut.Create(_mockHeaders.Object);
         var decodedNullTokenViaDecode = _sut.DecodeStandardToken(tokenWithNullPayload);
 
         // assert
-        decodedNullTokenViaCreate.Should().BeNull();
         decodedNullTokenViaDecode.Should().BeNull();
-    }
-
-    [Fact]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_AreCapableOfHandlingStingValuesPrimitivesFromHeaderDict()
-    {
-        // arrange
-        var cognitoToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Cognito);
-
-        var headerName = "Authorization";
-        var headersDict = new HeaderDictionary
-        {
-            { headerName, cognitoToken.JwtString }
-        };
-
-        StringValues strValPrimitiveHeaderVal = headersDict[headerName];
-
-        // act 
-        var decodedTokenViaCreate = _sut.Create(headersDict, headerName);
-        var decodedTokenViaDecode = _sut.DecodeStandardToken(strValPrimitiveHeaderVal!);
-
-        // assert
-        decodedTokenViaCreate.Should().NotBeNull();
-        decodedTokenViaDecode.Should().NotBeNull();
-
-        // only asserting a few fields as if even 1 field was decoded, it means
-        // that the JWT parser didn't fall over by creating an empty object with no data.
-        var expectedEmail = cognitoToken.TokenObj.Email;
-        decodedTokenViaCreate!.Email.Should().Be(expectedEmail);
-        decodedTokenViaDecode!.Email.Should().Be(expectedEmail);
     }
 
     [Theory]
@@ -396,23 +167,17 @@ public class TokenFactoryTests
     [InlineData("    ")]
     [InlineData("Bearer   ")]
     [InlineData("Bearer [object Object]")]
-    public void TokenFactory_DecodeStandardTokenAndCreateMethods_ReturnNull_GivenInvalidJWTInput(string invalidJwtString)
+    public void TokenFactory_DecodeStandardTokenMethod_ReturnsNull_GivenInvalidJWTInput(string invalidJwtString)
     {
-        // arrange
-        _mockHeaders.Reset();
-        _mockHeaders.Setup(h => h[It.IsAny<string>()]).Returns(invalidJwtString);
-
         // act
         var decodeMethodResult = _sut.DecodeStandardToken(invalidJwtString);
-        var createMethodResult = _sut.Create(_mockHeaders.Object);
 
         // assert
         decodeMethodResult.Should().BeNull();
-        createMethodResult.Should().BeNull();
     }
 
     [Fact]
-    public void TokenFactory_DecodeStandardTokenMethod_CanDecodeTokenIndependentOfHeaders_GivenTheRawBase64String()
+    public void TokenFactory_DecodeStandardToken_MapsLegacyAndCognitoTokens()
     {
         // arrange
         var legacyToken = TokenTestsHelper.GenerateTestTokenPresentationJWT(TokenSchema.Old);

@@ -84,7 +84,6 @@ var payload = tokenFactory.Decode<MyTokenPayload>(jwtString);
 - `DecodeCognitoM2MToken` maps Cognito's `client_id` and space-separated `scope` claims to `CognitoM2MToken`. Each valid scope in the form `{apiGatewayId}/{endpointName}.{accessType}` becomes a `CognitoM2MAccessScope`; malformed entries are ignored.
 - `Decode<T>` deserializes a JWT payload into the requested type. Use it for the legacy machine token or other payload formats not handled by a dedicated decoder.
 - Decode methods accept an optional `Bearer ` prefix and return `null` for malformed tokens, deserialization failures, or an empty JSON object payload.
-- `Create(IHeaderDictionary, ...)` is a deprecated HTTP-header convenience method. Extract the token string in application code, only then call a decoder.
 
 ## Security and limitations
 
