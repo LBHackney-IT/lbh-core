@@ -6,11 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - release
-      - major/**
-      - minor/**
-      - patch/**
-      - AddedSolutionFile
+      - '**'
     paths:
       - "Hackney.Shared/Hackney.Shared.Strings/**"
 

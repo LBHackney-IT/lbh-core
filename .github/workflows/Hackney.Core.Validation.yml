@@ -6,10 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - release
-      - major/**
-      - minor/**
-      - patch/**
+      - '**'
     paths:
       - "Hackney.Core/Hackney.Core.Validation/**"
       - "Hackney.Core.Tests/Hackney.Core.Tests.Validation/**"
