@@ -27,6 +27,7 @@ public class GoogleGroupsAuthorizationMiddleware
         if (token == null)
         {
             await HandleResponseAsync(context, HttpStatusCode.Unauthorized, "JWT token cannot be parsed!").ConfigureAwait(false);
+            //  Yes it can!
             return;
         }
 

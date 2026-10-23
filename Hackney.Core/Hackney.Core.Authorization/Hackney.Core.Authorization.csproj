@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hackney.Core.JWT" Version="2.0.0" />
+    <PackageReference Include="Hackney.Core.JWT" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>

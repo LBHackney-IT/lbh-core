@@ -22,6 +22,7 @@ namespace Hackney.Core.Http
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
+            // Whatever
             options.Converters.Add(new JsonStringEnumConverter());
             return options;
         }
