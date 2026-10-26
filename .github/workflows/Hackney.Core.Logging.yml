@@ -6,13 +6,10 @@ permissions:
 on:
   push:
     branches:
-      - release
-      - major/**
-      - minor/**
-      - patch/**
+      - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Logging/**"
-      - "Hackney.Core.Tests/Hackney.Core.Tests.Logging/**"
+      - 'Hackney.Core/Hackney.Core.Logging/**'
+      - 'Hackney.Core.Tests/Hackney.Core.Tests.Logging/**'
 
 jobs:
   call:

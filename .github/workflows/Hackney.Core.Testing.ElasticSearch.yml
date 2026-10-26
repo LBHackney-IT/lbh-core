@@ -6,12 +6,9 @@ permissions:
 on:
   push:
     branches:
-      - release
-      - major/**
-      - minor/**
-      - patch/**
+      - '**'
     paths:
-      - "Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.ElasticSearch/**"
+      - 'Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.ElasticSearch/**'
 
 jobs:
   call:
