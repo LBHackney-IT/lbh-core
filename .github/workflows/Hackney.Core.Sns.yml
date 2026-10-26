@@ -2,6 +2,7 @@ name: Hackney.Core.Sns-publish
 permissions:
   contents: read
   packages: write
+  actions: write
 
 on:
   push:
@@ -22,3 +23,5 @@ jobs:
       docker_service: hackney-core-sns-test
       format_root: Hackney.Core
       skip_tests: false
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -26,6 +26,9 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      SONAR_TOKEN:
+        required: true
 
 jobs:
   check-code-formatting:
@@ -58,8 +61,81 @@ jobs:
             echo "Skipping build-and-test for ${{ inputs.pack_project }}"
           else
             docker compose build ${{ inputs.docker_service }}
-            docker compose run ${{ inputs.docker_service }}
+            docker compose run --name package-tests ${{ inputs.docker_service }}
+            mkdir -p coverage
+            docker cp package-tests:/app/coverage/. ./coverage
+            if ! find coverage -name coverage.opencover.xml | grep -q .; then
+              echo "OpenCover report was not produced"
+              exit 1
+            fi
           fi
+      - name: Upload coverage
+        if: inputs.docker_service != '' && inputs.skip_tests == false
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: error
+
+  sonar-scan:
+    name: Sonar scan
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    env:
+      LBHPACKAGESTOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+      - name: Use the .NET 8 SDK
+        run: |
+          cat > global.json <<'EOF'
+          {
+            "sdk": {
+              "version": "8.0.100",
+              "rollForward": "latestFeature"
+            }
+          }
+          EOF
+      - name: Download coverage
+        if: inputs.docker_service != '' && inputs.skip_tests == false
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage
+          path: coverage
+      - name: Rewrite coverage paths
+        if: inputs.docker_service != '' && inputs.skip_tests == false
+        run: find coverage -name coverage.opencover.xml -exec sed -i "s|/app/|${GITHUB_WORKSPACE}/|g" {} +
+      - name: Install SonarScanner for .NET
+        run: |
+          dotnet tool install --global dotnet-sonarscanner --version 12.0.0
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+      - name: Begin Sonar scan
+        run: |
+          args=(
+            /k:"LBHackney-IT_lbh-core_${{ inputs.package_name }}"
+            /o:"lbhackney-it"
+            /n:"${{ inputs.package_name }}"
+            /d:sonar.host.url="https://sonarcloud.io"
+            /d:sonar.token="${SONAR_TOKEN}"
+            /d:sonar.dotnet.excludeTestProjects=true
+            /d:sonar.exclusions="**/*.js,**/*.ts,**/*.css"
+            /d:sonar.sourceEncoding="UTF-8"
+          )
+          if [ -d coverage ] && find coverage -name coverage.opencover.xml -print -quit | grep -q .; then
+            args+=(/d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml")
+          fi
+          dotnet sonarscanner begin "${args[@]}"
+      - name: Build package
+        run: dotnet build "${{ inputs.project_root }}/${{ inputs.pack_project }}/${{ inputs.pack_project }}.csproj"
+      - name: End Sonar scan
+        run: dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
 
   calculate-version:
     name: Calculate Version
@@ -69,7 +145,7 @@ jobs:
       startsWith(github.ref, 'refs/heads/minor/') ||
       startsWith(github.ref, 'refs/heads/patch/')
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: sonar-scan
     outputs:
       version: ${{ steps.calc_version.outputs.version }}
       should_publish: ${{ steps.calc_version.outputs.should_publish }}
