@@ -28,4 +28,4 @@ COPY . .
 
 RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet/Hackney.Core.Tests.Validation.AspNet.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet --collect:"XPlat Code Coverage;Format=opencover" --results-directory ./coverage
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Validation.AspNet --collect:"XPlat Code Coverage" --settings coverage.runsettings --results-directory ./coverage
