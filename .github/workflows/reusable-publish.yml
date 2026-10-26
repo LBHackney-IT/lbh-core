@@ -93,49 +93,14 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
-      - name: Use the .NET 8 SDK
-        run: |
-          cat > global.json <<'EOF'
-          {
-            "sdk": {
-              "version": "8.0.100",
-              "rollForward": "latestFeature"
-            }
-          }
-          EOF
       - name: Download coverage
         if: inputs.docker_service != '' && inputs.skip_tests == false
         uses: actions/download-artifact@v8
         with:
           name: coverage
           path: coverage
-      - name: Rewrite coverage paths
-        if: inputs.docker_service != '' && inputs.skip_tests == false
-        run: find coverage -name coverage.opencover.xml -exec sed -i "s|/app/|${GITHUB_WORKSPACE}/|g" {} +
-      - name: Install SonarScanner for .NET
-        run: |
-          dotnet tool install --global dotnet-sonarscanner --version 12.0.0
-          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-      - name: Begin Sonar scan
-        run: |
-          args=(
-            /k:"LBHackney-IT_lbh-core_${{ inputs.package_name }}"
-            /o:"lbhackney-it"
-            /n:"${{ inputs.package_name }}"
-            /d:sonar.host.url="https://sonarcloud.io"
-            /d:sonar.token="${SONAR_TOKEN}"
-            /d:sonar.dotnet.excludeTestProjects=true
-            /d:sonar.exclusions="**/*.js,**/*.ts,**/*.css"
-            /d:sonar.sourceEncoding="UTF-8"
-          )
-          if [ -d coverage ] && find coverage -name coverage.opencover.xml -print -quit | grep -q .; then
-            args+=(/d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml")
-          fi
-          dotnet sonarscanner begin "${args[@]}"
-      - name: Build package
-        run: dotnet build "${{ inputs.project_root }}/${{ inputs.pack_project }}/${{ inputs.pack_project }}.csproj"
-      - name: End Sonar scan
-        run: dotnet sonarscanner end /d:sonar.token="${SONAR_TOKEN}"
+      - name: Sonar scan
+        run: ./.github/scripts/sonar-scan.sh "${{ inputs.project_root }}" "${{ inputs.pack_project }}" "${{ inputs.package_name }}"
 
   calculate-version:
     name: Calculate Version
