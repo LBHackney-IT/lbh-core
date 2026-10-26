@@ -28,4 +28,4 @@ COPY . .
 
 RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck/Hackney.Core.Tests.HealthCheck.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.HealthCheck --collect:"XPlat Code Coverage;Format=opencover" --results-directory ./coverage

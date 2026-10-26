@@ -28,4 +28,4 @@ COPY . .
 
 RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch/Hackney.Core.Tests.ElasticSearch.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.ElasticSearch --collect:"XPlat Code Coverage;Format=opencover" --results-directory ./coverage
