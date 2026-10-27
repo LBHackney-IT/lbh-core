@@ -32,8 +32,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <!-- Capped at 7.2.2. The Xceed Community License (non-commercial use; paid license otherwise) was introduced in 8.0.0. 7.2.2 is the last Apache-2.0 release. -->
-    <PackageReference Include="FluentAssertions" Version="7.2.2" />
+    <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.23.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />

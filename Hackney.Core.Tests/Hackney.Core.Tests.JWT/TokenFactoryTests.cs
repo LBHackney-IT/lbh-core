@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.JWT;
 using Microsoft.Extensions.Logging;
 using Moq;
