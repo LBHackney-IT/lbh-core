@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.Testing.Shared;
 using Microsoft.AspNetCore.Http;
 using Xunit;

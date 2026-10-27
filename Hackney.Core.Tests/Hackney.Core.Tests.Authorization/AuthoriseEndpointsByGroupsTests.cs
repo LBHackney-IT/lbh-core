@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.Authorization;
 using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.JWT;

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Microsoft.AspNetCore.Builder;
 using System;
 using Xunit;

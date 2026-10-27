@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Hackney.Core.Authorization;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Http;
