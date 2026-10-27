@@ -2,6 +2,7 @@ name: Hackney.Core.Testing.Shared-publish
 permissions:
   contents: read
   packages: write
+  actions: write
 
 on:
   push:
@@ -21,3 +22,5 @@ jobs:
       docker_service: ""
       format_root: Hackney.Core/Hackney.Core.Testing
       skip_tests: true
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

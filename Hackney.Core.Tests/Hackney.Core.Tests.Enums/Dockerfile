@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
 # disable microsoft telemetry
 ENV DOTNET_CLI_TELEMETRY_OPTOUT='true'
@@ -29,4 +29,4 @@ COPY . .
 
 RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.Enums/Hackney.Core.Tests.Enums.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Enums
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Enums --collect:"XPlat Code Coverage;Format=opencover" --results-directory ./coverage

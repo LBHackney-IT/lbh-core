@@ -19,7 +19,7 @@ We follow Semantic Versioning (`Major.Minor.Patch[-Suffix]`):
 **⚠️ IMPORTANT: Branch Naming Update**
 The old `feature/<name>` convention has been **retired**!
 
-Pushes modifying a package's source code or tests will trigger checks like formatting or tests from **any branch**.
+Pushes modifying a package's source code or tests will trigger checks like formatting, tests, and a SonarCloud scan of that package from **any branch**.
 
 However, package **will only be published if** your feature branch is correctly prefixed with the type of version bump your changes represent:
 

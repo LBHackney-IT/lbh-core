@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
 # disable microsoft telematry
 ENV DOTNET_CLI_TELEMETRY_OPTOUT='true'
@@ -28,4 +28,4 @@ COPY . .
 
 RUN dotnet build -c debug -o out Hackney.Core.Tests/Hackney.Core.Tests.Sns/Hackney.Core.Tests.Sns.csproj
 
-CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Sns
+CMD dotnet test Hackney.Core.Tests/Hackney.Core.Tests.Sns --collect:"XPlat Code Coverage;Format=opencover" --results-directory ./coverage
