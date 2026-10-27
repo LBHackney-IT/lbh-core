@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using System.Net;
 using Hackney.Core.Authorization.Exceptions;
 using Xunit;
