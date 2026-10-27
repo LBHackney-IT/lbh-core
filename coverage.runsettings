@@ -3,8 +3,8 @@
   <DataCollectionRunSettings>
     <DataCollectors>
       <!--
-        Validation.AspNet tests still run on the .NET Core 3.1 SDK.
-        That VSTest treats the inline Format=opencover flag as a collector name.
+        Coverlet settings to make the scanner work with dotnetcore 3.1
+        way of configuring the OpenCover test coverage export format.
       -->
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>

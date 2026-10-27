@@ -8,7 +8,7 @@ pack_project=${2:-}
 package_name=${3:-}
 
 if [ -z "$project_root" ] || [ -z "$pack_project" ] || [ -z "$package_name" ]; then
-  echo "Usage: sonar-scan.sh <project_root> <pack_project> <package_name>" >&2
+  echo "All 3 inputs: <project_root> <pack_project> <package_name> are required" >&2
   exit 1
 fi
 
