@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Hackney.Core.JWT;
 using Hackney.Core.Testing.Shared;
 using Microsoft.Extensions.DependencyInjection;

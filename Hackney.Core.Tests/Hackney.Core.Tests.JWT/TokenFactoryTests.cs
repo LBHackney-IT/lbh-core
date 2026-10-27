@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.JWT;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -331,7 +331,7 @@ public class TokenFactoryTests
         // assert
         decodedToken.Should().NotBeNull();
         decodedToken!.ClientId.Should().Be(clientId);
-        decodedToken.Scopes.Should().BeEquivalentTo(tenureScope, repairsScope);
+        decodedToken.Scopes.Should().BeEquivalentTo([tenureScope, repairsScope]);
     }
 
     [Fact]

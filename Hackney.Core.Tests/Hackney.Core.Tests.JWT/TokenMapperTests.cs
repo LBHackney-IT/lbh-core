@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.JWT;
 using Xunit;
 
@@ -128,7 +128,7 @@ public class TokenMapperTests
 
         // assert
         token.ClientId.Should().Be(clientId);
-        token.Scopes.Should().BeEquivalentTo(sliferScope, obelistScope);
+        token.Scopes.Should().BeEquivalentTo([sliferScope, obelistScope]);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class TokenMapperTests
         var token = TokenMapper.MapCognitoM2MToken(presentation);
 
         // assert
-        token.Scopes.Should().BeEquivalentTo(expectedScope);
+        token.Scopes.Should().BeEquivalentTo([expectedScope]);
     }
 
     [Theory]

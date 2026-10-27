@@ -30,9 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup Label="Nuget Dependencies">
-	 <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
-	 <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.18.0" />
-	 <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
+	 <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14" />
+	 <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.23.0" />
+	 <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />
   </ItemGroup>
 
   <ItemGroup Label="Packaging">
