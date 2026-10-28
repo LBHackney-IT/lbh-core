@@ -81,7 +81,7 @@ var payload = tokenFactory.Decode<MyTokenPayload>(jwtString);
 - `IdentifyHackneyToken` requires a three-part JWT with a non-empty signature segment to classify a token. This is a structural requirement only; it does not verify the signature cryptographically.
 - Identification checks `consumerName` for `MachineLegacy`, `scope` for `CognitoM2M`, and `email` for `User`, in that order. Other payloads are `Unknown`.
 - `DecodeStandardToken` maps the legacy and Cognito user token payloads to the `Token` domain model. Missing group claims produce an empty group list. The cognito token `customGroups` only get mapped when `groups` is not provided.
-- `DecodeCognitoM2MToken` maps Cognito's `client_id` and space-separated `scope` claims to `CognitoM2MToken`. Each valid scope in the form `{apiGatewayId}/{endpointName}.{accessType}` becomes a `CognitoM2MAccessScope`; malformed entries are ignored.
+- `DecodeCognitoM2MToken` maps Cognito's `client_id` and space-separated `scope` claims to `CognitoM2MToken`. Each valid scope in the form `{logicalApiName}/{endpointName}.{accessType}` becomes a `CognitoM2MAccessScope`; malformed entries are ignored.
 - `Decode<T>` deserializes a JWT payload into the requested type. Use it for the legacy machine token or other payload formats not handled by a dedicated decoder.
 - Decode methods accept an optional `Bearer ` prefix and return `null` for malformed tokens, deserialization failures, or an empty JSON object payload.
 

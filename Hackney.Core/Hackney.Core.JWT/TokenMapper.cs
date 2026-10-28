@@ -65,7 +65,7 @@ internal static partial class TokenMapper
 
         parsedScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = match.Groups["apiGatewayId"].Value,
+            LogicalApiName = match.Groups["logicalApiName"].Value,
             EndpointName = match.Groups["endpointName"].Value,
             AccessType = match.Groups["accessType"].Value
         };
@@ -73,7 +73,7 @@ internal static partial class TokenMapper
     }
 
     [GeneratedRegex(
-        @"\A(?<apiGatewayId>[A-Za-z0-9]+)/(?<endpointName>[A-Za-z0-9-]+)\.(?<accessType>[A-Za-z0-9]+)\z",
+        @"\A(?<logicalApiName>[A-Za-z0-9-]+)/(?<endpointName>[A-Za-z0-9-]+)\.(?<accessType>[A-Za-z0-9]+)\z",
         RegexOptions.CultureInvariant,
         matchTimeoutMilliseconds: 500
     )]
