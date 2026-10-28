@@ -179,21 +179,5 @@ To configure a fake IP address for End-to-End (E2E) testing, follow these steps:
 
 	With this change, the tests in this class will now use the mocked IP address.
 
-## UseGoogleGroupAuthorization
-
-This feature enables developers to restrict access to an entire API based on specified Google groups.
-
-**Note:** While this method is available, the preferred approach is using the lambda authorizer. Refer to the [API Playbook](https://playbook.hackney.gov.uk/API-Playbook/lambda_authoriser) for details.
-
-### Instructions
-
-To use the `UseGoogleGroupAuthorization` middleware, add the following line to your `Configure(...)` method in `Startup.cs`:
-
-```csharp
-	app.UseGoogleGroupAuthorization();
-```
-
-This middleware will use `REQUIRED_GOOGL_GROUPS` environment variable to get required Google groups list.
-
 ### Testing
 The testing process for `AuthorizeEndpointByIpWhitelist` is similar to that of `AuthorizeEndpointByGroups`. For detailed instructions on how to conduct these tests, please refer to the [Testing section](#testing).
