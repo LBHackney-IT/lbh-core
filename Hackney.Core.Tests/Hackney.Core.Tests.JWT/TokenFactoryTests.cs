@@ -297,27 +297,27 @@ public class TokenFactoryTests
     }
 
     [Fact]
-    public void TokenFactory_DecodeCognitoM2MToken_MapsClientIdAndScopes()
+    public void TokenFactory_DecodeCognitoM2MToken_MapsClientIdAndScopes_AndIgnoresMalformedOnes()
     {
         // arrange
         const string clientId = "cognito-client-123";
 
-        var tenureScope = new CognitoM2MAccessScope
+        var badgerScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "2524go3mdg",
-            EndpointName = "tenures",
+            LogicalApiName = "badger-api",
+            EndpointName = "tunnel",
             AccessType = "post"
         };
 
-        var repairsScope = new CognitoM2MAccessScope
+        var foxScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "8ab5v6",
-            EndpointName = "repairs",
-            AccessType = "get"
+            LogicalApiName = "foxes-api",
+            EndpointName = "mouse",
+            AccessType = "delete"
         };
 
-        string tenureM2MScope = $"{tenureScope.ApiGatewayId}/{tenureScope.EndpointName}.{tenureScope.AccessType}";
-        string repairsM2MScope = $"{repairsScope.ApiGatewayId}/{repairsScope.EndpointName}.{repairsScope.AccessType}";
+        string tenureM2MScope = $"{badgerScope.LogicalApiName}/{badgerScope.EndpointName}.{badgerScope.AccessType}";
+        string repairsM2MScope = $"{foxScope.LogicalApiName}/{foxScope.EndpointName}.{foxScope.AccessType}";
 
         string validCognitoM2MScopes = $"{tenureM2MScope} {repairsM2MScope}";
         const string malformedCognitoM2MScopes = "malformed 8ab5v6/.read";
@@ -331,7 +331,7 @@ public class TokenFactoryTests
         // assert
         decodedToken.Should().NotBeNull();
         decodedToken!.ClientId.Should().Be(clientId);
-        decodedToken.Scopes.Should().BeEquivalentTo([tenureScope, repairsScope]);
+        decodedToken.Scopes.Should().BeEquivalentTo([badgerScope, foxScope]);
     }
 
     [Fact]

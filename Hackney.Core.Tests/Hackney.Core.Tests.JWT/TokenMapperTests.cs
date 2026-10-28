@@ -101,20 +101,20 @@ public class TokenMapperTests
 
         var sliferScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duelacademyapi",
+            LogicalApiName = "duelacademyapi",
             EndpointName = "slifer-dorm",
             AccessType = "post"
         };
 
         var obelistScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duelacademyapi",
+            LogicalApiName = "duelacademyapi",
             EndpointName = "obelisk-dorm",
             AccessType = "get"
         };
 
-        string sliferScopeStr = $"{sliferScope.ApiGatewayId}/{sliferScope.EndpointName}.{sliferScope.AccessType}";
-        string obelistScopeStr = $"{obelistScope.ApiGatewayId}/{obelistScope.EndpointName}.{obelistScope.AccessType}";
+        string sliferScopeStr = $"{sliferScope.LogicalApiName}/{sliferScope.EndpointName}.{sliferScope.AccessType}";
+        string obelistScopeStr = $"{obelistScope.LogicalApiName}/{obelistScope.EndpointName}.{obelistScope.AccessType}";
         var validScopes = $"{sliferScopeStr} {obelistScopeStr}";
 
         var presentation = new CognitoM2MTokenPresentation
@@ -137,12 +137,12 @@ public class TokenMapperTests
         // arrange
         var expectedScope = new CognitoM2MAccessScope
         {
-            ApiGatewayId = "duelacademyapi",
+            LogicalApiName = "duelacademyapi",
             EndpointName = "slifer-dorm",
             AccessType = "post"
         };
 
-        var scope = $"{expectedScope.ApiGatewayId}/{expectedScope.EndpointName}.{expectedScope.AccessType}";
+        var scope = $"{expectedScope.LogicalApiName}/{expectedScope.EndpointName}.{expectedScope.AccessType}";
         string paddedScope = $" {scope} "; // whitespace at the start and end of scope str that needs trimming
 
         var presentation = new CognitoM2MTokenPresentation

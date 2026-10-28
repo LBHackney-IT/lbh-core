@@ -28,11 +28,12 @@ public class CognitoM2MToken
 public class CognitoM2MAccessScope
 {
     /// <summary>
-    /// This authorization option assumes that APIs protected by it are exposed
-    /// via AWS API Gateway proxy. As such, a 1:1 mapping between an API Gateway
-    /// Id and an actual API application is expected.
+    /// The name of the API as would be specified in (for example) AWS Lambda name
+    /// minus the environment part (as tokens cannot be used cross-environment). The
+    /// same name is used in the API's Cognito resource server as a unique identifier
+    /// (hence it's in this scope as scopes come from resource server configuration).
     /// </summary>
-    public required string ApiGatewayId { get; set; }
+    public required string LogicalApiName { get; set; }
     /// <summary>
     /// EndpointName represents a name for an endpoint that will be used in
     /// a C# controller method's authorization attribute to allow/deny access.

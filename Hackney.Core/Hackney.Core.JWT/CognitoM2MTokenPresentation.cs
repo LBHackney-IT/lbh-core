@@ -20,7 +20,7 @@ internal class CognitoM2MTokenPresentation
     /// Cognito injects access scopes under a 'scope' key as a space-separated
     /// list of strings matching claims specified on the Cognito resource server.
     /// In our case, the format of an individual scope is:
-    /// {apiGatewayId}/{endpointName}.{accessType}, e.g. "2524go3mdg/tenures.post"
+    /// {logicalApiName}/{endpointName}.{accessType}, e.g. "badger-api/tunnel.post"
     /// </summary>
     [JsonPropertyName("scope")]
     public string? Scope { get; set; }
