@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <InternalsVisibleTo Include="Hackney.Core.Tests.Authorization" />
   </ItemGroup>
 
 </Project>
