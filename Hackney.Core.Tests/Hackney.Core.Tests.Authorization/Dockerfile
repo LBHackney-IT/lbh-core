@@ -8,7 +8,6 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers
 COPY ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Authorization.csproj ./Hackney.Core/Hackney.Core.Authorization/
 COPY ./Hackney.Core.Tests/Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj ./Hackney.Core.Tests/Hackney.Core.Tests.Authorization/
-COPY ./Hackney.Core/Hackney.Core.JWT/Hackney.Core.JWT.csproj ./Hackney.Core/Hackney.Core.JWT/
 COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
 
 # We mount secrets so they can't end up in logs or build layers.
@@ -19,9 +18,8 @@ COPY /nuget.config /root/.nuget/NuGet/NuGet.Config
 #   - https://docs.docker.com/compose/how-tos/use-secrets/ 
 RUN --mount=type=secret,id=LBHPACKAGESTOKEN \
   export LBHPACKAGESTOKEN=$(cat /run/secrets/LBHPACKAGESTOKEN) && \
-  dotnet restore ./Hackney.Core/Hackney.Core.JWT/Hackney.Core.JWT.csproj && \
-  dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj && \
-  dotnet restore ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Authorization.csproj
+  dotnet restore ./Hackney.Core/Hackney.Core.Authorization/Hackney.Core.Authorization.csproj && \
+  dotnet restore ./Hackney.Core.Tests/Hackney.Core.Tests.Authorization/Hackney.Core.Tests.Authorization.csproj
 
 # Copy everything else and build
 COPY . .

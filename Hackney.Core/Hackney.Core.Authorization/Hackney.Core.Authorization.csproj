@@ -1,28 +1,46 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>Nullable</WarningsAsErrors>
+  <PropertyGroup Label="Targeting">
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>12.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
     <Description>This library provides functionality to validate that a request's JWT token contains the correct Google Group(s) to allow access to an API or endpoint.</Description>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
+  <PropertyGroup Label="Compilation">
+    <!--
+      CS1591 Missing XML comment for publicly visible type or member 'ClassName.PropertyName' - disabled because needlessly marking up every field will bloat the codebase.
+    -->
+    <NoWarn>CS1591</NoWarn>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="Nuget Dependencies">
     <PackageReference Include="Hackney.Core.JWT" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="README.md">
-    </None>
+  <ItemGroup Label="Packaging">
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!-- Needed to test the private logic internal to the package as the tests project is separate -->
   <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <InternalsVisibleTo Include="Hackney.Core.Tests.Authorization" />
   </ItemGroup>
 
 </Project>

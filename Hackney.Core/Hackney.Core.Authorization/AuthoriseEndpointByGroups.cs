@@ -21,7 +21,7 @@ public class AuthorizeEndpointByGroups : TypeFilterAttribute
     }
 }
 
-public class TokenGroupsFilter : IAuthorizationFilter
+internal class TokenGroupsFilter : IAuthorizationFilter
 {
     private readonly string[] _requiredGoogleGroups;
     private readonly ITokenFactory _tokenFactory;
