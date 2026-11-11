@@ -1,8 +1,16 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using AwesomeAssertions;
 using Hackney.Core.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Hackney.Core.Tests.Authorization;
@@ -89,14 +97,56 @@ public class AllowAccessToAttributeTests
         attribute.Machine.Should().Be("method-clients");
     }
 
-    // example mock controller to which this tested attribute is applied at both
-    // controller-level and the method-level with different input arguments.
-    [AllowAccessTo(User = "class-users", Machine = "class-clients")]
-    private sealed class MockController
+    [Fact]
+    public void UndecoratedEndpoint_ReturnsControllerLevelUserAndMachine()
     {
-        [AllowAccessTo(User = "method-users", Machine = "method-clients")]
-        public static void Get()
+        // act
+        var attribute = EndpointAccessFor(nameof(MockController.List));
+
+        // assert
+        attribute.Should().NotBeNull();
+        attribute!.Policy.Should().Be(HybridAccessPolicy);
+        attribute.User.Should().Be("class-users");
+        attribute.Machine.Should().Be("class-clients");
+    }
+
+    private static AllowAccessToAttribute? EndpointAccessFor(string actionName)
+    {
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {
-        }
+            ApplicationName = typeof(AllowAccessToAttributeTests).Assembly.GetName().Name,
+            ContentRootPath = AppContext.BaseDirectory
+        });
+        builder.Logging.ClearProviders();
+        builder.Services.AddControllers()
+            .AddApplicationPart(typeof(AllowAccessToAttributeTests).Assembly);
+
+        using var app = builder.Build();
+        var provider = app.Services.GetRequiredService<IActionDescriptorCollectionProvider>();
+        var descriptor = provider.ActionDescriptors.Items
+            .OfType<ControllerActionDescriptor>()
+            .Single(action => action.ControllerTypeInfo == typeof(MockController).GetTypeInfo()
+                && action.MethodInfo.Name == actionName);
+        var metadata = new EndpointMetadataCollection(descriptor.EndpointMetadata);
+
+        return metadata.GetMetadata<AllowAccessToAttribute>();
+    }
+}
+
+// MVC only discovers public top-level classes as controllers. A nested class is
+// ignored, so the class-level attribute would never be copied onto an endpoint.
+[AllowAccessTo(User = "class-users", Machine = "class-clients")]
+[Route("mock")]
+public sealed class MockController
+{
+    [AllowAccessTo(User = "method-users", Machine = "method-clients")]
+    [HttpGet("item")]
+    public void Get()
+    {
+    }
+
+    [HttpGet("list")]
+    public void List()
+    {
     }
 }
