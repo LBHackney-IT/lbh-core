@@ -54,15 +54,12 @@ namespace Hackney.Core.Authorization
             services.AddSingleton(new PolicyGroupMap(domainPolicies));
             services.AddSingleton<IAuthorizationHandler, HybridAccessHandler>();
 
-            // register actual ASP.NET Native Auth configured with our custom auth handler.
-
-            // Goal here is to  register a middleware that Denies all traffic to the endpoint whose methods or
-            // the controller class aren't decorated with the AllowAccessToAttribute attribute. However, when they are decorated,
-            // the should need to go through the HybridAccessHandler and whatever rules it sets out.
+            // Fallback triggers when neither the endpoint method, nor its controller is decorated with auth attribute.
+            // If you want an endpoint to be public for whatever reason, use [AllowAnonymous].
             services.AddAuthorization(authOptions =>
             {
                 authOptions.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
+                    .RequireAssertion(_ => false)
                     .Build();
 
                 authOptions.AddPolicy("HybridAccessPolicy", policy =>
