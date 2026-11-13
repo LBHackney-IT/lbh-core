@@ -15,6 +15,12 @@ internal static class TestJwt
     public static string LegacyMachine(string id, string consumerName, string consumerType) =>
         Signed(new { id, consumerName, consumerType, iat = 1 });
 
+    /// <summary>
+    /// Identifies as a legacy machine token, but cannot be decoded: id and consumerType are required.
+    /// </summary>
+    public static string UndecodableLegacyMachine(string consumerName) =>
+        Signed(new { consumerName });
+
     private static string Signed(object payload)
     {
         var header = Base64Url("{\"alg\":\"none\",\"typ\":\"JWT\"}");
