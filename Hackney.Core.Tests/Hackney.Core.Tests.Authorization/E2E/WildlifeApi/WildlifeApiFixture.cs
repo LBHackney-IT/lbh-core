@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Hackney.Core.Authorization;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting; // unused?
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -30,6 +30,7 @@ public class AllowAccessToAttributeTests
         attribute.Policy.Should().Be(HybridAccessPolicy);
         attribute.User.Should().BeNull();
         attribute.Machine.Should().BeNull();
+        attribute.LegacyMachine.Should().BeFalse();
     }
 
     [Fact]
@@ -43,12 +44,14 @@ public class AllowAccessToAttributeTests
         var attribute = new AllowAccessToAttribute
         {
             User = user,
-            Machine = machine
+            Machine = machine,
+            LegacyMachine = true
         };
 
         // assert
         attribute.User.Should().Be(user);
         attribute.Machine.Should().Be(machine);
+        attribute.LegacyMachine.Should().BeTrue();
         attribute.Policy.Should().Be(HybridAccessPolicy);
     }
 

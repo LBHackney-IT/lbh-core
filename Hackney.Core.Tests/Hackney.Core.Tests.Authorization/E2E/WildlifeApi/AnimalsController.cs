@@ -18,7 +18,7 @@ public sealed class AnimalsController : ControllerBase
 
     // tested endpoints:
 
-    [AllowAccessTo(Machine = BarbastellusBatEndpointName, User = UserAccess)]
+    [AllowAccessTo(Machine = BarbastellusBatEndpointName, User = UserAccess, LegacyMachine = true)]
     [HttpGet("barbastellus-bat")]
     public IActionResult BarbastellusBat() => Ok(new { status = "allowed" });
 }

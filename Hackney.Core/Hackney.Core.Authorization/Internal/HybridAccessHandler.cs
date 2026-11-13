@@ -46,7 +46,7 @@ namespace Hackney.Core.Authorization.Internal
             var isAllowed = tokenFactory.IdentifyHackneyToken(authorizationHeader) switch
             {
                 HackneyTokenType.User => IsUserAllowed(tokenFactory, authorizationHeader, accessRule),
-                HackneyTokenType.MachineLegacy => IsLegacyMachineAllowed(tokenFactory, authorizationHeader),
+                HackneyTokenType.MachineLegacy => IsLegacyMachineAllowed(tokenFactory, authorizationHeader, accessRule),
                 HackneyTokenType.CognitoM2M => IsCognitoM2MAllowed(tokenFactory, authorizationHeader, accessRule),
                 _ => LogUnknownTokenDenied()
             };
@@ -83,10 +83,17 @@ namespace Hackney.Core.Authorization.Internal
             return false;
         }
 
-        private bool IsLegacyMachineAllowed(ITokenFactory tokenFactory, string jwt)
+        private bool IsLegacyMachineAllowed(ITokenFactory tokenFactory, string jwt, AllowAccessToAttribute accessRule)
         {
-            // Legacy M2M tokens are fully validated per-endpoint by the lambda authorizer before the request
-            // reaches the API. There is nothing left to check, but log access.
+            // The lambda authorizer already checked which endpoint this token may call, so there's little left to check.
+            // However, for added security and documentation, endpoints are required to have the 'LegacyMachine' flag
+            // enabled so the legacy request token would be permitted access.
+            if (!accessRule.LegacyMachine)
+            {
+                _logger.LogWarning("Access denied: legacy machine token used on an endpoint that does not allow legacy machine access.");
+                return false;
+            }
+
             var token = tokenFactory.Decode<LegacyMachineToken>(jwt);
 
             if (token == null)

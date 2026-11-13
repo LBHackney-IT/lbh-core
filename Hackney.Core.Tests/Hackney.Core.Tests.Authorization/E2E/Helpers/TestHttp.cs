@@ -4,9 +4,9 @@ using Xunit;
 
 namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
+// helper so that the tests code wouldn't need to repeat these verbose cancellation tokens
 internal static class TestHttp
 {
-    // xUnit only recognizes this exact token expression. The tests call these methods instead of repeating it.
     public static Task<HttpResponseMessage> SendRequest(this HttpClient client, HttpRequestMessage request) =>
         client.SendAsync(request, TestContext.Current.CancellationToken);
 

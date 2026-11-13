@@ -39,8 +39,11 @@ public class HybridAccessHandlerTests
 
     #region helper methods
 
-    private static AllowAccessToAttribute Rule(string? user = UserPolicyKey, string? machine = MachineEndpoint) =>
-        new() { User = user, Machine = machine };
+    private static AllowAccessToAttribute Rule(
+        string? user = UserPolicyKey,
+        string? machine = MachineEndpoint,
+        bool legacyMachine = false) =>
+        new() { User = user, Machine = machine, LegacyMachine = legacyMachine };
 
     private HttpContext BuildHttpContext(
         AllowAccessToAttribute? rule,
@@ -371,6 +374,21 @@ public class HybridAccessHandlerTests
     #region  legacy machine token
 
     [Fact]
+    public async Task HandleAsync_DeniesAndWarns_WhenEndpointDoesNotAllowLegacyMachine()
+    {
+        // arrange
+        SetupTokenType(HackneyTokenType.MachineLegacy);
+
+        // act
+        var context = await HandleAsync(BuildHttpContext(Rule()));
+
+        // assert
+        context.HasSucceeded.Should().BeFalse();
+        _logger.ShouldHaveLogged(LogLevel.Warning, "does not allow legacy machine access");
+        _mockTokenFactory.Verify(x => x.Decode<LegacyMachineToken>(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
     public async Task HandleAsync_SucceedsAndLogsTokenId_WhenLegacyMachineTokenIsDecoded()
     {
         // arrange
@@ -379,7 +397,7 @@ public class HybridAccessHandlerTests
         _mockTokenFactory.Setup(x => x.Decode<LegacyMachineToken>(RawJwt)).Returns(token);
 
         // act
-        var context = await HandleAsync(BuildHttpContext(Rule()));
+        var context = await HandleAsync(BuildHttpContext(Rule(legacyMachine: true)));
 
         // assert
         context.HasSucceeded.Should().BeTrue();
@@ -395,7 +413,7 @@ public class HybridAccessHandlerTests
         _mockTokenFactory.Setup(x => x.Decode<LegacyMachineToken>(RawJwt)).Returns(LegacyToken());
 
         // act
-        var context = await HandleAsync(BuildHttpContext(Rule(user: null, machine: null)));
+        var context = await HandleAsync(BuildHttpContext(Rule(user: null, machine: null, legacyMachine: true)));
 
         // assert
         context.HasSucceeded.Should().BeTrue();
@@ -409,7 +427,7 @@ public class HybridAccessHandlerTests
         _mockTokenFactory.Setup(x => x.Decode<LegacyMachineToken>(RawJwt)).Returns((LegacyMachineToken?)null);
 
         // act
-        var context = await HandleAsync(BuildHttpContext(Rule()));
+        var context = await HandleAsync(BuildHttpContext(Rule(legacyMachine: true)));
 
         // assert
         context.HasSucceeded.Should().BeFalse();

@@ -59,4 +59,22 @@ public sealed class LegacyMachineAuthorizationTests
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
+
+    [Fact]
+    public async Task LegacyMachine_DeniesAccess_WhenTheEndpointDoesNotAllowLegacyMachine()
+    {
+        // arrange
+        var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
+        var salmonPath = $"{AquaticController.RoutePrefix}/{AquaticController.AtlanticSalmonEndpointName}";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, salmonPath);
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+
+        // act
+        var response = await _client.SendRequest(request);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
 }
