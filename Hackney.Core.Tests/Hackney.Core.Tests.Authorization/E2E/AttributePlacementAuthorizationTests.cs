@@ -52,12 +52,12 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.MachineAccess);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.ReadBody();
         body.Should().Contain("allowed");
     }
 
@@ -70,7 +70,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.ChamomileEndpointName);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -89,12 +89,12 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.ChamomileEndpointName);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.ReadBody();
         body.Should().Contain("allowed");
     }
 
@@ -107,7 +107,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.MachineAccess);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -126,7 +126,7 @@ public sealed class AttributePlacementAuthorizationTests
             AquaticController.AtlanticSalmonEndpointName);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -146,7 +146,7 @@ public sealed class AttributePlacementAuthorizationTests
             AquaticController.GreatCrestedNewtEndpointName);
 
         // act
-        using var response = await _client.SendAsync(request);
+        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

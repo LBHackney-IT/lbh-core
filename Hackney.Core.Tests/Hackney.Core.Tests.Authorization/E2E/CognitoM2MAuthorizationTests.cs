@@ -30,12 +30,12 @@ public sealed class CognitoM2MAuthorizationTests
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
 
         // act
-        var response = await _client.SendAsync(request);
+        var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var body = await response.Content.ReadAsStringAsync();
+        var body = await response.ReadBody();
         body.Should().Contain("allowed");
     }
 
@@ -50,7 +50,7 @@ public sealed class CognitoM2MAuthorizationTests
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
 
         // act
-        var response = await _client.SendAsync(request);
+        var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
