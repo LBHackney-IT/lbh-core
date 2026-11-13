@@ -66,6 +66,11 @@ namespace Hackney.Core.Authorization
                     policy.Requirements.Add(new HybridAccessRequirement()));
             });
 
+            // Ensure the denied requests return a 403 (forbidden) instead of 401 (unauthorized) to reflect that
+            // the user request was authenticated as it was able to reach the API, but didn't have the permissions
+            // to access the endpoint it was targetting.
+            services.AddSingleton<IAuthorizationMiddlewareResultHandler, ForbiddenAuthorizationResultHandler>();
+
             return services;
         }
     }

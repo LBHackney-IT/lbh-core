@@ -243,6 +243,9 @@ public class ServiceCollectionExtensionsTests
 
         options.FallbackPolicy.Should().NotBeNull();
         options.FallbackPolicy.Should().NotBeSameAs(hybridPolicy);
+
+        provider.GetRequiredService<IAuthorizationMiddlewareResultHandler>()
+            .Should().BeOfType<ForbiddenAuthorizationResultHandler>();
     }
 
     #endregion
