@@ -21,9 +21,9 @@ public sealed class CognitoM2MAuthorizationTests
     public async Task CognitoM2M_AllowsAccess_WhenTheTokenScopeMatchesTheEndpointMachineClaimRestriction()
     {
         // arrange
-        var jwt = TestJwt.CognitoM2M("tenures-consumer", $"badger-api/{WildlifeApiController.BarbastellusBatEndpointName}.read");
+        var jwt = TestJwt.CognitoM2M("wildlife-consumer", $"wildlife-api/{AnimalsController.BarbastellusBatEndpointName}.read");
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, "machine-access/barbastellus-bat");
+        using var request = new HttpRequestMessage(HttpMethod.Get, "animals/barbastellus-bat");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
 

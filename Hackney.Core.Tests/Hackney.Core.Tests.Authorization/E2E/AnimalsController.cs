@@ -5,13 +5,16 @@ namespace Hackney.Core.Tests.Authorization.E2E;
 
 /// <summary>
 /// Controller of the mock Wildlife API. It exists only so the authorization tests have endpoints
-/// to call. It is not a real service and has no business logic.
+/// to call for different token authorization flow testing.
 /// </summary>
 [ApiController]
-[Route("machine-access")]
-public sealed class WildlifeApiController : ControllerBase
+[Route(RoutePrefix)]
+public sealed class AnimalsController : ControllerBase
 {
+    public const string RoutePrefix = "animals";
     public const string BarbastellusBatEndpointName = "barbastellus-bat";
+
+    // tested endpoints:
 
     [AllowAccessTo(Machine = BarbastellusBatEndpointName)]
     [HttpGet("barbastellus-bat")]

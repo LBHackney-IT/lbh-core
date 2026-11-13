@@ -87,7 +87,7 @@ public class HybridAccessHandlerTests
         ClientId = "client-123",
         Scopes = scopes.Select(s => new CognitoM2MAccessScope
         {
-            LogicalApiName = "badger-api",
+            LogicalApiName = "wildlife-api",
             EndpointName = s.endpoint,
             AccessType = s.access
         }).ToList()
