@@ -36,4 +36,21 @@ public sealed class CognitoM2MAuthorizationTests
         var body = await response.Content.ReadAsStringAsync();
         body.Should().Contain("allowed");
     }
+
+    [Fact]
+    public async Task CognitoM2M_DeniesAccess_WhenTheTokenScopeDoesNotMatchTheEndpointMachineClaimRestriction()
+    {
+        // arrange
+        var jwt = TestJwt.CognitoM2M("wildlife-consumer", "wildlife-api/other-endpoint.read");
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, "animals/barbastellus-bat");
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+
+        // act
+        var response = await _client.SendAsync(request);
+
+        // assert
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
 }
