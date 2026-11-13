@@ -1,7 +1,7 @@
 using Hackney.Core.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Controller of the mock Wildlife API. It exists only so the authorization tests have endpoints

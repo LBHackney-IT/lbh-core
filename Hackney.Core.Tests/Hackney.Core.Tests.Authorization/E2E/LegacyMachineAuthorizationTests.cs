@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
+using Hackney.Core.Tests.Authorization.E2E.Helpers;
+using Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 using Xunit;
 
 namespace Hackney.Core.Tests.Authorization.E2E;

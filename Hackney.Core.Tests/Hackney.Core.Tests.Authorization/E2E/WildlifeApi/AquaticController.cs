@@ -1,7 +1,7 @@
 using Hackney.Core.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Aquatic part of the mock Wildlife API. It is not a real service - it's a Controller used to

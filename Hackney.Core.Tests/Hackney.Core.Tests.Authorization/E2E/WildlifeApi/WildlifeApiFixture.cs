@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Hackney.Core.Authorization;
+using Hackney.Core.Tests.Authorization.E2E.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting; // unused?
 using Microsoft.AspNetCore.TestHost;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Starts the mock Wildlife API in memory for the tests in its collection. The Wildlife API is a

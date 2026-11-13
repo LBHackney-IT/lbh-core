@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
 internal static class TestJwt
 {

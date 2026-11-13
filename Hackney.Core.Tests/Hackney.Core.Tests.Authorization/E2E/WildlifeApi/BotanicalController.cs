@@ -1,7 +1,7 @@
 using Hackney.Core.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Controller is part of mock API for E2E tess. It is decorated with authorization attribute

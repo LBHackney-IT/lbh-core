@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Hackney.Core.Tests.Authorization.E2E;
+namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Test collection that shares one running <see cref="WildlifeApiFixture"/>, which hosts the
