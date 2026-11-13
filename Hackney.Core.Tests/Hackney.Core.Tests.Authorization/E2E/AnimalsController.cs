@@ -13,10 +13,12 @@ public sealed class AnimalsController : ControllerBase
 {
     public const string RoutePrefix = "animals";
     public const string BarbastellusBatEndpointName = "barbastellus-bat";
+    public const string UserAccess = "wildlife-keepers";
+    public const string UserGroup = "mammal-surveyors";
 
     // tested endpoints:
 
-    [AllowAccessTo(Machine = BarbastellusBatEndpointName)]
+    [AllowAccessTo(Machine = BarbastellusBatEndpointName, User = UserAccess)]
     [HttpGet("barbastellus-bat")]
     public IActionResult BarbastellusBat() => Ok(new { status = "allowed" });
 }

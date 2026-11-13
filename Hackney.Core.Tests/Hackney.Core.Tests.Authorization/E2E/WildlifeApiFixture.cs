@@ -37,8 +37,9 @@ public sealed class WildlifeApiFixture : IAsyncLifetime
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(WildlifeApiFixture).Assembly);
 
-        // empty doc for now as only the cognito test is written which doens't need param store
-        await builder.Services.AddHackneyAuthorizationAsync(ParameterName, FakeSsm.WithPayload("{}"));
+        // The user flow looks up AnimalsController.UserAccess in this document. Cognito and legacy flows do not read it.
+        var groups = $"{{\"{AnimalsController.UserAccess}\":[\"{AnimalsController.UserGroup}\"]}}";
+        await builder.Services.AddHackneyAuthorizationAsync(ParameterName, FakeSsm.WithPayload(groups));
 
         _app = builder.Build();
         _app.UseAuthorization();
