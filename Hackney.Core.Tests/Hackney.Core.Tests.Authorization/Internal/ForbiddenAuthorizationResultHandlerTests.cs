@@ -60,37 +60,38 @@ public class ForbiddenAuthorizationResultHandlerTests
 
     #region denied
 
-    [Fact]
-    public async Task HandleAsync_SetsForbiddenAndStopsThePipeline_WhenTheResultIsAChallenge()
+    // Challenge is the failure for an anonymous caller. The built-in handler would answer it with 401.
+    // Forbid is the failure for a caller ASP.NET already considers authenticated.
+    // This handler writes 403 for both and does not run the rest of the pipeline.
+    [Theory]
+    [InlineData(Denial.Challenge)]
+    [InlineData(Denial.Forbid)]
+    public async Task HandleAsync_SetsForbiddenAndStopsThePipeline_WhenThePolicyDeniesTheRequest(Denial denial)
     {
         // arrange
-        // Challenge is the failure for an anonymous caller. The built-in handler would answer it with 401.
         var context = new DefaultHttpContext();
         var pipelineRan = false;
 
         // act
-        await Invoke(context, PolicyAuthorizationResult.Challenge(), () => pipelineRan = true);
+        await Invoke(context, Denied(denial), () => pipelineRan = true);
 
         // assert
         pipelineRan.Should().BeFalse();
         context.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
 
-    [Fact]
-    public async Task HandleAsync_SetsForbiddenAndStopsThePipeline_WhenTheResultIsAForbid()
+    public enum Denial
     {
-        // arrange
-        // Forbid is the failure for a caller ASP.NET already considers authenticated.
-        var context = new DefaultHttpContext();
-        var pipelineRan = false;
-
-        // act
-        await Invoke(context, PolicyAuthorizationResult.Forbid(), () => pipelineRan = true);
-
-        // assert
-        pipelineRan.Should().BeFalse();
-        context.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        Challenge,
+        Forbid
     }
+
+    private static PolicyAuthorizationResult Denied(Denial denial) => denial switch
+    {
+        Denial.Challenge => PolicyAuthorizationResult.Challenge(),
+        Denial.Forbid => PolicyAuthorizationResult.Forbid(),
+        _ => throw new ArgumentOutOfRangeException(nameof(denial))
+    };
 
     #endregion
 }
