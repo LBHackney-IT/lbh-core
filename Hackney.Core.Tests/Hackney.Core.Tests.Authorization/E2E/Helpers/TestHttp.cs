@@ -1,6 +1,8 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AwesomeAssertions;
 using Xunit;
 
 namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -24,6 +26,16 @@ internal static class TestHttp
     private static Task<HttpResponseMessage> SendRequest(this HttpClient client, HttpRequestMessage request) =>
         client.SendAsync(request, TestContext.Current.CancellationToken);
 
-    public static Task<string> ReadBody(this HttpResponseMessage response) =>
+    public static async Task ShouldBeAllowed(this HttpResponseMessage response)
+    {
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var body = await response.ReadBody();
+        body.Should().Contain("allowed");
+    }
+
+    public static void ShouldBeForbidden(this HttpResponseMessage response) =>
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+    private static Task<string> ReadBody(this HttpResponseMessage response) =>
         response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 }

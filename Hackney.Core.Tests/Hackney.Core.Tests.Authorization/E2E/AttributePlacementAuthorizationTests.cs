@@ -1,7 +1,5 @@
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
 using Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 using Xunit;
@@ -46,10 +44,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.MachineAccess);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var body = await response.ReadBody();
-        body.Should().Contain("allowed");
+        await response.ShouldBeAllowed();
     }
 
     [Fact]
@@ -61,7 +56,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.ChamomileEndpointName);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 
     #endregion
@@ -77,10 +72,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.ChamomileEndpointName);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var body = await response.ReadBody();
-        body.Should().Contain("allowed");
+        await response.ShouldBeAllowed();
     }
 
     [Fact]
@@ -92,7 +84,7 @@ public sealed class AttributePlacementAuthorizationTests
             BotanicalController.MachineAccess);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 
     #endregion
@@ -108,7 +100,7 @@ public sealed class AttributePlacementAuthorizationTests
             AquaticController.AtlanticSalmonEndpointName);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 
     #endregion
@@ -125,7 +117,7 @@ public sealed class AttributePlacementAuthorizationTests
             AquaticController.GreatCrestedNewtEndpointName);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 
     #endregion

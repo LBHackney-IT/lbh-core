@@ -1,7 +1,5 @@
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
 using Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 using Xunit;
@@ -29,10 +27,7 @@ public sealed class LegacyMachineAuthorizationTests
         var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var body = await response.ReadBody();
-        body.Should().Contain("allowed");
+        await response.ShouldBeAllowed();
     }
 
     [Fact]
@@ -45,7 +40,7 @@ public sealed class LegacyMachineAuthorizationTests
         var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 
     [Fact]
@@ -58,6 +53,6 @@ public sealed class LegacyMachineAuthorizationTests
         var response = await _client.SendBearerGet(WildlifePaths.AtlanticSalmon, jwt);
 
         // assert
-        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        response.ShouldBeForbidden();
     }
 }
