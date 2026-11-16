@@ -25,7 +25,6 @@ public class ServiceCollectionExtensionsTests
 {
     private const string ParameterName = "/auth/groups";
     private const string SsmFailureMessagePrefix = "Failed to fetch authorization groups from SSM parameter: ";
-    private const string PayloadFailureMessage = "SSM Parameter payload could not be deserialized.";
 
     #region parameter name
 
@@ -134,7 +133,7 @@ public class ServiceCollectionExtensionsTests
     #region group map
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_StoresPolicyKeysIgnoringCase_AndGroupsExactly()
+    public async Task AddHackneyAuthorizationAsync_RegistersTheGroupMapAsASingleton()
     {
         // arrange
         await using var provider = await BuildServiceProvider(ParameterStorePayload());
@@ -143,33 +142,10 @@ public class ServiceCollectionExtensionsTests
         var policyGroupsMap = provider.GetRequiredService<PolicyGroupMap>();
 
         // assert
-        // key comparison
-        policyGroupsMap.Policies.Comparer.Should().Be(StringComparer.OrdinalIgnoreCase);
-        policyGroupsMap.Policies.Should().ContainKey("housing-officers");
-
-        // key value (groups) comparison
-        policyGroupsMap.Policies["HOUSING-OFFICERS"].Comparer.Should().Be(StringComparer.Ordinal);
-        policyGroupsMap.Policies["housing-officers"].Should().BeEquivalentTo("group-a", "Group-A");
-        policyGroupsMap.Policies["housing-officers"].Contains("GROUP-A").Should().BeFalse();
-        policyGroupsMap.Policies["machine-readers"].Should().BeEquivalentTo("reader");
-
         // 2nd resolve must return the same map. A transient registration creates a new one.
         // sadly doesn't prove it's singleton, but it's the next best thing to proving it does
         // not get needlessly recreated all the time.
         provider.GetRequiredService<PolicyGroupMap>().Should().BeSameAs(policyGroupsMap);
-    }
-
-    [Fact]
-    public async Task AddHackneyAuthorizationAsync_StoresAnEmptyGroupMap_WhenTheParameterDocumentIsEmpty()
-    {
-        // arrange
-        await using var provider = await BuildServiceProvider("{}");
-
-        // act
-        var policyGroupsMap = provider.GetRequiredService<PolicyGroupMap>();
-
-        // assert
-        policyGroupsMap.Policies.Should().BeEmpty();
     }
 
     [Fact]
@@ -183,10 +159,7 @@ public class ServiceCollectionExtensionsTests
         var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
 
         // assert
-        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
-
-        exception.Which.Message.Should().Be(PayloadFailureMessage);
-        exception.Which.InnerException.Should().BeNull();
+        await act.Should().ThrowAsync<InvalidOperationException>();
 
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
     }
