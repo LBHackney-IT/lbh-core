@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -33,10 +32,8 @@ public sealed class AttributePlacementAuthorizationTests
 
     private static HttpRequestMessage CreateRequest(string path, string machineEndpoint)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, path);
         var jwt = TestJwt.CognitoM2M(ClientId, $"{ApiName}/{machineEndpoint}.read");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-        return request;
+        return TestHttp.BearerGet(path, jwt);
     }
 
     #endregion

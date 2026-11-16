@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -24,10 +23,7 @@ public sealed class CognitoM2MAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.CognitoM2M("wildlife-consumer", $"wildlife-api/{AnimalsController.BarbastellusBatEndpointName}.read");
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, "animals/barbastellus-bat");
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet("animals/barbastellus-bat", jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -44,10 +40,7 @@ public sealed class CognitoM2MAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.CognitoM2M("wildlife-consumer", "wildlife-api/other-endpoint.read");
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, "animals/barbastellus-bat");
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet("animals/barbastellus-bat", jwt);
 
         // act
         var response = await _client.SendRequest(request);

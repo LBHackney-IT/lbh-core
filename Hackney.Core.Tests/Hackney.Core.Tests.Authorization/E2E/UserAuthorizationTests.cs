@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -27,10 +26,7 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", AnimalsController.UserGroup);
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, BatPath);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet(BatPath, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -47,10 +43,7 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", "bird-surveyors");
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, BatPath);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet(BatPath, jwt);
 
         // act
         var response = await _client.SendRequest(request);

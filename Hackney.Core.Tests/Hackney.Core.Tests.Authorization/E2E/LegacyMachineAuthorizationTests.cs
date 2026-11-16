@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
 using Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -28,10 +27,7 @@ public sealed class LegacyMachineAuthorizationTests
         // arrange
         // The lambda authorizer already checked this token against the endpoint. Decoding it is enough.
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, BatPath);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet(BatPath, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -48,10 +44,7 @@ public sealed class LegacyMachineAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.UndecodableLegacyMachine("wildlife-survey");
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, BatPath);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet(BatPath, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -66,10 +59,7 @@ public sealed class LegacyMachineAuthorizationTests
         // arrange
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
         var salmonPath = $"{AquaticController.RoutePrefix}/{AquaticController.AtlanticSalmonEndpointName}";
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, salmonPath);
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        using var request = TestHttp.BearerGet(salmonPath, jwt);
 
         // act
         var response = await _client.SendRequest(request);
