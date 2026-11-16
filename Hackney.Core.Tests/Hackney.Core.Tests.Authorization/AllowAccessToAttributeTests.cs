@@ -17,8 +17,6 @@ namespace Hackney.Core.Tests.Authorization;
 
 public class AllowAccessToAttributeTests
 {
-    private const string HybridAccessPolicy = "HybridAccessPolicy";
-
     [Fact]
     public void Constructor_SetsHybridAccessPolicy()
     {
@@ -27,7 +25,7 @@ public class AllowAccessToAttributeTests
 
         // assert
         attribute.Should().BeAssignableTo<AuthorizeAttribute>();
-        attribute.Policy.Should().Be(HybridAccessPolicy);
+        attribute.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
         attribute.User.Should().BeNull();
         attribute.Machine.Should().BeNull();
         attribute.LegacyMachine.Should().BeFalse();
@@ -52,7 +50,7 @@ public class AllowAccessToAttributeTests
         attribute.User.Should().Be(user);
         attribute.Machine.Should().Be(machine);
         attribute.LegacyMachine.Should().BeTrue();
-        attribute.Policy.Should().Be(HybridAccessPolicy);
+        attribute.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
     }
 
     [Fact]
@@ -76,7 +74,7 @@ public class AllowAccessToAttributeTests
 
         // assert
         attribute.Should().NotBeNull();
-        attribute!.Policy.Should().Be(HybridAccessPolicy);
+        attribute!.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
         attribute.User.Should().Be("class-users");
         attribute.Machine.Should().Be("class-clients");
     }
@@ -95,7 +93,7 @@ public class AllowAccessToAttributeTests
 
         // assert
         attribute.Should().NotBeNull();
-        attribute!.Policy.Should().Be(HybridAccessPolicy);
+        attribute!.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
         attribute.User.Should().Be("method-users");
         attribute.Machine.Should().Be("method-clients");
     }
@@ -108,7 +106,7 @@ public class AllowAccessToAttributeTests
 
         // assert
         attribute.Should().NotBeNull();
-        attribute!.Policy.Should().Be(HybridAccessPolicy);
+        attribute!.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
         attribute.User.Should().Be("class-users");
         attribute.Machine.Should().Be("class-clients");
     }

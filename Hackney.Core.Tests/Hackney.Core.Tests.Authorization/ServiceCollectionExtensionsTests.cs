@@ -24,7 +24,6 @@ namespace Hackney.Core.Tests.Authorization;
 public class ServiceCollectionExtensionsTests
 {
     private const string ParameterName = "/auth/groups";
-    private const string HybridAccessPolicyName = "HybridAccessPolicy";
     private const string SsmFailureMessagePrefix = "Failed to fetch authorization groups from SSM parameter: ";
     private const string PayloadFailureMessage = "SSM Parameter payload could not be deserialized.";
 
@@ -227,7 +226,7 @@ public class ServiceCollectionExtensionsTests
         var tokenFactory = scope.ServiceProvider.GetRequiredService<ITokenFactory>();
         var authHandler = provider.GetServices<IAuthorizationHandler>().OfType<HybridAccessHandler>().Single();
         var options = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value;
-        var hybridPolicy = options.GetPolicy(HybridAccessPolicyName);
+        var hybridPolicy = options.GetPolicy(AllowAccessToAttribute.PolicyName);
 
         // assert
         tokenFactory.Should().BeOfType<TokenFactory>();

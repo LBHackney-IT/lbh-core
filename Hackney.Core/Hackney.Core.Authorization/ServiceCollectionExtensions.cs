@@ -62,7 +62,7 @@ namespace Hackney.Core.Authorization
                     .RequireAssertion(_ => false)
                     .Build();
 
-                authOptions.AddPolicy("HybridAccessPolicy", policy =>
+                authOptions.AddPolicy(AllowAccessToAttribute.PolicyName, policy =>
                     policy.Requirements.Add(new HybridAccessRequirement()));
             });
 

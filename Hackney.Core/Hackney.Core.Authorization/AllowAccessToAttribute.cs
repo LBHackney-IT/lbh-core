@@ -6,6 +6,8 @@ namespace Hackney.Core.Authorization
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class AllowAccessToAttribute : AuthorizeAttribute
     {
+        public const string PolicyName = "HybridAccessPolicy";
+
         public string? User { get; set; }
         public string? Machine { get; set; }
 
@@ -17,7 +19,7 @@ namespace Hackney.Core.Authorization
 
         public AllowAccessToAttribute()
         {
-            Policy = "HybridAccessPolicy";
+            Policy = PolicyName;
         }
     }
 }
