@@ -5,8 +5,6 @@ using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Hackney.Core.Authorization
@@ -23,58 +21,52 @@ namespace Hackney.Core.Authorization
 
             services.AddTokenFactory();
 
-            // TODO: the SSM functionality will be needed in another nuget package, so it might make more sense
-            // to have a dedicated ssm package with its own registration that we reference like we do with token factory.
-            // This being an MVP, this will be left crude as is.
+            var json = await FetchGroupDocument(ssmParameterName, ssmClient);
+            services.AddSingleton(PolicyGroupMapMapper.Map(json));
+            services.AddSingleton<IAuthorizationHandler, HybridAccessHandler>();
+
+            // Fallback triggers when neither the endpoint method, nor its controller is decorated with auth attribute.
+            // If you want an endpoint to be public for whatever reason, use [AllowAnonymous].
+            services.AddAuthorization(authOptions =>
+            {
+                authOptions.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAssertion(_ => false)
+                    .Build();
+
+                authOptions.AddPolicy(AllowAccessToAttribute.PolicyName, policy =>
+                    policy.Requirements.Add(new HybridAccessRequirement()));
+            });
+
+            // Ensure the denied requests return a 403 (forbidden) instead of 401 (unauthorized) to reflect that
+            // the user request was authenticated as it was able to reach the API, but didn't have the permissions
+            // to access the endpoint it was targetting.
+            services.AddSingleton<IAuthorizationMiddlewareResultHandler, ForbiddenAuthorizationResultHandler>();
+
+            return services;
+        }
+
+        // TODO: the SSM functionality will be needed in another nuget package, so it might make more sense
+        // to have a dedicated ssm package with its own registration that we reference like we do with token factory.
+        // This being an MVP, this will be left crude as is.
+        private static async Task<string> FetchGroupDocument(
+            string ssmParameterName,
+            IAmazonSimpleSystemsManagement? ssmClient)
+        {
             var ownsClient = ssmClient is null;
             var client = ssmClient ?? new AmazonSimpleSystemsManagementClient();
             try
             {
-                string jsonPayload;
                 try
                 {
                     var request = new GetParameterRequest { Name = ssmParameterName, WithDecryption = true };
                     var response = await client.GetParameterAsync(request);
-                    jsonPayload = response.Parameter.Value;
+                    return response.Parameter.Value;
                 }
                 catch (Exception ex)
                 {
-                    throw new InvalidOperationException($"Failed to fetch authorization groups from SSM parameter: '{ssmParameterName}'", ex);
+                    throw new InvalidOperationException(
+                        $"Failed to fetch authorization groups from SSM parameter: '{ssmParameterName}'", ex);
                 }
-
-                // mapping the param store json response into the model the domain expects
-                var rawDict = JsonSerializer.Deserialize<Dictionary<string, string[]>>(jsonPayload);
-                if (rawDict == null)
-                    throw new InvalidOperationException("SSM Parameter payload could not be deserialized.");
-
-                var domainPolicies = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
-                foreach (var kvp in rawDict)
-                {
-                    domainPolicies[kvp.Key] = new HashSet<string>(kvp.Value, StringComparer.Ordinal);
-                }
-
-                // register user groups configuration object and the auth handler
-                services.AddSingleton(new PolicyGroupMap(domainPolicies));
-                services.AddSingleton<IAuthorizationHandler, HybridAccessHandler>();
-
-                // Fallback triggers when neither the endpoint method, nor its controller is decorated with auth attribute.
-                // If you want an endpoint to be public for whatever reason, use [AllowAnonymous].
-                services.AddAuthorization(authOptions =>
-                {
-                    authOptions.FallbackPolicy = new AuthorizationPolicyBuilder()
-                        .RequireAssertion(_ => false)
-                        .Build();
-
-                    authOptions.AddPolicy(AllowAccessToAttribute.PolicyName, policy =>
-                        policy.Requirements.Add(new HybridAccessRequirement()));
-                });
-
-                // Ensure the denied requests return a 403 (forbidden) instead of 401 (unauthorized) to reflect that
-                // the user request was authenticated as it was able to reach the API, but didn't have the permissions
-                // to access the endpoint it was targetting.
-                services.AddSingleton<IAuthorizationMiddlewareResultHandler, ForbiddenAuthorizationResultHandler>();
-
-                return services;
             }
             finally
             {
