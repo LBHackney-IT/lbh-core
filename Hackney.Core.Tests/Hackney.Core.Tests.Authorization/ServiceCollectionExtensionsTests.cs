@@ -67,7 +67,7 @@ public class ServiceCollectionExtensionsTests
     public async Task AddHackneyAuthorizationAsync_RequestsTheDecryptedParameterByName()
     {
         // arrange
-        var ssm = MockSsm(ParameterStorePayload());
+        var ssm = SsmMock.WithPayload(ParameterStorePayload());
         var services = new ServiceCollection();
 
         // act
@@ -176,7 +176,7 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var services = new ServiceCollection();
-        var ssm = MockSsm("null");
+        var ssm = SsmMock.WithPayload("null");
 
         // act
         var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
@@ -199,7 +199,7 @@ public class ServiceCollectionExtensionsTests
     {
         // arrange
         var services = new ServiceCollection();
-        var ssm = MockSsm(payload);
+        var ssm = SsmMock.WithPayload(payload);
 
         // act
         var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
@@ -305,23 +305,10 @@ public class ServiceCollectionExtensionsTests
         ["machine-readers"] = ["reader"]
     });
 
-    private static Mock<IAmazonSimpleSystemsManagement> MockSsm(string payload)
-    {
-        var ssm = new Mock<IAmazonSimpleSystemsManagement>();
-
-        ssm.Setup(client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new GetParameterResponse
-            {
-                Parameter = new Parameter { Value = payload }
-            });
-
-        return ssm;
-    }
-
     private static async Task<ServiceProvider> BuildServiceProvider(string payload)
     {
         var services = new ServiceCollection();
-        await services.AddHackneyAuthorizationAsync(ParameterName, MockSsm(payload).Object);
+        await services.AddHackneyAuthorizationAsync(ParameterName, SsmMock.WithPayload(payload).Object);
         return services.BuildServiceProvider();
     }
 

@@ -1,21 +1,12 @@
-using System.Threading;
 using Amazon.SimpleSystemsManagement;
-using Amazon.SimpleSystemsManagement.Model;
-using Moq;
+using Hackney.Core.Tests.Authorization.Helpers;
 
 namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
+// The E2E tests do not call the '.Verify(...)' on the mock, therefore they
+// only need the object that mimicks the behaviour of mocked class.
 internal static class FakeSsm
 {
-    public static IAmazonSimpleSystemsManagement WithPayload(string json)
-    {
-        var ssm = new Mock<IAmazonSimpleSystemsManagement>();
-        ssm.Setup(client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new GetParameterResponse
-            {
-                Parameter = new Parameter { Value = json }
-            });
-
-        return ssm.Object;
-    }
+    public static IAmazonSimpleSystemsManagement WithPayload(string json) =>
+        SsmMock.WithPayload(json).Object;
 }
