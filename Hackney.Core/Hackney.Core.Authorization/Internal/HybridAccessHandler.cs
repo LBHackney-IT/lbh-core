@@ -99,7 +99,7 @@ namespace Hackney.Core.Authorization.Internal
             if (token == null)
             {
                 // Probably won't happen, but adding an explicit guard anyway just in case.
-                _logger.LogWarning("Access granted to a legacy machine token whose Id could not be determined.");
+                _logger.LogWarning("Access denied: legacy machine token whose Id could not be determined.");
                 return false;
             }
 
