@@ -11,9 +11,6 @@ namespace Hackney.Core.Tests.Authorization.E2E;
 [Collection(WildlifeApiCollection.Name)]
 public sealed class LegacyMachineAuthorizationTests
 {
-    private static readonly string BatPath =
-        $"{AnimalsController.RoutePrefix}/{AnimalsController.BarbastellusBatEndpointName}";
-
     private readonly HttpClient _client;
 
     public LegacyMachineAuthorizationTests(WildlifeApiFixture api)
@@ -27,7 +24,7 @@ public sealed class LegacyMachineAuthorizationTests
         // arrange
         // The lambda authorizer already checked this token against the endpoint. Decoding it is enough.
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
-        using var request = TestHttp.BearerGet(BatPath, jwt);
+        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -44,7 +41,7 @@ public sealed class LegacyMachineAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.UndecodableLegacyMachine("wildlife-survey");
-        using var request = TestHttp.BearerGet(BatPath, jwt);
+        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -58,8 +55,7 @@ public sealed class LegacyMachineAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
-        var salmonPath = $"{AquaticController.RoutePrefix}/{AquaticController.AtlanticSalmonEndpointName}";
-        using var request = TestHttp.BearerGet(salmonPath, jwt);
+        using var request = TestHttp.BearerGet(WildlifePaths.AtlanticSalmon, jwt);
 
         // act
         var response = await _client.SendRequest(request);

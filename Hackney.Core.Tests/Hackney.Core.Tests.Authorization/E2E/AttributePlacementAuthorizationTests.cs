@@ -27,9 +27,6 @@ public sealed class AttributePlacementAuthorizationTests
 
     #region helper methods
 
-    private static string BotanicalPath(string endpoint) => $"{BotanicalController.RoutePrefix}/{endpoint}";
-    private static string AquaticPath(string endpoint) => $"{AquaticController.RoutePrefix}/{endpoint}";
-
     private static HttpRequestMessage CreateRequest(string path, string machineEndpoint)
     {
         var jwt = TestJwt.CognitoM2M(ClientId, $"{ApiName}/{machineEndpoint}.read");
@@ -45,7 +42,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // arrange
         using var request = CreateRequest(
-            BotanicalPath(BotanicalController.DandelionEndpointName),
+            WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
             BotanicalController.MachineAccess);
 
         // act
@@ -63,7 +60,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // arrange
         using var request = CreateRequest(
-            BotanicalPath(BotanicalController.DandelionEndpointName),
+            WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
             BotanicalController.ChamomileEndpointName);
 
         // act
@@ -82,7 +79,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // arrange
         using var request = CreateRequest(
-            BotanicalPath(BotanicalController.ChamomileEndpointName),
+            WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
             BotanicalController.ChamomileEndpointName);
 
         // act
@@ -100,7 +97,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // arrange
         using var request = CreateRequest(
-            BotanicalPath(BotanicalController.ChamomileEndpointName),
+            WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
             BotanicalController.MachineAccess);
 
         // act
@@ -119,7 +116,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // arrange
         using var request = CreateRequest(
-            AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
+            WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
             AquaticController.AtlanticSalmonEndpointName);
 
         // act
@@ -139,7 +136,7 @@ public sealed class AttributePlacementAuthorizationTests
         // arrange
         // The route name is not an access rule. Neither the action nor the controller has AllowAccessTo.
         using var request = CreateRequest(
-            AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
+            WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
             AquaticController.GreatCrestedNewtEndpointName);
 
         // act

@@ -11,9 +11,6 @@ namespace Hackney.Core.Tests.Authorization.E2E;
 [Collection(WildlifeApiCollection.Name)]
 public sealed class UserAuthorizationTests
 {
-    private static readonly string BatPath =
-        $"{AnimalsController.RoutePrefix}/{AnimalsController.BarbastellusBatEndpointName}";
-
     private readonly HttpClient _client;
 
     public UserAuthorizationTests(WildlifeApiFixture api)
@@ -26,7 +23,7 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", AnimalsController.UserGroup);
-        using var request = TestHttp.BearerGet(BatPath, jwt);
+        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
         var response = await _client.SendRequest(request);
@@ -43,7 +40,7 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", "bird-surveyors");
-        using var request = TestHttp.BearerGet(BatPath, jwt);
+        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
         var response = await _client.SendRequest(request);
