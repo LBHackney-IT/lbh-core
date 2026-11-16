@@ -13,9 +13,6 @@ namespace Hackney.Core.Tests.Authorization.E2E;
 [Collection(WildlifeApiCollection.Name)]
 public sealed class AttributePlacementAuthorizationTests
 {
-    private const string ClientId = "wildlife-consumer";
-    private const string ApiName = "wildlife-api";
-
     private readonly HttpClient _client;
 
     public AttributePlacementAuthorizationTests(WildlifeApiFixture api)
@@ -27,7 +24,7 @@ public sealed class AttributePlacementAuthorizationTests
 
     private Task<HttpResponseMessage> Send(string path, string machineEndpoint)
     {
-        var jwt = TestJwt.CognitoM2M(ClientId, $"{ApiName}/{machineEndpoint}.read");
+        var jwt = TestJwt.CognitoM2M(machineEndpoint);
         return _client.SendBearerGet(path, jwt);
     }
 

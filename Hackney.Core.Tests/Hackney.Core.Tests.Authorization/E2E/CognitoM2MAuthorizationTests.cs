@@ -20,7 +20,7 @@ public sealed class CognitoM2MAuthorizationTests
     public async Task CognitoM2M_AllowsAccess_WhenTheTokenScopeMatchesTheEndpointMachineClaimRestriction()
     {
         // arrange
-        var jwt = TestJwt.CognitoM2M("wildlife-consumer", $"wildlife-api/{AnimalsController.BarbastellusBatEndpointName}.read");
+        var jwt = TestJwt.CognitoM2M(AnimalsController.BarbastellusBatEndpointName);
 
         // act
         var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
@@ -33,7 +33,7 @@ public sealed class CognitoM2MAuthorizationTests
     public async Task CognitoM2M_DeniesAccess_WhenTheTokenScopeDoesNotMatchTheEndpointMachineClaimRestriction()
     {
         // arrange
-        var jwt = TestJwt.CognitoM2M("wildlife-consumer", "wildlife-api/other-endpoint.read");
+        var jwt = TestJwt.CognitoM2M("other-endpoint");
 
         // act
         var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);

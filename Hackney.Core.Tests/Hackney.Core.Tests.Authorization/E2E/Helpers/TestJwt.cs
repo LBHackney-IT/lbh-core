@@ -6,7 +6,15 @@ namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
 internal static class TestJwt
 {
-    public static string CognitoM2M(string clientId, string scope) =>
+    public const string CognitoClientId = "wildlife-consumer";
+    public const string ApiName = "wildlife-api";
+
+    public static string CognitoScope(string endpoint) => $"{ApiName}/{endpoint}.read";
+
+    public static string CognitoM2M(string endpoint) =>
+        CognitoM2M(CognitoClientId, CognitoScope(endpoint));
+
+    private static string CognitoM2M(string clientId, string scope) =>
         Signed(new { client_id = clientId, scope });
 
     public static string User(string email, params string[] groups) =>
