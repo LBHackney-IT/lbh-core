@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AwesomeAssertions;
+using Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 using Xunit;
 
 namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
@@ -30,7 +31,7 @@ internal static class TestHttp
     {
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var body = await response.ReadBody();
-        body.Should().Contain("allowed");
+        body.Should().Contain(WildlifeApiControllerBase.AllowedStatus);
     }
 
     public static void ShouldBeForbidden(this HttpResponseMessage response) =>

@@ -10,7 +10,7 @@ namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 /// </summary>
 [ApiController]
 [Route(RoutePrefix)]
-public sealed class AquaticController : ControllerBase
+public sealed class AquaticController : WildlifeApiControllerBase
 {
     public const string RoutePrefix = "aquatic";
     public const string AtlanticSalmonEndpointName = "atlantic-salmon";
@@ -23,8 +23,8 @@ public sealed class AquaticController : ControllerBase
     // to have simple scope names that are not burdained by rest-style parameterised paths.
     [AllowAccessTo(Machine = AtlanticSalmonEndpointName)]
     [HttpGet(AtlanticSalmonEndpointName)]
-    public IActionResult AtlanticSalmon() => Ok(new { status = "allowed" });
+    public IActionResult AtlanticSalmon() => Allowed();
 
     [HttpGet(GreatCrestedNewtEndpointName)]
-    public IActionResult GreatCrestedNewt() => Ok(new { status = "allowed" });
+    public IActionResult GreatCrestedNewt() => Allowed();
 }

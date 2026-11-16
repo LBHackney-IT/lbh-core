@@ -11,7 +11,7 @@ namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 [ApiController]
 [Route(RoutePrefix)]
 [AllowAccessTo(Machine = MachineAccess)]
-public sealed class BotanicalController : ControllerBase
+public sealed class BotanicalController : WildlifeApiControllerBase
 {
     public const string RoutePrefix = "botanical";
     public const string MachineAccess = "botanical";
@@ -23,8 +23,8 @@ public sealed class BotanicalController : ControllerBase
 
     [AllowAccessTo(Machine = ChamomileEndpointName)]
     [HttpGet(ChamomileEndpointName)]
-    public IActionResult Chamomile() => Ok(new { status = "allowed" });
+    public IActionResult Chamomile() => Allowed();
 
     [HttpGet(DandelionEndpointName)]
-    public IActionResult Dandelion() => Ok(new { status = "allowed" });
+    public IActionResult Dandelion() => Allowed();
 }

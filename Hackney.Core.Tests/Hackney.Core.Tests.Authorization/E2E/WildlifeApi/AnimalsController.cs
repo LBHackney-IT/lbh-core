@@ -9,7 +9,7 @@ namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 /// </summary>
 [ApiController]
 [Route(RoutePrefix)]
-public sealed class AnimalsController : ControllerBase
+public sealed class AnimalsController : WildlifeApiControllerBase
 {
     public const string RoutePrefix = "animals";
     public const string BarbastellusBatEndpointName = "barbastellus-bat";
@@ -20,5 +20,5 @@ public sealed class AnimalsController : ControllerBase
 
     [AllowAccessTo(Machine = BarbastellusBatEndpointName, User = UserAccess, LegacyMachine = true)]
     [HttpGet(BarbastellusBatEndpointName)]
-    public IActionResult BarbastellusBat() => Ok(new { status = "allowed" });
+    public IActionResult BarbastellusBat() => Allowed();
 }
