@@ -10,6 +10,7 @@ using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
 using AwesomeAssertions;
 using Hackney.Core.Authorization;
+using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.Authorization.Internal;
 using Hackney.Core.JWT;
 using Hackney.Core.Tests.Authorization.Helpers;
@@ -148,28 +149,14 @@ public class ServiceCollectionExtensionsTests
         provider.GetRequiredService<PolicyGroupMap>().Should().BeSameAs(policyGroupsMap);
     }
 
-    [Fact]
-    public async Task AddHackneyAuthorizationAsync_ThrowsInvalidOperationException_WhenThePayloadIsJsonNull()
-    {
-        // arrange
-        var services = new ServiceCollection();
-        var ssm = SsmMock.WithPayload("null");
-
-        // act
-        var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
-
-        // assert
-        await act.Should().ThrowAsync<InvalidOperationException>();
-
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
-    }
-
     [Theory]
+    [InlineData("null")]
     [InlineData("")]
     [InlineData("{")]
     [InlineData("[]")]
     [InlineData("\"housing-officers\"")]
-    public async Task AddHackneyAuthorizationAsync_ThrowsJsonException_WhenThePayloadIsNotAGroupDocument(string payload)
+    [InlineData("{ \"wildlife-api\": null }")]
+    public async Task AddHackneyAuthorizationAsync_ThrowsInvalidGroupDocumentException_WhenThePayloadIsNotAGroupDocument(string payload)
     {
         // arrange
         var services = new ServiceCollection();
@@ -179,8 +166,11 @@ public class ServiceCollectionExtensionsTests
         var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
 
         // assert
-        await act.Should().ThrowAsync<JsonException>();
+        var exception = await act.Should().ThrowAsync<InvalidGroupDocumentException>();
 
+        exception.Which.InnerException.Should().BeOfType<InvalidGroupDocumentException>();
+        exception.Which.Message.Should().Be(
+            $"Failed to read authorization groups from SSM parameter: '{ParameterName}'. {exception.Which.InnerException!.Message}");
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
     }
 

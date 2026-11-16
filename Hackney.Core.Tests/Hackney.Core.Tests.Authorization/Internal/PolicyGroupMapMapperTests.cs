@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using AwesomeAssertions;
+using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.Authorization.Internal;
 using Xunit;
 
@@ -9,7 +9,8 @@ namespace Hackney.Core.Tests.Authorization.Internal;
 
 public class PolicyGroupMapMapperTests
 {
-    private const string PayloadFailureMessage = "SSM Parameter payload could not be deserialized.";
+    private const string CouldNotBeDeserializedMessage = "The group document could not be deserialized.";
+    private const string NotAGroupDocumentMessage = "The group document is not a policy map.";
 
     [Fact]
     public void Map_BuildsPolicyKeysIgnoringKeyCase_AndKeepingGroupsCaseExactly()
@@ -82,15 +83,15 @@ public class PolicyGroupMapMapperTests
     }
 
     [Fact]
-    public void Map_ThrowsInvalidOperationException_WhenTheDocumentIsJsonNull()
+    public void Map_ThrowsInvalidGroupDocumentException_WhenTheDocumentIsJsonNull()
     {
         // act
         var act = () => PolicyGroupMapMapper.Map("null");
 
         // assert
-        var exception = act.Should().Throw<InvalidOperationException>();
+        var exception = act.Should().Throw<InvalidGroupDocumentException>();
 
-        exception.Which.Message.Should().Be(PayloadFailureMessage);
+        exception.Which.Message.Should().Be(CouldNotBeDeserializedMessage);
         exception.Which.InnerException.Should().BeNull();
     }
 
@@ -101,23 +102,28 @@ public class PolicyGroupMapMapperTests
     [InlineData("\"housing-officers\"")]
     [InlineData("{ \"wildlife-api\": \"officers\" }")]
     [InlineData("{ \"wildlife-api\": 1 }")]
-    public void Map_ThrowsJsonException_WhenTheDocumentIsNotAGroupMap(string json)
+    public void Map_ThrowsInvalidGroupDocumentException_WhenTheDocumentIsNotAGroupMap(string json)
     {
         // act
         var act = () => PolicyGroupMapMapper.Map(json);
 
         // assert
-        act.Should().Throw<JsonException>();
+        var exception = act.Should().Throw<InvalidGroupDocumentException>();
+
+        exception.Which.Message.Should().Be(NotAGroupDocumentMessage);
+        exception.Which.InnerException.Should().BeOfType<JsonException>();
     }
 
     [Fact]
-    public void Map_ThrowsArgumentNullException_WhenAPolicyGroupListIsNull()
+    public void Map_ThrowsInvalidGroupDocumentException_WhenAPolicyGroupListIsNull()
     {
         // act
         var act = () => PolicyGroupMapMapper.Map("""{ "wildlife-api": null }""");
 
         // assert
-        act.Should().Throw<ArgumentNullException>()
-            .WithParameterName("collection");
+        var exception = act.Should().Throw<InvalidGroupDocumentException>();
+
+        exception.Which.Message.Should().Be("Policy 'wildlife-api' has no group list.");
+        exception.Which.InnerException.Should().BeNull();
     }
 }

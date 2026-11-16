@@ -1,5 +1,6 @@
 using Amazon.SimpleSystemsManagement;
 using Amazon.SimpleSystemsManagement.Model;
+using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.Authorization.Internal;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace Hackney.Core.Authorization
             services.AddTokenFactory();
 
             var json = await FetchGroupDocument(ssmParameterName, ssmClient);
-            services.AddSingleton(PolicyGroupMapMapper.Map(json));
+            services.AddSingleton(ReadGroupMap(json, ssmParameterName));
             services.AddSingleton<IAuthorizationHandler, HybridAccessHandler>();
 
             // Fallback triggers when neither the endpoint method, nor its controller is decorated with auth attribute.
@@ -43,6 +44,19 @@ namespace Hackney.Core.Authorization
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, ForbiddenAuthorizationResultHandler>();
 
             return services;
+        }
+
+        private static PolicyGroupMap ReadGroupMap(string json, string ssmParameterName)
+        {
+            try
+            {
+                return PolicyGroupMapMapper.Map(json);
+            }
+            catch (InvalidGroupDocumentException ex)
+            {
+                throw new InvalidGroupDocumentException(
+                    $"Failed to read authorization groups from SSM parameter: '{ssmParameterName}'. {ex.Message}", ex);
+            }
         }
 
         // TODO: the SSM functionality will be needed in another nuget package, so it might make more sense
