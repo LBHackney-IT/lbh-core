@@ -27,10 +27,10 @@ public sealed class AttributePlacementAuthorizationTests
 
     #region helper methods
 
-    private static HttpRequestMessage CreateRequest(string path, string machineEndpoint)
+    private Task<HttpResponseMessage> Send(string path, string machineEndpoint)
     {
         var jwt = TestJwt.CognitoM2M(ClientId, $"{ApiName}/{machineEndpoint}.read");
-        return TestHttp.BearerGet(path, jwt);
+        return _client.SendBearerGet(path, jwt);
     }
 
     #endregion
@@ -40,13 +40,10 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task UndecoratedMethod_AllowsAccess_WhenItInheritsTheControllerAttribute()
     {
-        // arrange
-        using var request = CreateRequest(
+        // act
+        using var response = await Send(
             WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
             BotanicalController.MachineAccess);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -58,13 +55,10 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task UndecoratedMethod_DeniesAccess_WhenTheTokenDoesNotMatchTheInheritedControllerAttribute()
     {
-        // arrange
-        using var request = CreateRequest(
+        // act
+        using var response = await Send(
             WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
             BotanicalController.ChamomileEndpointName);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -77,13 +71,10 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task DecoratedMethod_AllowsAccess_WhenTheTokenMatchesTheOverridingMethodAttribute()
     {
-        // arrange
-        using var request = CreateRequest(
+        // act
+        using var response = await Send(
             WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
             BotanicalController.ChamomileEndpointName);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -95,13 +86,10 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task DecoratedMethod_DeniesAccess_WhenTheTokenOnlyMatchesTheOverriddenControllerAttribute()
     {
-        // arrange
-        using var request = CreateRequest(
+        // act
+        using var response = await Send(
             WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
             BotanicalController.MachineAccess);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -114,13 +102,10 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task UndecoratedMethod_DeniesAccess_WhenAnotherMethodOnTheControllerHasAnAttribute()
     {
-        // arrange
-        using var request = CreateRequest(
+        // act
+        using var response = await Send(
             WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
             AquaticController.AtlanticSalmonEndpointName);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -133,14 +118,11 @@ public sealed class AttributePlacementAuthorizationTests
     [Fact]
     public async Task UndecoratedMethod_DeniesAccess_WhenTheControllerAlsoHasNoAttribute()
     {
-        // arrange
+        // act
         // The route name is not an access rule. Neither the action nor the controller has AllowAccessTo.
-        using var request = CreateRequest(
+        using var response = await Send(
             WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
             AquaticController.GreatCrestedNewtEndpointName);
-
-        // act
-        using var response = await _client.SendRequest(request);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

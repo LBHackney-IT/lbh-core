@@ -23,10 +23,9 @@ public sealed class CognitoM2MAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.CognitoM2M("wildlife-consumer", $"wildlife-api/{AnimalsController.BarbastellusBatEndpointName}.read");
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -40,10 +39,9 @@ public sealed class CognitoM2MAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.CognitoM2M("wildlife-consumer", "wildlife-api/other-endpoint.read");
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

@@ -24,10 +24,9 @@ public sealed class LegacyMachineAuthorizationTests
         // arrange
         // The lambda authorizer already checked this token against the endpoint. Decoding it is enough.
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -41,10 +40,9 @@ public sealed class LegacyMachineAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.UndecodableLegacyMachine("wildlife-survey");
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -55,10 +53,9 @@ public sealed class LegacyMachineAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
-        using var request = TestHttp.BearerGet(WildlifePaths.AtlanticSalmon, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.AtlanticSalmon, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);

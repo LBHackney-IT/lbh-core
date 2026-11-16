@@ -23,10 +23,9 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", AnimalsController.UserGroup);
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -40,10 +39,9 @@ public sealed class UserAuthorizationTests
     {
         // arrange
         var jwt = TestJwt.User("keeper@hackney.gov.uk", "bird-surveyors");
-        using var request = TestHttp.BearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // act
-        var response = await _client.SendRequest(request);
+        var response = await _client.SendBearerGet(WildlifePaths.BarbastellusBat, jwt);
 
         // assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
