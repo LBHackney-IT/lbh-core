@@ -67,7 +67,7 @@ public class ServiceCollectionExtensionsTests
     public async Task AddHackneyAuthorizationAsync_RequestsTheDecryptedParameterByName()
     {
         // arrange
-        var ssm = MockSsm(ParamStorePayload());
+        var ssm = MockSsm(ParameterStorePayload());
         var services = new ServiceCollection();
 
         // act
@@ -136,7 +136,7 @@ public class ServiceCollectionExtensionsTests
     public async Task AddHackneyAuthorizationAsync_StoresPolicyKeysIgnoringCase_AndGroupsExactly()
     {
         // arrange
-        await using var provider = await BuildProvider(ParamStorePayload());
+        await using var provider = await BuildServiceProvider(ParameterStorePayload());
 
         // act
         var policyGroupsMap = provider.GetRequiredService<PolicyGroupMap>();
@@ -162,7 +162,7 @@ public class ServiceCollectionExtensionsTests
     public async Task AddHackneyAuthorizationAsync_StoresAnEmptyGroupMap_WhenTheParameterDocumentIsEmpty()
     {
         // arrange
-        await using var provider = await BuildProvider("{}");
+        await using var provider = await BuildServiceProvider("{}");
 
         // act
         var policyGroupsMap = provider.GetRequiredService<PolicyGroupMap>();
@@ -218,7 +218,7 @@ public class ServiceCollectionExtensionsTests
     public async Task AddHackneyAuthorizationAsync_RegistersTheTokenFactoryHandlerAndHybridPolicy()
     {
         // arrange
-        await using var provider = await BuildProvider(ParamStorePayload());
+        await using var provider = await BuildServiceProvider(ParameterStorePayload());
 
         // act
         // token factory is currently scoped, so it has to be resolved from scope. scope is discarded at the end of test
@@ -261,7 +261,7 @@ public class ServiceCollectionExtensionsTests
     public async Task FallbackPolicy_DeniesAnAuthenticatedCaller()
     {
         // arrange
-        await using var provider = await BuildProvider(ParamStorePayload());
+        await using var provider = await BuildServiceProvider(ParameterStorePayload());
 
         var authorization = provider.GetRequiredService<IAuthorizationService>();
         var fallback = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy;
@@ -281,7 +281,7 @@ public class ServiceCollectionExtensionsTests
     public async Task FallbackPolicy_DeniesAnAnonymousCaller()
     {
         // arrange
-        await using var provider = await BuildProvider(ParamStorePayload());
+        await using var provider = await BuildServiceProvider(ParameterStorePayload());
 
         var authorization = provider.GetRequiredService<IAuthorizationService>();
         var fallback = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy;
@@ -297,7 +297,7 @@ public class ServiceCollectionExtensionsTests
 
     #region helper methods
 
-    private static string ParamStorePayload() => JsonSerializer.Serialize(new Dictionary<string, string[]>
+    private static string ParameterStorePayload() => JsonSerializer.Serialize(new Dictionary<string, string[]>
     {
         ["Housing-Officers"] = ["group-a", "Group-A"],
         ["machine-readers"] = ["reader"]
@@ -316,7 +316,7 @@ public class ServiceCollectionExtensionsTests
         return ssm;
     }
 
-    private static async Task<ServiceProvider> BuildProvider(string payload)
+    private static async Task<ServiceProvider> BuildServiceProvider(string payload)
     {
         var services = new ServiceCollection();
         await services.AddHackneyAuthorizationAsync(ParameterName, MockSsm(payload).Object);

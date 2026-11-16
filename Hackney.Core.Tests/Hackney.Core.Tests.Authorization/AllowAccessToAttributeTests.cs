@@ -120,6 +120,7 @@ public class AllowAccessToAttributeTests
             ApplicationName = typeof(AllowAccessToAttributeTests).Assembly.GetName().Name,
             ContentRootPath = AppContext.BaseDirectory
         });
+
         builder.Logging.ClearProviders();
         builder.Services.AddControllers()
             .AddApplicationPart(typeof(AllowAccessToAttributeTests).Assembly);
@@ -130,6 +131,7 @@ public class AllowAccessToAttributeTests
             .OfType<ControllerActionDescriptor>()
             .Single(action => action.ControllerTypeInfo == typeof(MockController).GetTypeInfo()
                 && action.MethodInfo.Name == actionName);
+
         var metadata = new EndpointMetadataCollection(descriptor.EndpointMetadata);
 
         return metadata.GetMetadata<AllowAccessToAttribute>();
