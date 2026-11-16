@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
@@ -13,6 +12,7 @@ using AwesomeAssertions;
 using Hackney.Core.Authorization;
 using Hackney.Core.Authorization.Internal;
 using Hackney.Core.JWT;
+using Hackney.Core.Tests.Authorization.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -266,6 +266,8 @@ public class ServiceCollectionExtensionsTests
         var authorization = provider.GetRequiredService<IAuthorizationService>();
         var fallback = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy;
 
+        // the details of authenticated user are irrelevant as this test is testing whether behaviour stays
+        // as intended in a scenario that should not happen in practice under the normal API's setups.
         var caller = new ClaimsPrincipal(new ClaimsIdentity(
             [new Claim(ClaimTypes.Name, "caller")],
             authenticationType: "Bearer"));
@@ -321,48 +323,6 @@ public class ServiceCollectionExtensionsTests
         var services = new ServiceCollection();
         await services.AddHackneyAuthorizationAsync(ParameterName, MockSsm(payload).Object);
         return services.BuildServiceProvider();
-    }
-
-    // TODO: move to a helper file
-    /// <summary>
-    /// Hide the developer machine's AWS profile, region, and metadata service so the
-    /// parameter-store client constructed by the package fails before it opens a connection.
-    /// </summary>
-    private sealed class ClearedAwsDiscovery : IDisposable
-    {
-        private readonly Dictionary<string, string?> _previous = [];
-        private readonly string _configPath = Path.GetTempFileName();
-        private readonly string _credentialsPath = Path.GetTempFileName();
-
-        public ClearedAwsDiscovery()
-        {
-            Set("AWS_REGION", null);
-            Set("AWS_DEFAULT_REGION", null);
-            Set("AWS_PROFILE", null);
-            Set("AWS_ACCESS_KEY_ID", "test-key");
-            Set("AWS_SECRET_ACCESS_KEY", "test-secret");
-            Set("AWS_SESSION_TOKEN", null);
-            Set("AWS_EC2_METADATA_DISABLED", "true");
-            Set("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", null);
-            Set("AWS_CONTAINER_CREDENTIALS_FULL_URI", null);
-            Set("AWS_SHARED_CREDENTIALS_FILE", _credentialsPath);
-            Set("AWS_CONFIG_FILE", _configPath);
-        }
-
-        public void Dispose()
-        {
-            foreach (var (name, value) in _previous)
-                Environment.SetEnvironmentVariable(name, value);
-
-            File.Delete(_configPath);
-            File.Delete(_credentialsPath);
-        }
-
-        private void Set(string name, string? value)
-        {
-            _previous[name] = Environment.GetEnvironmentVariable(name);
-            Environment.SetEnvironmentVariable(name, value);
-        }
     }
 
     #endregion
