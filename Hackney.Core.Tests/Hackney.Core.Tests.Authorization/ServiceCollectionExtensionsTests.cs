@@ -81,6 +81,7 @@ public class ServiceCollectionExtensionsTests
             ),
             Times.Once
         );
+        ssm.Verify(client => client.Dispose(), Times.Never);
     }
 
     [Fact]
@@ -106,6 +107,7 @@ public class ServiceCollectionExtensionsTests
 
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(IAuthorizationHandler));
+        ssm.Verify(client => client.Dispose(), Times.Never);
     }
 
     [Fact]
