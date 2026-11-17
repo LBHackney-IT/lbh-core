@@ -70,17 +70,14 @@ namespace Hackney.Core.Authorization
             var client = ssmClient ?? new AmazonSimpleSystemsManagementClient();
             try
             {
-                try
-                {
-                    var request = new GetParameterRequest { Name = ssmParameterName, WithDecryption = true };
-                    var response = await client.GetParameterAsync(request);
-                    return response.Parameter.Value;
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException(
-                        $"Failed to fetch authorization groups from SSM parameter: '{ssmParameterName}'", ex);
-                }
+                var request = new GetParameterRequest { Name = ssmParameterName, WithDecryption = true };
+                var response = await client.GetParameterAsync(request);
+                return response.Parameter.Value;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    $"Failed to fetch authorization groups from SSM parameter: '{ssmParameterName}'", ex);
             }
             finally
             {
