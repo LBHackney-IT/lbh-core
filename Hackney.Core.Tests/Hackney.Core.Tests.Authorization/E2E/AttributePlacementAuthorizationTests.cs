@@ -37,7 +37,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // act
         using var response = await Send(
-            WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
+            WildlifePaths.Dandelion,
             BotanicalController.MachineAccess);
 
         // assert
@@ -49,7 +49,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // act
         using var response = await Send(
-            WildlifePaths.BotanicalPath(BotanicalController.DandelionEndpointName),
+            WildlifePaths.Dandelion,
             BotanicalController.ChamomileEndpointName);
 
         // assert
@@ -65,7 +65,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // act
         using var response = await Send(
-            WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
+            WildlifePaths.Chamomile,
             BotanicalController.ChamomileEndpointName);
 
         // assert
@@ -77,7 +77,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // act
         using var response = await Send(
-            WildlifePaths.BotanicalPath(BotanicalController.ChamomileEndpointName),
+            WildlifePaths.Chamomile,
             BotanicalController.MachineAccess);
 
         // assert
@@ -93,7 +93,7 @@ public sealed class AttributePlacementAuthorizationTests
     {
         // act
         using var response = await Send(
-            WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
+            WildlifePaths.GreatCrestedNewt,
             AquaticController.AtlanticSalmonEndpointName);
 
         // assert
@@ -110,7 +110,7 @@ public sealed class AttributePlacementAuthorizationTests
         // act
         // The route name is not an access rule. Neither the action nor the controller has AllowAccessTo.
         using var response = await Send(
-            WildlifePaths.AquaticPath(AquaticController.GreatCrestedNewtEndpointName),
+            WildlifePaths.GreatCrestedNewt,
             AquaticController.GreatCrestedNewtEndpointName);
 
         // assert
