@@ -108,7 +108,6 @@ public sealed class AttributePlacementAuthorizationTests
     public async Task UndecoratedMethod_DeniesAccess_WhenTheControllerAlsoHasNoAttribute()
     {
         // act
-        // The route name is not an access rule. Neither the action nor the controller has AllowAccessTo.
         using var response = await Send(
             WildlifePaths.GreatCrestedNewt,
             AquaticController.GreatCrestedNewtEndpointName);

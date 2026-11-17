@@ -98,7 +98,6 @@ public class HybridAccessHandlerTests
 
     private static LegacyMachineToken LegacyToken() => new()
     {
-        // TODO: ensure proper model exists in JWT and check if id is int or str
         Id = "42",
         ConsumerName = "some-consumer",
         ConsumerType = "Service",

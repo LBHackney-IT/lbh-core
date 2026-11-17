@@ -17,7 +17,7 @@ public class ForbiddenAuthorizationResultHandlerTests
     public ForbiddenAuthorizationResultHandlerTests()
     {
         _classUnderTest = new ForbiddenAuthorizationResultHandler();
-        // The handler does not read the policy. HandleAsync requires one.
+        // The handler does not read the policy, however, HandleAsync requires one.
         _policy = new AuthorizationPolicyBuilder().RequireAssertion(_ => true).Build();
     }
 

@@ -8,7 +8,6 @@ using Xunit;
 
 namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
-// helper so that the tests code wouldn't need to repeat these verbose cancellation tokens
 internal static class TestHttp
 {
     public static async Task<HttpResponseMessage> SendBearerGet(this HttpClient client, string path, string jwt)

@@ -38,6 +38,8 @@ public sealed class WildlifeApiFixture : IAsyncLifetime
             .AddApplicationPart(typeof(WildlifeApiFixture).Assembly);
 
         // The user flow looks up AnimalsController.UserAccess in this document. Cognito and legacy flows do not read it.
+        // For the sakes of simplicity only 1 controller's user groups are set up, other controllers will be tested via
+        // the machine token flows.
         var groups = $"{{\"{AnimalsController.UserAccess}\":[\"{AnimalsController.UserGroup}\"]}}";
         await builder.Services.AddHackneyAuthorizationAsync(ParameterName, FakeSsm.WithPayload(groups));
 
