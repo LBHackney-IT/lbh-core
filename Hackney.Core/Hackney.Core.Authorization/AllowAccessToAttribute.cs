@@ -4,7 +4,7 @@ using System;
 namespace Hackney.Core.Authorization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class AllowAccessToAttribute : AuthorizeAttribute
+    public sealed class AllowAccessToAttribute : AuthorizeAttribute
     {
         public const string PolicyName = "HybridAccessPolicy";
 
