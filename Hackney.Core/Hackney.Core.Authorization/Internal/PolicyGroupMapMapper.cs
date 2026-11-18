@@ -28,7 +28,11 @@ namespace Hackney.Core.Authorization.Internal
                 if (groups is null)
                     throw new InvalidGroupDocumentException($"Policy '{key}' has no group list.");
 
-                policies[key] = new HashSet<string>(groups, StringComparer.Ordinal);
+                if (policies.ContainsKey(key))
+                    throw new InvalidGroupDocumentException(
+                        $"Policy '{key}' duplicates another policy key when compared without case.");
+
+                policies.Add(key, new HashSet<string>(groups, StringComparer.Ordinal));
             }
 
             return new PolicyGroupMap(policies);

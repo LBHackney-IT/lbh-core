@@ -64,7 +64,7 @@ public class PolicyGroupMapMapperTests
     }
 
     [Fact]
-    public void Map_KeepsTheGroupsFromTheLaterPolicyKey_WhenKeysDifferOnlyByCase()
+    public void Map_ThrowsInvalidGroupDocumentException_WhenPolicyKeysDifferOnlyByCase()
     {
         // arrange
         const string json = """
@@ -75,11 +75,14 @@ public class PolicyGroupMapMapperTests
             """;
 
         // act
-        var map = PolicyGroupMapMapper.Map(json);
+        var act = () => PolicyGroupMapMapper.Map(json);
 
         // assert
-        map.Policies.Should().ContainSingle();
-        map.Policies["HOUSING-OFFICERS"].Should().BeEquivalentTo("group-b");
+        var exception = act.Should().Throw<InvalidGroupDocumentException>();
+
+        exception.Which.Message.Should().Be(
+            "Policy 'housing-officers' duplicates another policy key when compared without case.");
+        exception.Which.InnerException.Should().BeNull();
     }
 
     [Fact]

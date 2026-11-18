@@ -19,7 +19,7 @@ The package is built for Hackney APIs that run behind the Lambda authorizer.
 - The bearer token is still on the `Authorization` header when the request enters the API. The package reads that header. It does not read `HttpContext.User`.
 - User groups are published as one JSON document in AWS Systems Manager Parameter Store. `AddHackneyAuthorizationAsync` reads that document once, while the application is starting. A later change to the parameter is picked up when a new process starts.
 - The host calls `app.UseAuthorization()`. Registration only puts the services in the container. It cannot insert the middleware into the pipeline.
-- The group document is a JSON object. Each key is a policy name. Each value is the list of group names that satisfy that policy. Policy names are compared without case. Group names are compared exactly.
+- The group document is a JSON object. Each key is a policy name. Each value is the list of group names that satisfy that policy. Policy names are compared without case, and two keys that differ only by case are rejected. Group names are compared exactly.
 
 ```json
 {
@@ -120,7 +120,7 @@ Registers the token factory, reads the group document, registers the authorizati
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ArgumentNullException`         | `ssmParameterName` is null, empty, or whitespace. `ParamName` is `ssmParameterName`.                                                                                                                                                                                                                    |
 | `InvalidOperationException`     | The parameter cannot be fetched. The SSM error is the inner exception. The message names the parameter.                                                                                                                                                                                                 |
-| `InvalidGroupDocumentException` | The parameter value is not a policy map. The message names the parameter. JSON that is not an object, a JSON `null`, and a policy whose group list is null are this exception. A `JsonException` is the inner exception of the map error, which is then the inner exception of the exception you catch. |
+| `InvalidGroupDocumentException` | The parameter value is not a policy map. The message names the parameter. JSON that is not an object, a JSON `null`, a policy whose group list is null, and two policy keys that differ only by case are this exception. A `JsonException` is the inner exception of the map error, which is then the inner exception of the exception you catch. |
 | AWS SDK exception               | You passed no client, and constructing the default SSM client fails, for example because no region is configured. That exception is not wrapped.                                                                                                                                                        |
 
 `{}` is a valid document. It publishes no policies, so every user token is denied.
