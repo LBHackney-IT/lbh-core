@@ -99,7 +99,8 @@ Namespace `Hackney.Core.Authorization`. Apply it to a controller or an action. `
 
 | Member          | Meaning                                                                                   |
 | --------------- | ----------------------------------------------------------------------------------------- |
-| `PolicyName`    | `"HybridAccessPolicy"`. The policy the attribute selects.                                 |
+| `PolicyName`    | `"HybridAccessPolicy"`. A const. The policy the attribute selects.                        |
+| `Policy`        | Always `PolicyName`. There is no setter, so a caller cannot select another policy.       |
 | `User`          | Policy name in the group document. Null means user tokens are denied.                     |
 | `Machine`       | Endpoint name a Cognito scope must contain. Null means Cognito machine tokens are denied. |
 | `LegacyMachine` | `false` unless set to `true`. Gates legacy machine tokens.                                |

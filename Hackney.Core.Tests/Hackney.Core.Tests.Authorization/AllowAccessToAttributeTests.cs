@@ -18,17 +18,41 @@ namespace Hackney.Core.Tests.Authorization;
 public class AllowAccessToAttributeTests
 {
     [Fact]
-    public void Constructor_SetsHybridAccessPolicy()
+    public void Attribute_ExposesTheFixedHybridAccessPolicy()
     {
         // act
         var attribute = new AllowAccessToAttribute();
 
         // assert
-        attribute.Should().BeAssignableTo<AuthorizeAttribute>();
+        attribute.Should().BeAssignableTo<IAuthorizeData>();
+
+        // sealed so devs can't inherit from it & accidentally override policy that way
+        typeof(AllowAccessToAttribute).IsSealed.Should().BeTrue();
+
         attribute.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
         attribute.User.Should().BeNull();
         attribute.Machine.Should().BeNull();
         attribute.LegacyMachine.Should().BeFalse();
+    }
+
+    // ensuring it's a custom implementation of 'IAuthorizeData' rather than descendent of
+    // 'AuthorizeAttribute' as it was before so the 'Roles', 'AuthenticationSchemes', and
+    // 'Policy' keys are locked down to prevent developers from shooting themselves in the foot
+    [Fact]
+    public void PolicyRolesAndSchemes_StayFixedWhenSetThroughTheInterface()
+    {
+        // arrange
+        IAuthorizeData attribute = new AllowAccessToAttribute();
+
+        // act
+        attribute.Policy = "Other";
+        attribute.Roles = "Admin";
+        attribute.AuthenticationSchemes = "Bearer";
+
+        // assert
+        attribute.Policy.Should().Be(AllowAccessToAttribute.PolicyName);
+        attribute.Roles.Should().BeNull();
+        attribute.AuthenticationSchemes.Should().BeNull();
     }
 
     [Fact]
