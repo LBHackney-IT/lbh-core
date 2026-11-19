@@ -91,6 +91,8 @@ An attribute on one action does not open the other actions.
 
 An action with no `AllowAccessTo`, on a controller that also has none, is denied. The route is not itself a rule.
 
+`[AllowAccessTo]` with no `User`, no `Machine`, and no `LegacyMachine = true` also denies every caller. The attribute is present, so this is not the fallback rule. Each token is denied because its own rule is missing.
+
 To leave an endpoint public, mark it `[AllowAnonymous]`. That skips the fallback denial.
 
 ## Public interface

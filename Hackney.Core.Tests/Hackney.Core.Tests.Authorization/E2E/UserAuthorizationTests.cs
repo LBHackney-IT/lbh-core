@@ -41,4 +41,17 @@ public sealed class UserAuthorizationTests
         // assert
         response.ShouldBeForbidden();
     }
+
+    [Fact]
+    public async Task User_DeniesAccess_WhenTheAttributeHasNoRules()
+    {
+        // arrange
+        var jwt = TestJwt.User("keeper@hackney.gov.uk", AnimalsController.UserGroup);
+
+        // act
+        var response = await _client.SendBearerGet(WildlifePaths.MelesBadger, jwt);
+
+        // assert
+        response.ShouldBeForbidden();
+    }
 }

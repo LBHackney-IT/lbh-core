@@ -55,4 +55,17 @@ public sealed class LegacyMachineAuthorizationTests
         // assert
         response.ShouldBeForbidden();
     }
+
+    [Fact]
+    public async Task LegacyMachine_DeniesAccess_WhenTheAttributeHasNoRules()
+    {
+        // arrange
+        var jwt = TestJwt.LegacyMachine("42", "wildlife-survey", "Service");
+
+        // act
+        var response = await _client.SendBearerGet(WildlifePaths.MelesBadger, jwt);
+
+        // assert
+        response.ShouldBeForbidden();
+    }
 }

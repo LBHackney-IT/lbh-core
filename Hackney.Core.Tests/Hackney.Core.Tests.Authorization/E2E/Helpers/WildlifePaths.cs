@@ -10,6 +10,9 @@ internal static class WildlifePaths
     public static string BarbastellusBat =>
         $"{AnimalsController.RoutePrefix}/{AnimalsController.BarbastellusBatEndpointName}";
 
+    public static string MelesBadger =>
+        $"{AnimalsController.RoutePrefix}/{AnimalsController.MelesBadgerEndpointName}";
+
     public static string AtlanticSalmon =>
         $"{AquaticController.RoutePrefix}/{AquaticController.AtlanticSalmonEndpointName}";
 

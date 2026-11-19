@@ -13,6 +13,7 @@ public sealed class AnimalsController : WildlifeApiControllerBase
 {
     public const string RoutePrefix = "animals";
     public const string BarbastellusBatEndpointName = "barbastellus-bat";
+    public const string MelesBadgerEndpointName = "meles-badger";
     public const string UserAccess = "wildlife-keepers";
     public const string UserGroup = "mammal-surveyors";
 
@@ -21,4 +22,9 @@ public sealed class AnimalsController : WildlifeApiControllerBase
     [AllowAccessTo(Machine = BarbastellusBatEndpointName, User = UserAccess, LegacyMachine = true)]
     [HttpGet(BarbastellusBatEndpointName)]
     public IActionResult BarbastellusBat() => Allowed();
+
+    // attribute with no rules
+    [AllowAccessTo]
+    [HttpGet(MelesBadgerEndpointName)]
+    public IActionResult MelesBadger() => Allowed();
 }

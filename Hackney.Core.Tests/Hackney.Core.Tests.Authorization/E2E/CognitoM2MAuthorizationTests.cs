@@ -41,4 +41,17 @@ public sealed class CognitoM2MAuthorizationTests
         // assert
         response.ShouldBeForbidden();
     }
+
+    [Fact]
+    public async Task CognitoM2M_DeniesAccess_WhenTheAttributeHasNoRules()
+    {
+        // arrange
+        var jwt = TestJwt.CognitoM2M(AnimalsController.MelesBadgerEndpointName);
+
+        // act
+        var response = await _client.SendBearerGet(WildlifePaths.MelesBadger, jwt);
+
+        // assert
+        response.ShouldBeForbidden();
+    }
 }

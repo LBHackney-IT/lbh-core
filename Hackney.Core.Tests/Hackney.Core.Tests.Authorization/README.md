@@ -33,7 +33,7 @@ A mock API used only as a target. It has no business behaviour.
 
 - `WildlifeApiFixture` builds one `WebApplication` for the collection, points it at a fake SSM document, calls `UseAuthorization`, and exposes an `HttpClient`.
 - `WildlifeApiCollection` shares that host across the end-to-end tests.
-- `AnimalsController` is the token-flow target. `GET animals/barbastellus-bat` allows the Cognito endpoint `barbastellus-bat`, the user policy `wildlife-keepers` (group `mammal-surveyors`), and legacy machine tokens.
+- `AnimalsController` is the token-flow target. `GET animals/barbastellus-bat` allows the Cognito endpoint `barbastellus-bat`, the user policy `wildlife-keepers` (group `mammal-surveyors`), and legacy machine tokens. `GET animals/meles-badger` has an empty `AllowAccessTo`, so every caller is denied.
 - `BotanicalController` is decorated, so its undecorated action inherits that rule and its decorated action replaces it.
 - `AquaticController` is not decorated. One action has `AllowAccessTo`. The other has nothing.
 

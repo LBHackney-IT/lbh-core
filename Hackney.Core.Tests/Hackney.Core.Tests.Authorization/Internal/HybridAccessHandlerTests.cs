@@ -271,6 +271,29 @@ public class HybridAccessHandlerTests
 
     #endregion
 
+    #region empty attribute
+
+    [Theory]
+    [InlineData(HackneyTokenType.User, "does not allow user access")]
+    [InlineData(HackneyTokenType.MachineLegacy, "does not allow legacy machine access")]
+    [InlineData(HackneyTokenType.CognitoM2M, "does not allow machine access")]
+    public async Task HandleAsync_DeniesAndWarns_WhenTheAttributeHasNoRules(
+        HackneyTokenType tokenType,
+        string warning)
+    {
+        // arrange
+        SetupTokenType(tokenType);
+
+        // act
+        var context = await HandleAsync(BuildHttpContext(new AllowAccessToAttribute()));
+
+        // assert
+        context.HasSucceeded.Should().BeFalse();
+        _logger.ShouldHaveLogged(LogLevel.Warning, warning);
+    }
+
+    #endregion
+
     #region user token
 
     [Fact]
