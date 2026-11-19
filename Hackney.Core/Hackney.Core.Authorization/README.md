@@ -93,7 +93,9 @@ An action with no `AllowAccessTo`, on a controller that also has none, is denied
 
 `[AllowAccessTo]` with no `User`, no `Machine`, and no `LegacyMachine = true` also denies every caller. The attribute is present, so this is not the fallback rule. Each token is denied because its own rule is missing.
 
-To leave an endpoint public, mark it `[AllowAnonymous]`. That skips the fallback denial and any `AllowAccessTo` inherited from the controller.
+To leave one endpoint public, mark that action `[AllowAnonymous]`. That skips the fallback denial and any `AllowAccessTo` inherited from the controller.
+
+`[AllowAnonymous]` on a controller makes every action on that controller public. An `[AllowAccessTo]` on one of those actions does not close it. ASP.NET Core skips authorization for the whole endpoint when it finds `[AllowAnonymous]` anywhere on it, including on the controller.
 
 ## Public interface
 
