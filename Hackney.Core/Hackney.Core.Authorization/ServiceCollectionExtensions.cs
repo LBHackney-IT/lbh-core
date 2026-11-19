@@ -20,8 +20,9 @@ namespace Hackney.Core.Authorization
             ArgumentException.ThrowIfNullOrWhiteSpace(ssmParameterName);
 
             // A second call would add another map and another loader, so SSM would be read twice.
+            // Keep the first registration. Its parameter name is the one that is read.
             if (services.Any(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap)))
-                throw new InvalidOperationException("Hackney authorization is already registered.");
+                return services;
 
             services.AddTokenFactory();
 

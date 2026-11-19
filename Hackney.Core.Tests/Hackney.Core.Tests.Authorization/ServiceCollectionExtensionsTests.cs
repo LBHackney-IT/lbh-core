@@ -279,26 +279,28 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void AddHackneyAuthorization_ThrowsInvalidOperationException_WhenCalledTwice()
+    public async Task AddHackneyAuthorization_KeepsTheFirstRegistration_WhenCalledTwice()
     {
         // arrange
         var services = new ServiceCollection();
         var ssm = SsmMock.WithPayload(ParameterStorePayload());
-        services.AddHackneyAuthorization(ParameterName, ssm.Object); // first call
+        var first = services.AddHackneyAuthorization(ParameterName, ssm.Object);
 
-        // act - second call
-        var act = () => services.AddHackneyAuthorization("/other/groups", ssm.Object);
+        // act
+        var second = services.AddHackneyAuthorization("/other/groups", ssm.Object);
+        await using var provider = services.BuildServiceProvider();
+        await StartHostedServices(provider);
 
         // assert
-        act.Should().Throw<InvalidOperationException>()
-            .WithMessage("Hackney authorization is already registered.");
-
+        second.Should().BeSameAs(first);
         services.Should().ContainSingle(descriptor => descriptor.ServiceType == typeof(IHostedService));
         services.Should().ContainSingle(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
 
         ssm.Verify(
-            client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()),
-            Times.Never);
+            client => client.GetParameterAsync(
+                It.Is<GetParameterRequest>(request => request.Name == ParameterName),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
