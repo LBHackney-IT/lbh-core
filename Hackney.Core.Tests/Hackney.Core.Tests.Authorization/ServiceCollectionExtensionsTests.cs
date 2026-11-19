@@ -32,24 +32,44 @@ public class ServiceCollectionExtensionsTests
 
     #region parameter name
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\t")]
-    [InlineData("\r\n")]
-    public void AddHackneyAuthorization_ThrowsArgumentNullException_WhenParameterNameIsMissing(string? parameterName)
+    [Fact]
+    public void AddHackneyAuthorization_ThrowsArgumentNullException_WhenParameterNameIsNull()
     {
         // arrange
         var services = new ServiceCollection();
         var ssm = new Mock<IAmazonSimpleSystemsManagement>();
 
         // act
-        var act = () => services.AddHackneyAuthorization(parameterName!, ssm.Object);
+        var act = () => services.AddHackneyAuthorization(null!, ssm.Object);
 
         // assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("ssmParameterName");
+        AssertParameterNameWasRejected(services, ssm);
+    }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("\t")]
+    [InlineData("\r\n")]
+    public void AddHackneyAuthorization_ThrowsArgumentException_WhenParameterNameIsBlank(string parameterName)
+    {
+        // arrange
+        var services = new ServiceCollection();
+        var ssm = new Mock<IAmazonSimpleSystemsManagement>();
+
+        // act
+        var act = () => services.AddHackneyAuthorization(parameterName, ssm.Object);
+
+        // assert
+        act.Should().ThrowExactly<ArgumentException>().WithParameterName("ssmParameterName");
+        AssertParameterNameWasRejected(services, ssm);
+    }
+
+    private static void AssertParameterNameWasRejected(
+        ServiceCollection services,
+        Mock<IAmazonSimpleSystemsManagement> ssm)
+    {
         ssm.Verify(
             client => client.GetParameterAsync(
                 It.IsAny<GetParameterRequest>(),

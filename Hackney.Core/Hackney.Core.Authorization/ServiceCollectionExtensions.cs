@@ -17,8 +17,7 @@ namespace Hackney.Core.Authorization
             string ssmParameterName,
             IAmazonSimpleSystemsManagement? ssmClient = null)
         {
-            if (string.IsNullOrWhiteSpace(ssmParameterName))
-                throw new ArgumentNullException(nameof(ssmParameterName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(ssmParameterName);
 
             // A second call would add another map and another loader, so SSM would be read twice.
             if (services.Any(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap)))
