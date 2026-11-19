@@ -19,6 +19,7 @@ The package is built for Hackney APIs that run behind the Lambda authorizer.
 - The bearer token is still on the `Authorization` header when the request enters the API. The package reads that header. It does not read `HttpContext.User`.
 - User groups are published as one JSON document in AWS Systems Manager Parameter Store. `AddHackneyAuthorization` registers a hosted service that reads that document once, when the host starts, before the server accepts a request. A later change to the parameter is picked up when a new process starts.
 - The host calls `app.UseAuthorization()`. Registration only puts the services in the container. It cannot insert the middleware into the pipeline.
+- This middleware needs to be the only Authorization middleware used by the consuming application. It's meant to handle all traffic.
 - The group document is a JSON object. Each key is a policy name. Each value is the list of group names that satisfy that policy. Policy names are compared without case, and two keys that differ only by case are rejected. Group names are compared exactly.
 
 ```json
@@ -101,7 +102,7 @@ Namespace `Hackney.Core.Authorization`. Apply it to a controller or an action. `
 | Member          | Meaning                                                                                   |
 | --------------- | ----------------------------------------------------------------------------------------- |
 | `PolicyName`    | `"HybridAccessPolicy"`. A const. The policy the attribute selects.                        |
-| `Policy`        | Always `PolicyName`. There is no setter, so a caller cannot select another policy.       |
+| `Policy`        | Always `PolicyName`. There is no setter, so a caller cannot select another policy.        |
 | `User`          | Policy name in the group document. Null means user tokens are denied.                     |
 | `Machine`       | Endpoint name a Cognito scope must contain. Null means Cognito machine tokens are denied. |
 | `LegacyMachine` | `false` unless set to `true`. Gates legacy machine tokens.                                |
@@ -115,14 +116,14 @@ public static IServiceCollection AddHackneyAuthorization(
     IAmazonSimpleSystemsManagement? ssmClient = null)
 ```
 
-Registers the token factory, an empty group map, the hosted service that reads the group document when the host starts, the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403. `ArgumentNullException` is thrown by this call. The other exceptions in the table are thrown when the host starts.
+Registers the token factory, an empty group map, the hosted service that reads the group document when the host starts, the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403. `ArgumentNullException`, and `InvalidOperationException` for a second call, are thrown by this call. The fetch and document exceptions in the table are thrown when the host starts.
 
-| Exception                       | When                                                                                                                                                                                                                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ArgumentNullException`         | `ssmParameterName` is null, empty, or whitespace. `ParamName` is `ssmParameterName`.                                                                                                                                                                                                                    |
-| `InvalidOperationException`     | The parameter cannot be fetched. The SSM error is the inner exception. The message names the parameter.                                                                                                                                                                                                 |
+| Exception                       | When                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ArgumentNullException`         | `ssmParameterName` is null, empty, or whitespace. `ParamName` is `ssmParameterName`.                                                                                                                                                                                                                                                              |
+| `InvalidOperationException`     | This method was already called. The message is `Hackney authorization is already registered.` Or the parameter cannot be fetched when the host starts. In that case the SSM error is the inner exception and the message names the parameter.                                                                                                     |
 | `InvalidGroupDocumentException` | The parameter value is not a policy map. The message names the parameter. JSON that is not an object, a JSON `null`, a policy whose group list is null, and two policy keys that differ only by case are this exception. A `JsonException` is the inner exception of the map error, which is then the inner exception of the exception you catch. |
-| AWS SDK exception               | You passed no client, and constructing the default SSM client fails, for example because no region is configured. That exception is not wrapped.                                                                                                                                                        |
+| AWS SDK exception               | You passed no client, and constructing the default SSM client fails, for example because no region is configured. That exception is not wrapped.                                                                                                                                                                                                  |
 
 `{}` is a valid document. It publishes no policies, so every user token is denied.
 
