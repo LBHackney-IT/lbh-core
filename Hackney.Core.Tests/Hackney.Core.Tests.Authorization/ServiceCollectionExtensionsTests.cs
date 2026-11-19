@@ -15,6 +15,8 @@ using Hackney.Core.Authorization.Internal;
 using Hackney.Core.JWT;
 using Hackney.Core.Tests.Authorization.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -253,6 +255,58 @@ public class ServiceCollectionExtensionsTests
 
         provider.GetServices<IHostedService>().Should().ContainSingle()
             .Which.Should().BeOfType<GroupDocumentLoader>();
+    }
+
+    [Fact]
+    public void AddHackneyAuthorization_ThrowsInvalidOperationException_WhenCalledTwice()
+    {
+        // arrange
+        var services = new ServiceCollection();
+        var ssm = SsmMock.WithPayload(ParameterStorePayload());
+        services.AddHackneyAuthorization(ParameterName, ssm.Object); // first call
+
+        // act - second call
+        var act = () => services.AddHackneyAuthorization("/other/groups", ssm.Object);
+
+        // assert
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("Hackney authorization is already registered.");
+
+        services.Should().ContainSingle(descriptor => descriptor.ServiceType == typeof(IHostedService));
+        services.Should().ContainSingle(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
+
+        ssm.Verify(
+            client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public void AddHackneyAuthorization_ReplacesAnAuthorizationResultHandlerRegisteredEarlier()
+    {
+        // arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<IAuthorizationMiddlewareResultHandler, EarlierResultHandler>();
+
+        // act
+        services.AddHackneyAuthorization(ParameterName, SsmMock.WithPayload(ParameterStorePayload()).Object);
+
+        // assert
+        using var provider = services.BuildServiceProvider();
+
+        provider.GetServices<IAuthorizationMiddlewareResultHandler>().Should().ContainSingle()
+            .Which.Should().BeOfType<ForbiddenAuthorizationResultHandler>();
+    }
+
+    // mock authorization handler to simulate the scenario where this package's middleware gets
+    // registered after the consumer application has already done some startup authorization service
+    // registration steps (such as registering a different result handler)
+    private sealed class EarlierResultHandler : IAuthorizationMiddlewareResultHandler
+    {
+        public Task HandleAsync(
+            RequestDelegate next,
+            HttpContext context,
+            AuthorizationPolicy policy,
+            PolicyAuthorizationResult authorizeResult) => Task.CompletedTask;
     }
 
     #endregion
