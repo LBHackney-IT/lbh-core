@@ -6,7 +6,7 @@ namespace Hackney.Core.Authorization.Internal
 {
     internal class PolicyGroupMap
     {
-        public FrozenDictionary<string, FrozenSet<string>> Policies { get; }
+        public FrozenDictionary<string, FrozenSet<string>> Policies { get; private set; }
 
         public PolicyGroupMap(Dictionary<string, HashSet<string>> policies)
         {
@@ -17,6 +17,14 @@ namespace Hackney.Core.Authorization.Internal
                 static pair => pair.Key,
                 static pair => pair.Value.ToFrozenSet(pair.Value.Comparer),
                 policies.Comparer);
+        }
+
+        public void Replace(PolicyGroupMap loadedMap)
+        {
+            if (loadedMap is null)
+                throw new ArgumentNullException(nameof(loadedMap));
+
+            Policies = loadedMap.Policies;
         }
     }
 }

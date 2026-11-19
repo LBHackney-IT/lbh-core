@@ -62,4 +62,34 @@ public class PolicyGroupMapTests
 
         map.Policies.Should().BeEmpty();
     }
+
+    [Fact]
+    public void Replace_SwapsThePolicyDictionaryOnTheSameMap()
+    {
+        // arrange
+        var emptyMap = new PolicyGroupMap(new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase));
+        var loadedMap = new PolicyGroupMap(new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["housing-admins"] = ["housing-officers"]
+        });
+
+        // act
+        emptyMap.Replace(loadedMap);
+
+        // assert
+        emptyMap.Policies["HOUSING-ADMINS"].Should().BeEquivalentTo("housing-officers");
+    }
+
+    [Fact]
+    public void Replace_ThrowsArgumentNullException_WhenTheLoadedMapIsNull()
+    {
+        // arrange
+        var map = new PolicyGroupMap(new Dictionary<string, HashSet<string>>());
+
+        // act
+        var act = () => map.Replace(null!);
+
+        // assert
+        act.Should().Throw<ArgumentNullException>().WithParameterName("loadedMap");
+    }
 }

@@ -10,7 +10,7 @@ dotnet test
 
 ## Unit tests
 
-These call the package directly. They do not start a host.
+These call the package directly. They do not start a web host. The registration tests start the group-document loader so the map is filled.
 
 | Area | What it locks |
 | --- | --- |

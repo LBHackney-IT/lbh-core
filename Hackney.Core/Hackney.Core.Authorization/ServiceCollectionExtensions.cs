@@ -1,18 +1,16 @@
 using Amazon.SimpleSystemsManagement;
-using Amazon.SimpleSystemsManagement.Model;
-using Hackney.Core.Authorization.Exceptions;
 using Hackney.Core.Authorization.Internal;
 using Hackney.Core.JWT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Hackney.Core.Authorization
 {
     public static class ServiceCollectionExtensions
     {
-        public static async Task<IServiceCollection> AddHackneyAuthorizationAsync(
+        public static IServiceCollection AddHackneyAuthorization(
             this IServiceCollection services,
             string ssmParameterName,
             IAmazonSimpleSystemsManagement? ssmClient = null)
@@ -22,8 +20,14 @@ namespace Hackney.Core.Authorization
 
             services.AddTokenFactory();
 
-            var json = await FetchGroupDocument(ssmParameterName, ssmClient);
-            services.AddSingleton(ReadGroupMap(json, ssmParameterName));
+            // Empty on purpose. The hosted service replaces inner dictionary before the server listens.
+            services.AddSingleton(new PolicyGroupMap(
+                new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase)));
+
+            services.AddHostedService(serviceProvider => new GroupDocumentLoader(
+                serviceProvider.GetRequiredService<PolicyGroupMap>(),
+                ssmParameterName,
+                ssmClient));
             services.AddSingleton<IAuthorizationHandler, HybridAccessHandler>();
 
             // Fallback triggers when neither the endpoint method, nor its controller is decorated with auth attribute.
@@ -44,46 +48,6 @@ namespace Hackney.Core.Authorization
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, ForbiddenAuthorizationResultHandler>();
 
             return services;
-        }
-
-        private static PolicyGroupMap ReadGroupMap(string json, string ssmParameterName)
-        {
-            try
-            {
-                return PolicyGroupMapMapper.Map(json);
-            }
-            catch (InvalidGroupDocumentException ex)
-            {
-                throw new InvalidGroupDocumentException(
-                    $"Failed to read authorization groups from SSM parameter: '{ssmParameterName}'. {ex.Message}", ex);
-            }
-        }
-
-        // TODO: the SSM functionality will be needed in another nuget package, so it might make more sense
-        // to have a dedicated ssm package with its own registration that we reference like we do with token factory.
-        // This being an MVP, this will be left crude as is.
-        private static async Task<string> FetchGroupDocument(
-            string ssmParameterName,
-            IAmazonSimpleSystemsManagement? ssmClient)
-        {
-            var ownsClient = ssmClient is null;
-            var client = ssmClient ?? new AmazonSimpleSystemsManagementClient();
-            try
-            {
-                var request = new GetParameterRequest { Name = ssmParameterName, WithDecryption = true };
-                var response = await client.GetParameterAsync(request);
-                return response.Parameter.Value;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException(
-                    $"Failed to fetch authorization groups from SSM parameter: '{ssmParameterName}'", ex);
-            }
-            finally
-            {
-                if (ownsClient)
-                    client.Dispose();
-            }
         }
     }
 }

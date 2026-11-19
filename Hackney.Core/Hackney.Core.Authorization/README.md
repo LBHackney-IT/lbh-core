@@ -17,7 +17,7 @@ The package is built for Hackney APIs that run behind the Lambda authorizer.
 - The authorizer has already authenticated the caller. This package does not check signatures, expiry, or issuer.
 - The authorizer has already done the authorization checks it is able to do. For user tokens, the API target was checked. For a Cognito machine token that includes the API name and the HTTP verb. For a legacy machine token that includes the endpoint itself. This package does the check the authorizer cannot finish.
 - The bearer token is still on the `Authorization` header when the request enters the API. The package reads that header. It does not read `HttpContext.User`.
-- User groups are published as one JSON document in AWS Systems Manager Parameter Store. `AddHackneyAuthorizationAsync` reads that document once, while the application is starting. A later change to the parameter is picked up when a new process starts.
+- User groups are published as one JSON document in AWS Systems Manager Parameter Store. `AddHackneyAuthorization` registers a hosted service that reads that document once, when the host starts, before the server accepts a request. A later change to the parameter is picked up when a new process starts.
 - The host calls `app.UseAuthorization()`. Registration only puts the services in the container. It cannot insert the middleware into the pipeline.
 - The group document is a JSON object. Each key is a policy name. Each value is the list of group names that satisfy that policy. Policy names are compared without case, and two keys that differ only by case are rejected. Group names are compared exactly.
 
@@ -35,11 +35,12 @@ A Cognito scope has the form `{api}/{endpoint}.{access}`, for example `wildlife-
 Register the package, then turn authorization on. Pass the name of the SSM parameter. Pass your own SSM client when the application has its own constructed and you do not wish for this Nuget package to construct its own client instance.
 
 ```csharp
-await builder.Services.AddHackneyAuthorizationAsync("/auth/groups");
+builder.Services.AddHackneyAuthorization("/auth/groups");
 
 var app = builder.Build();
 app.UseAuthorization();
 app.MapControllers();
+app.Run();
 ```
 
 ### A user, a Cognito machine, or both
@@ -105,16 +106,16 @@ Namespace `Hackney.Core.Authorization`. Apply it to a controller or an action. `
 | `Machine`       | Endpoint name a Cognito scope must contain. Null means Cognito machine tokens are denied. |
 | `LegacyMachine` | `false` unless set to `true`. Gates legacy machine tokens.                                |
 
-### `AddHackneyAuthorizationAsync`
+### `AddHackneyAuthorization`
 
 ```csharp
-public static Task<IServiceCollection> AddHackneyAuthorizationAsync(
+public static IServiceCollection AddHackneyAuthorization(
     this IServiceCollection services,
     string ssmParameterName,
     IAmazonSimpleSystemsManagement? ssmClient = null)
 ```
 
-Registers the token factory, reads the group document, registers the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403.
+Registers the token factory, an empty group map, the hosted service that reads the group document when the host starts, the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403. `ArgumentNullException` is thrown by this call. The other exceptions in the table are thrown when the host starts.
 
 | Exception                       | When                                                                                                                                                                                                                                                                                                    |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -41,7 +41,7 @@ public sealed class WildlifeApiFixture : IAsyncLifetime
         // For the sakes of simplicity only 1 controller's user groups are set up, other controllers will be tested via
         // the machine token flows.
         var groups = $"{{\"{AnimalsController.UserAccess}\":[\"{AnimalsController.UserGroup}\"]}}";
-        await builder.Services.AddHackneyAuthorizationAsync(ParameterName, FakeSsm.WithPayload(groups));
+        builder.Services.AddHackneyAuthorization(ParameterName, FakeSsm.WithPayload(groups));
 
         _app = builder.Build();
         _app.UseAuthorization();

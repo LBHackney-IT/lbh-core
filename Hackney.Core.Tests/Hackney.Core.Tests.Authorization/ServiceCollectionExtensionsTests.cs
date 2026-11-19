@@ -16,6 +16,7 @@ using Hackney.Core.JWT;
 using Hackney.Core.Tests.Authorization.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -35,17 +36,17 @@ public class ServiceCollectionExtensionsTests
     [InlineData(" ")]
     [InlineData("\t")]
     [InlineData("\r\n")]
-    public async Task AddHackneyAuthorizationAsync_ThrowsArgumentNullException_WhenParameterNameIsMissing(string? parameterName)
+    public void AddHackneyAuthorization_ThrowsArgumentNullException_WhenParameterNameIsMissing(string? parameterName)
     {
         // arrange
         var services = new ServiceCollection();
         var ssm = new Mock<IAmazonSimpleSystemsManagement>();
 
         // act
-        var act = async () => await services.AddHackneyAuthorizationAsync(parameterName!, ssm.Object);
+        var act = () => services.AddHackneyAuthorization(parameterName!, ssm.Object);
 
         // assert
-        await act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("ssmParameterName");
+        act.Should().Throw<ArgumentNullException>().WithParameterName("ssmParameterName");
 
         ssm.Verify(
             client => client.GetParameterAsync(
@@ -56,6 +57,7 @@ public class ServiceCollectionExtensionsTests
         );
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(ITokenFactory));
         services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
+        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(IHostedService));
     }
 
     #endregion
@@ -63,29 +65,39 @@ public class ServiceCollectionExtensionsTests
     #region ssm fetch
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_RequestsTheDecryptedParameterByName()
+    public async Task AddHackneyAuthorization_RequestsTheDecryptedParameterByName_WhenTheHostStarts()
     {
         // arrange
         var ssm = SsmMock.WithPayload(ParameterStorePayload());
         var services = new ServiceCollection();
 
-        // act
-        var returnedParam = await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
+        // act 1 - registration
+        var returned = services.AddHackneyAuthorization(ParameterName, ssm.Object);
 
         // assert
-        returnedParam.Should().BeSameAs(services);
+        returned.Should().BeSameAs(services);
+        ssm.Verify(
+            client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+
+        // act 2 - simulated launch
+        await using var provider = services.BuildServiceProvider();
+        await StartHostedServices(provider);
+
         ssm.Verify(
             client => client.GetParameterAsync(
                 It.Is<GetParameterRequest>(request => request.Name == ParameterName && request.WithDecryption == true),
-                It.IsAny<CancellationToken>()
+                It.Is<CancellationToken>(token => token.CanBeCanceled)
             ),
             Times.Once
         );
         ssm.Verify(client => client.Dispose(), Times.Never);
+
+        provider.GetRequiredService<PolicyGroupMap>().Policies.Should().ContainKey("housing-officers");
     }
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_ThrowsInvalidOperationException_WhenTheParameterFetchFails()
+    public async Task AddHackneyAuthorization_ThrowsInvalidOperationException_WhenTheParameterFetchFails()
     {
         // arrange
         var ssm = new Mock<IAmazonSimpleSystemsManagement>();
@@ -96,8 +108,11 @@ public class ServiceCollectionExtensionsTests
         ssm.Setup(client => client.GetParameterAsync(It.IsAny<GetParameterRequest>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(ssmFailure);
 
+        services.AddHackneyAuthorization(ParameterName, ssm.Object);
+        await using var provider = services.BuildServiceProvider();
+
         // act
-        var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
+        var act = async () => await StartHostedServices(provider);
 
         // assert
         var exception = await act.Should().ThrowAsync<InvalidOperationException>();
@@ -105,28 +120,29 @@ public class ServiceCollectionExtensionsTests
         exception.Which.Message.Should().Be($"{SsmFailureMessagePrefix}'{ParameterName}'");
         exception.Which.InnerException.Should().BeSameAs(ssmFailure);
 
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(IAuthorizationHandler));
+        provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
         ssm.Verify(client => client.Dispose(), Times.Never);
     }
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_ThrowsAmazonClientException_WhenNoSsmClientIsSupplied()
+    public async Task AddHackneyAuthorization_ThrowsAmazonClientException_WhenNoSsmClientIsSupplied()
     {
         // arrange
         // no region is visible, so the client the package constructs fails before any network call.
         using var isolatedAws = new ClearedAwsDiscovery();
         var services = new ServiceCollection();
+        services.AddHackneyAuthorization(ParameterName);
+        await using var provider = services.BuildServiceProvider();
 
         // act
-        var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName);
+        var act = async () => await StartHostedServices(provider);
 
         // assert
         var exception = await act.Should().ThrowAsync<AmazonClientException>();
 
         exception.Which.Message.Should().Be("No RegionEndpoint or ServiceURL configured");
 
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
+        provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
     }
 
     #endregion
@@ -134,10 +150,10 @@ public class ServiceCollectionExtensionsTests
     #region group map
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_RegistersTheGroupMapAsASingleton()
+    public async Task AddHackneyAuthorization_RegistersTheGroupMapAsASingleton()
     {
         // arrange
-        await using var provider = await BuildServiceProvider(ParameterStorePayload());
+        await using var provider = await BuildProviderAndStartHostedServices(ParameterStorePayload());
 
         // act
         var policyGroupsMap = provider.GetRequiredService<PolicyGroupMap>();
@@ -149,6 +165,28 @@ public class ServiceCollectionExtensionsTests
         provider.GetRequiredService<PolicyGroupMap>().Should().BeSameAs(policyGroupsMap);
     }
 
+    [Fact]
+    public async Task GroupDocumentLoader_ReplacesTheEmptyMap_WhenTheHostStarts()
+    {
+        // arrange
+        var services = new ServiceCollection();
+        var ssmMock = SsmMock.WithPayload(ParameterStorePayload()).Object;
+
+        services.AddHackneyAuthorization(ParameterName, ssmMock);
+        await using var provider = services.BuildServiceProvider();
+
+        var map = provider.GetRequiredService<PolicyGroupMap>();
+        map.Policies.Should().BeEmpty();
+
+        // act
+        await StartHostedServices(provider);
+
+        // assert
+        provider.GetRequiredService<PolicyGroupMap>().Should().BeSameAs(map);
+        map.Policies.Should().ContainKey("housing-officers");
+        map.Policies["housing-officers"].Should().BeEquivalentTo("group-a", "Group-A");
+    }
+
     [Theory]
     [InlineData("null")]
     [InlineData("")]
@@ -156,14 +194,16 @@ public class ServiceCollectionExtensionsTests
     [InlineData("[]")]
     [InlineData("\"housing-officers\"")]
     [InlineData("{ \"wildlife-api\": null }")]
-    public async Task AddHackneyAuthorizationAsync_ThrowsInvalidGroupDocumentException_WhenThePayloadIsNotAGroupDocument(string payload)
+    public async Task AddHackneyAuthorization_ThrowsInvalidGroupDocumentException_WhenThePayloadIsNotAGroupDocument(string payload)
     {
         // arrange
         var services = new ServiceCollection();
         var ssm = SsmMock.WithPayload(payload);
+        services.AddHackneyAuthorization(ParameterName, ssm.Object);
+        await using var provider = services.BuildServiceProvider();
 
         // act
-        var act = async () => await services.AddHackneyAuthorizationAsync(ParameterName, ssm.Object);
+        var act = async () => await StartHostedServices(provider);
 
         // assert
         var exception = await act.Should().ThrowAsync<InvalidGroupDocumentException>();
@@ -171,7 +211,7 @@ public class ServiceCollectionExtensionsTests
         exception.Which.InnerException.Should().BeOfType<InvalidGroupDocumentException>();
         exception.Which.Message.Should().Be(
             $"Failed to read authorization groups from SSM parameter: '{ParameterName}'. {exception.Which.InnerException!.Message}");
-        services.Should().NotContain(descriptor => descriptor.ServiceType == typeof(PolicyGroupMap));
+        provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
     }
 
     #endregion
@@ -179,10 +219,10 @@ public class ServiceCollectionExtensionsTests
     #region service registration
 
     [Fact]
-    public async Task AddHackneyAuthorizationAsync_RegistersTheTokenFactoryHandlerAndHybridPolicy()
+    public async Task AddHackneyAuthorization_RegistersTheTokenFactory_FallbackHandler_HybridPolicy_AndGroupsDocumentLoader()
     {
         // arrange
-        await using var provider = await BuildServiceProvider(ParameterStorePayload());
+        await using var provider = await BuildProviderAndStartHostedServices(ParameterStorePayload());
 
         // act
         // token factory is currently scoped, so it has to be resolved from scope. scope is discarded at the end of test
@@ -210,6 +250,9 @@ public class ServiceCollectionExtensionsTests
 
         provider.GetRequiredService<IAuthorizationMiddlewareResultHandler>()
             .Should().BeOfType<ForbiddenAuthorizationResultHandler>();
+
+        provider.GetServices<IHostedService>().Should().ContainSingle()
+            .Which.Should().BeOfType<GroupDocumentLoader>();
     }
 
     #endregion
@@ -225,7 +268,7 @@ public class ServiceCollectionExtensionsTests
     public async Task FallbackPolicy_DeniesAnAuthenticatedCaller()
     {
         // arrange
-        await using var provider = await BuildServiceProvider(ParameterStorePayload());
+        await using var provider = await BuildProviderAndStartHostedServices(ParameterStorePayload());
 
         var authorization = provider.GetRequiredService<IAuthorizationService>();
         var fallback = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy;
@@ -247,7 +290,7 @@ public class ServiceCollectionExtensionsTests
     public async Task FallbackPolicy_DeniesAnAnonymousCaller()
     {
         // arrange
-        await using var provider = await BuildServiceProvider(ParameterStorePayload());
+        await using var provider = await BuildProviderAndStartHostedServices(ParameterStorePayload());
 
         var authorization = provider.GetRequiredService<IAuthorizationService>();
         var fallback = provider.GetRequiredService<IOptions<AuthorizationOptions>>().Value.FallbackPolicy;
@@ -269,11 +312,19 @@ public class ServiceCollectionExtensionsTests
         ["machine-readers"] = ["reader"]
     });
 
-    private static async Task<ServiceProvider> BuildServiceProvider(string payload)
+    private static async Task<ServiceProvider> BuildProviderAndStartHostedServices(string payload)
     {
         var services = new ServiceCollection();
-        await services.AddHackneyAuthorizationAsync(ParameterName, SsmMock.WithPayload(payload).Object);
-        return services.BuildServiceProvider();
+        services.AddHackneyAuthorization(ParameterName, SsmMock.WithPayload(payload).Object);
+        var provider = services.BuildServiceProvider();
+        await StartHostedServices(provider);
+        return provider;
+    }
+
+    private static async Task StartHostedServices(ServiceProvider provider)
+    {
+        foreach (var hostedService in provider.GetServices<IHostedService>())
+            await hostedService.StartAsync(CancellationToken.None);
     }
 
     #endregion

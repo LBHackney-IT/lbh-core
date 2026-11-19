@@ -6,7 +6,7 @@ The filter reads one environment variable, named by the attribute, and compares 
 
 ## Instructions
 
-1. **Configure `ITokenFactory`.** Register the token factory from `Hackney.Core.JWT`. `AddHackneyAuthorizationAsync` does this itself. An application that uses only this filter registers it directly:
+1. **Configure `ITokenFactory`.** Register the token factory from `Hackney.Core.JWT`. `AddHackneyAuthorization` does this itself. An application that uses only this filter registers it directly:
 
 ```csharp
 services.AddTokenFactory();
