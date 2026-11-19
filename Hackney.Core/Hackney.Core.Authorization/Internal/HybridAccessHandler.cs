@@ -103,10 +103,6 @@ namespace Hackney.Core.Authorization.Internal
                 return false;
             }
 
-            _logger.LogInformation(
-                "Access granted to legacy machine token {TokenId} (consumer {ConsumerName}).",
-                token.Id, token.ConsumerName);
-
             return true;
         }
 

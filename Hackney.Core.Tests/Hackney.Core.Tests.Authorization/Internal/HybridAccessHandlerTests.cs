@@ -412,7 +412,7 @@ public class HybridAccessHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_SucceedsAndLogsTokenId_WhenLegacyMachineTokenIsDecoded()
+    public async Task HandleAsync_SucceedsWithoutLogging_WhenLegacyMachineTokenIsDecoded()
     {
         // arrange
         var token = LegacyToken();
@@ -423,9 +423,9 @@ public class HybridAccessHandlerTests
         var context = await HandleAsync(BuildHttpContext(Rule(legacyMachine: true)));
 
         // assert
+        // The lambda authorizer already logs the token details, so a success adds nothing here.
         context.HasSucceeded.Should().BeTrue();
-        _logger.ShouldHaveLogged(LogLevel.Information, token.Id);
-        _logger.ShouldHaveLogged(LogLevel.Information, token.ConsumerName);
+        _logger.Entries.Should().BeEmpty();
     }
 
     [Fact]
