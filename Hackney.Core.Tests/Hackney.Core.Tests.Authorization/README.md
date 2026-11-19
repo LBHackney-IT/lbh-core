@@ -34,8 +34,8 @@ A mock API used only as a target. It has no business behaviour.
 - `WildlifeApiFixture` builds one `WebApplication` for the collection, points it at a fake SSM document, calls `UseAuthorization`, and exposes an `HttpClient`.
 - `WildlifeApiCollection` shares that host across the end-to-end tests.
 - `AnimalsController` is the token-flow target. `GET animals/barbastellus-bat` allows the Cognito endpoint `barbastellus-bat`, the user policy `wildlife-keepers` (group `mammal-surveyors`), and legacy machine tokens. `GET animals/meles-badger` has an empty `AllowAccessTo`, so every caller is denied.
-- `BotanicalController` is decorated, so its undecorated action inherits that rule and its decorated action replaces it.
-- `AquaticController` is not decorated. One action has `AllowAccessTo`. The other has nothing.
+- `BotanicalController` is decorated, so its undecorated action inherits that rule and its decorated action replaces it. `GET botanical/bellis-daisy` is `[AllowAnonymous]`, so the controller rule is skipped.
+- `AquaticController` is not decorated. One action has `AllowAccessTo`. One has nothing. `GET aquatic/lampetra-lamprey` is `[AllowAnonymous]`, so the fallback denial is skipped.
 
 The group document is `{"wildlife-keepers":["mammal-surveyors"]}`.
 
@@ -50,6 +50,6 @@ The group document is `{"wildlife-keepers":["mammal-surveyors"]}`.
 | `CognitoM2MAuthorizationTests` | A matching Cognito scope is allowed. A different endpoint name is 403. |
 | `UserAuthorizationTests` | A group in `wildlife-keepers` is allowed. Another group is 403. |
 | `LegacyMachineAuthorizationTests` | A readable legacy token is allowed on the barbastelle endpoint. An unreadable one is 403. The same readable token is 403 on an endpoint that did not set `LegacyMachine = true`. |
-| `AttributePlacementAuthorizationTests` | An undecorated action inherits the controller attribute. An action attribute replaces it. An action attribute does not open another action. No attribute on either is 403. |
+| `AttributePlacementAuthorizationTests` | An undecorated action inherits the controller attribute. An action attribute replaces it. An action attribute does not open another action. No attribute on either is 403. `[AllowAnonymous]` allows a request with no token on both a decorated and an undecorated controller. |
 
 These tests do not prove signature checks, a real SSM read, or a Lambda authorizer. Those happen before a request reaches this package.

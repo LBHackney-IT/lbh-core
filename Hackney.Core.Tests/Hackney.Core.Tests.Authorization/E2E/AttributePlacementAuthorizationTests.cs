@@ -102,6 +102,30 @@ public sealed class AttributePlacementAuthorizationTests
 
     #endregion
 
+    #region allow anonymous skips authorization
+
+    [Fact]
+    public async Task AllowAnonymousMethod_AllowsAccess_WhenTheControllerHasNoAttribute()
+    {
+        // act
+        using var response = await _client.SendGet(WildlifePaths.LampetraLamprey);
+
+        // assert
+        await response.ShouldBeAllowed();
+    }
+
+    [Fact]
+    public async Task AllowAnonymousMethod_AllowsAccess_WhenTheControllerHasAnAttribute()
+    {
+        // act
+        using var response = await _client.SendGet(WildlifePaths.BellisDaisy);
+
+        // assert
+        await response.ShouldBeAllowed();
+    }
+
+    #endregion
+
     #region no attribute denies the request
 
     [Fact]

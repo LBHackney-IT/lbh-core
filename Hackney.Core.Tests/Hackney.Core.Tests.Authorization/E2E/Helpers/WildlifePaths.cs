@@ -19,9 +19,15 @@ internal static class WildlifePaths
     public static string GreatCrestedNewt =>
         $"{AquaticController.RoutePrefix}/{AquaticController.GreatCrestedNewtEndpointName}";
 
+    public static string LampetraLamprey =>
+        $"{AquaticController.RoutePrefix}/{AquaticController.LampetraLampreyEndpointName}";
+
     public static string Chamomile =>
         $"{BotanicalController.RoutePrefix}/{BotanicalController.ChamomileEndpointName}";
 
     public static string Dandelion =>
         $"{BotanicalController.RoutePrefix}/{BotanicalController.DandelionEndpointName}";
+
+    public static string BellisDaisy =>
+        $"{BotanicalController.RoutePrefix}/{BotanicalController.BellisDaisyEndpointName}";
 }

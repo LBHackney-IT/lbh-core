@@ -1,12 +1,13 @@
 using Hackney.Core.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 
 /// <summary>
 /// Controller is part of mock API for E2E tests. It is decorated with authorization attribute
-/// to test if an undecorated endpoint method inherits it, and whether a decorated endpoint's
-/// attribute overrides controller's attribute.
+/// to test if an undecorated endpoint method inherits it, whether a decorated endpoint's
+/// attribute overrides controller's attribute, and whether <c>AllowAnonymous</c> ignores it.
 /// </summary>
 [ApiController]
 [Route(RoutePrefix)]
@@ -18,6 +19,7 @@ public sealed class BotanicalController : WildlifeApiControllerBase
 
     public const string ChamomileEndpointName = "chamomile";
     public const string DandelionEndpointName = "dandelion";
+    public const string BellisDaisyEndpointName = "bellis-daisy";
 
     // tested endpoints:
 
@@ -27,4 +29,8 @@ public sealed class BotanicalController : WildlifeApiControllerBase
 
     [HttpGet(DandelionEndpointName)]
     public IActionResult Dandelion() => Allowed();
+
+    [AllowAnonymous]
+    [HttpGet(BellisDaisyEndpointName)]
+    public IActionResult BellisDaisy() => Allowed();
 }

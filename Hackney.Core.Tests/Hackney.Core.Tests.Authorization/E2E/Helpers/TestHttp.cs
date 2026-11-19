@@ -10,6 +10,12 @@ namespace Hackney.Core.Tests.Authorization.E2E.Helpers;
 
 internal static class TestHttp
 {
+    public static async Task<HttpResponseMessage> SendGet(this HttpClient client, string path)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, path);
+        return await client.SendRequest(request);
+    }
+
     public static async Task<HttpResponseMessage> SendBearerGet(this HttpClient client, string path, string jwt)
     {
         using var request = BearerGet(path, jwt);

@@ -135,7 +135,32 @@ public class AllowAccessToAttributeTests
         attribute.Machine.Should().Be("class-clients");
     }
 
-    private static AllowAccessToAttribute? EndpointAccessFor(string actionName)
+    [Fact]
+    public void AllowAnonymousEndpoint_StaysAnonymous_WhenTheControllerHasAllowAccessTo()
+    {
+        // act
+        var metadata = EndpointMetadataFor(typeof(MockController), nameof(MockController.Public));
+
+        // assert
+        metadata.GetMetadata<IAllowAnonymous>().Should().NotBeNull();
+        metadata.GetMetadata<AllowAccessToAttribute>()!.User.Should().Be("class-users");
+    }
+
+    [Fact]
+    public void AllowAnonymousEndpoint_IsAnonymous_WhenTheControllerHasNoAllowAccessTo()
+    {
+        // act
+        var metadata = EndpointMetadataFor(typeof(UndecoratedMockController), nameof(UndecoratedMockController.Public));
+
+        // assert
+        metadata.GetMetadata<IAllowAnonymous>().Should().NotBeNull();
+        metadata.GetMetadata<AllowAccessToAttribute>().Should().BeNull();
+    }
+
+    private static AllowAccessToAttribute? EndpointAccessFor(string actionName) =>
+        EndpointMetadataFor(typeof(MockController), actionName).GetMetadata<AllowAccessToAttribute>();
+
+    private static EndpointMetadataCollection EndpointMetadataFor(Type controller, string actionName)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
         {
@@ -151,12 +176,10 @@ public class AllowAccessToAttributeTests
         var provider = app.Services.GetRequiredService<IActionDescriptorCollectionProvider>();
         var descriptor = provider.ActionDescriptors.Items
             .OfType<ControllerActionDescriptor>()
-            .Single(action => action.ControllerTypeInfo == typeof(MockController).GetTypeInfo()
+            .Single(action => action.ControllerTypeInfo == controller.GetTypeInfo()
                 && action.MethodInfo.Name == actionName);
 
-        var metadata = new EndpointMetadataCollection(descriptor.EndpointMetadata);
-
-        return metadata.GetMetadata<AllowAccessToAttribute>();
+        return new EndpointMetadataCollection(descriptor.EndpointMetadata);
     }
 }
 
@@ -174,6 +197,22 @@ public sealed class MockController
 
     [HttpGet("list")]
     public void List()
+    {
+    }
+
+    [AllowAnonymous]
+    [HttpGet("public")]
+    public void Public()
+    {
+    }
+}
+
+[Route("open")]
+public sealed class UndecoratedMockController
+{
+    [AllowAnonymous]
+    [HttpGet("public")]
+    public void Public()
     {
     }
 }

@@ -93,7 +93,7 @@ An action with no `AllowAccessTo`, on a controller that also has none, is denied
 
 `[AllowAccessTo]` with no `User`, no `Machine`, and no `LegacyMachine = true` also denies every caller. The attribute is present, so this is not the fallback rule. Each token is denied because its own rule is missing.
 
-To leave an endpoint public, mark it `[AllowAnonymous]`. That skips the fallback denial.
+To leave an endpoint public, mark it `[AllowAnonymous]`. That skips the fallback denial and any `AllowAccessTo` inherited from the controller.
 
 ## Public interface
 

@@ -1,4 +1,5 @@
 using Hackney.Core.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
@@ -6,7 +7,7 @@ namespace Hackney.Core.Tests.Authorization.E2E.WildlifeApi;
 /// <summary>
 /// Aquatic part of the mock Wildlife API. It is not a real service - it's a Controller used to
 /// test the undecorated controller behaviour end to end. A decorated action allows access only
-/// to itself, and an undecorated action is denied.
+/// to itself, an undecorated action is denied, and <c>AllowAnonymous</c> skips that denial.
 /// </summary>
 [ApiController]
 [Route(RoutePrefix)]
@@ -15,6 +16,7 @@ public sealed class AquaticController : WildlifeApiControllerBase
     public const string RoutePrefix = "aquatic";
     public const string AtlanticSalmonEndpointName = "atlantic-salmon";
     public const string GreatCrestedNewtEndpointName = "great-crested-newt";
+    public const string LampetraLampreyEndpointName = "lampetra-lamprey";
 
     // tested endpoints:
 
@@ -27,4 +29,8 @@ public sealed class AquaticController : WildlifeApiControllerBase
 
     [HttpGet(GreatCrestedNewtEndpointName)]
     public IActionResult GreatCrestedNewt() => Allowed();
+
+    [AllowAnonymous]
+    [HttpGet(LampetraLampreyEndpointName)]
+    public IActionResult LampetraLamprey() => Allowed();
 }
