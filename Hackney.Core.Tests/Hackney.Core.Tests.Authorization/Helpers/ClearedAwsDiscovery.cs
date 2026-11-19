@@ -7,6 +7,9 @@ namespace Hackney.Core.Tests.Authorization.Helpers;
 /// <summary>
 /// Hide the developer machine's AWS profile, region, and metadata service so the
 /// parameter-store client constructed by the package fails before it opens a connection.
+/// The variables are process-wide and restored on dispose. This is safe while no other
+/// test in this assembly constructs a real AWS client. A new test that does must not run
+/// alongside this one.
 /// </summary>
 internal sealed class ClearedAwsDiscovery : IDisposable
 {

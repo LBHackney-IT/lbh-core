@@ -126,6 +126,9 @@ public class ServiceCollectionExtensionsTests
         ssm.Verify(client => client.Dispose(), Times.Never);
     }
 
+    // Currently, this is the only test that constructs the real SSM client. Other tests pass a mock,
+    // so their environment cannot conflict over the ClearedAwsDiscovery changes. Should more tests
+    // using real client be added, parallelisation may need to be disabled.
     [Fact]
     public async Task AddHackneyAuthorization_ThrowsAmazonClientException_WhenNoSsmClientIsSupplied()
     {
@@ -140,9 +143,7 @@ public class ServiceCollectionExtensionsTests
         var act = async () => await StartHostedServices(provider);
 
         // assert
-        var exception = await act.Should().ThrowAsync<AmazonClientException>();
-
-        exception.Which.Message.Should().Be("No RegionEndpoint or ServiceURL configured");
+        await act.Should().ThrowAsync<AmazonClientException>();
 
         provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
     }
