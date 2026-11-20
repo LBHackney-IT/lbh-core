@@ -1,6 +1,6 @@
 namespace Hackney.Core.Authorization.Exceptions;
 
-public class InvalidGroupDocumentException : System.Exception
+internal class InvalidGroupDocumentException : System.Exception
 {
     public InvalidGroupDocumentException(string message) : base(message) { }
 
