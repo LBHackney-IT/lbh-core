@@ -10,7 +10,7 @@
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
-    <Description>This library provides functionality to validate that a request's JWT token contains the correct Google Group(s) to allow access to an API or endpoint.</Description>
+    <Description>Common library that authorizes a caller who has already been authenticated by the Lambda authorizer. Endpoints declare access with AllowAccessTo for a user group policy, a Cognito machine scope, or a legacy machine token. An endpoint with no rule is denied.</Description>
   </PropertyGroup>
 
   <PropertyGroup Label="Compilation">
@@ -30,12 +30,19 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <ItemGroup Label="Framework">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <ItemGroup Label="Nuget Dependencies">
-    <PackageReference Include="Hackney.Core.JWT" Version="2.0.0" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.105.1" />
+    <PackageReference Include="Hackney.Core.JWT" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.33" />
   </ItemGroup>
 
   <ItemGroup Label="Packaging">
     <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="LEGACY.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <!-- Needed to test the private logic internal to the package as the tests project is separate -->
