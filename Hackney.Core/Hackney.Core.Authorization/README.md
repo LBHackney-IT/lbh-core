@@ -120,7 +120,7 @@ public static IServiceCollection AddHackneyAuthorization(
     IAmazonSimpleSystemsManagement? ssmClient = null)
 ```
 
-Registers the token factory, an empty group map, the hosted service that reads the group document when the host starts, the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403. `ArgumentNullException` when the parameter name is null, and `ArgumentException` when it is empty or whitespace, are thrown by this call. A second call returns without registering again. The parameter name from the first call is the one that is read. The fetch failure in the table is thrown when the host starts. A bad group document stops the host from starting as well.
+Registers the token factory, an empty group map, the hosted service that reads the group document when the host starts, the authorization handler, the always-deny fallback policy, the `HybridAccessPolicy`, and the result handler that writes 403. `ArgumentNullException` when the parameter name is null, and `ArgumentException` when it is empty or whitespace, are thrown by this call. A second call returns without registering again. The parameter name from the first call is the one that is read. `GroupDocumentLoadException` is thrown when the host starts and the group document cannot be loaded.
 
 `AddMvc` and `AddControllers` register ASP.NET Core's result handler. This call replaces that handler, and any other result handler registered before it, with the one that writes 403. Do not register another result handler. One registered after this call replaces this package's handler, and a denial may no longer be 403.
 
@@ -128,11 +128,14 @@ Registers the token factory, an empty group map, the hosted service that reads t
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ArgumentNullException`         | `ssmParameterName` is null. `ParamName` is `ssmParameterName`.                                                                                                                                                                                                                                                                                    |
 | `ArgumentException`             | `ssmParameterName` is empty or whitespace. `ParamName` is `ssmParameterName`.                                                                                                                                                                                                                                                                     |
-| `InvalidOperationException`     | The parameter cannot be fetched when the host starts. The SSM error is the inner exception and the message names the parameter.                                                                                                                                                                                                                  |
-| Bad group document              | The host does not start. The message names the parameter. JSON that is not an object, a JSON `null`, a policy whose group list is null, and two policy keys that differ only by case are rejected.                                                                                                                                              |
+| `GroupDocumentLoadException`    | The group document cannot be loaded when the host starts. `ParameterName` is the parameter that was requested. The inner exception is the cause: the SSM error, the timeout, or a document that is not a policy map. JSON that is not an object, a JSON `null`, a policy whose group list is null, and two policy keys that differ only by case are a bad document. |
 | AWS SDK exception               | You passed no client, and constructing the default SSM client fails, for example because no region is configured. That exception is not wrapped.                                                                                                                                                                                                  |
 
 `{}` is a valid document. It publishes no policies, so every user token is denied.
+
+### `GroupDocumentLoadException`
+
+Namespace `Hackney.Core.Authorization.Exceptions`. Thrown when the host starts and the group document cannot be loaded, as the table above describes. `ParameterName` names the parameter. The inner exception is the cause.
 
 ### Legacy types
 

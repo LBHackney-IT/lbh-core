@@ -42,12 +42,11 @@ namespace Hackney.Core.Authorization.Internal
                     new GetParameterRequest { Name = _parameterName, WithDecryption = true },
                     timeout.Token);
 
-                _groups.Replace(ReadGroupMap(response.Parameter.Value));
+                _groups.Replace(PolicyGroupMapMapper.Map(response.Parameter.Value));
             }
-            catch (Exception ex) when (ex is not InvalidGroupDocumentException)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException(
-                    $"Failed to fetch authorization groups from SSM parameter: '{_parameterName}'", ex);
+                throw new GroupDocumentLoadException(_parameterName, ex);
             }
             finally
             {
@@ -58,18 +57,5 @@ namespace Hackney.Core.Authorization.Internal
 
         // one off task, not something that stays in the background, hence this StopAsync implementation is but a formality
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-        private PolicyGroupMap ReadGroupMap(string json)
-        {
-            try
-            {
-                return PolicyGroupMapMapper.Map(json);
-            }
-            catch (InvalidGroupDocumentException ex)
-            {
-                throw new InvalidGroupDocumentException(
-                    $"Failed to read authorization groups from SSM parameter: '{_parameterName}'. {ex.Message}", ex);
-            }
-        }
     }
 }

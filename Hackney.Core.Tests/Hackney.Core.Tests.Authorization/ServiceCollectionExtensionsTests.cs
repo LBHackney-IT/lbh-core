@@ -28,7 +28,8 @@ namespace Hackney.Core.Tests.Authorization;
 public class ServiceCollectionExtensionsTests
 {
     private const string ParameterName = "/auth/groups";
-    private const string SsmFailureMessagePrefix = "Failed to fetch authorization groups from SSM parameter: ";
+    private static string LoadFailureMessage(string parameterName) =>
+        $"Failed to load authorization groups from SSM parameter: '{parameterName}'.";
 
     #region parameter name
 
@@ -119,7 +120,7 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public async Task AddHackneyAuthorization_ThrowsInvalidOperationException_WhenTheParameterFetchFails()
+    public async Task AddHackneyAuthorization_ThrowsGroupDocumentLoadException_WhenTheParameterFetchFails()
     {
         // arrange
         var ssm = new Mock<IAmazonSimpleSystemsManagement>();
@@ -137,9 +138,10 @@ public class ServiceCollectionExtensionsTests
         var act = async () => await StartHostedServices(provider);
 
         // assert
-        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
+        var exception = await act.Should().ThrowAsync<GroupDocumentLoadException>();
 
-        exception.Which.Message.Should().Be($"{SsmFailureMessagePrefix}'{ParameterName}'");
+        exception.Which.ParameterName.Should().Be(ParameterName);
+        exception.Which.Message.Should().Be(LoadFailureMessage(ParameterName));
         exception.Which.InnerException.Should().BeSameAs(ssmFailure);
 
         provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
@@ -217,7 +219,7 @@ public class ServiceCollectionExtensionsTests
     [InlineData("[]")]
     [InlineData("\"housing-officers\"")]
     [InlineData("{ \"wildlife-api\": null }")]
-    public async Task AddHackneyAuthorization_ThrowsInvalidGroupDocumentException_WhenThePayloadIsNotAGroupDocument(string payload)
+    public async Task AddHackneyAuthorization_ThrowsGroupDocumentLoadException_WhenThePayloadIsNotAGroupDocument(string payload)
     {
         // arrange
         var services = new ServiceCollection();
@@ -229,11 +231,11 @@ public class ServiceCollectionExtensionsTests
         var act = async () => await StartHostedServices(provider);
 
         // assert
-        var exception = await act.Should().ThrowAsync<InvalidGroupDocumentException>();
+        var exception = await act.Should().ThrowAsync<GroupDocumentLoadException>();
 
+        exception.Which.ParameterName.Should().Be(ParameterName);
+        exception.Which.Message.Should().Be(LoadFailureMessage(ParameterName));
         exception.Which.InnerException.Should().BeOfType<InvalidGroupDocumentException>();
-        exception.Which.Message.Should().Be(
-            $"Failed to read authorization groups from SSM parameter: '{ParameterName}'. {exception.Which.InnerException!.Message}");
         provider.GetRequiredService<PolicyGroupMap>().Policies.Should().BeEmpty();
     }
 
