@@ -1,4 +1,4 @@
-# Hackney.Core.Authorization
+# Hackney.Core.Authorization (trigger Hackney.Core.Authorization package interim preview version deployment)
 
 `Hackney.Core.Authorization` decides whether a request that has already reached an API may call the endpoint it is aimed at. A request is denied unless the endpoint, or its controller, says who may call it.
 
