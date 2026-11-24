@@ -50,7 +50,8 @@ namespace Hackney.Core.Tests.Sns
 
             var amazonSns = serviceProvider.GetService<IAmazonSimpleNotificationService>();
             amazonSns.Should().NotBeNull();
-            amazonSns.Config.ServiceURL.Should().Be(url);
+            // The SDK normalises ServiceURL by appending a trailing slash on read-back.
+            amazonSns.Config.ServiceURL.Should().Be(url + "/");
 
             Environment.SetEnvironmentVariable("Localstack_SnsServiceUrl", null);
             Environment.SetEnvironmentVariable("Sns_LocalMode", null);
