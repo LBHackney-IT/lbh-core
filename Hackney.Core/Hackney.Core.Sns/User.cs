@@ -1,9 +1,8 @@
-namespace Hackney.Core.Sns
-{
-    public class User
-    {
-        public string Name { get; set; }
+namespace Hackney.Core.Sns;
 
-        public string Email { get; set; }
-    }
+public class User
+{
+    public string Name { get; set; }
+
+    public string Email { get; set; }
 }
