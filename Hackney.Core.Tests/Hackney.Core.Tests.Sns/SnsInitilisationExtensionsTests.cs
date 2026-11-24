@@ -1,5 +1,5 @@
 ﻿using Amazon.SimpleNotificationService;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.Sns;
 using Microsoft.Extensions.DependencyInjection;
 using System;

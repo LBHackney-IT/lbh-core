@@ -1,7 +1,7 @@
 ﻿using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.Sns;
 using Moq;
 using System;
@@ -50,19 +50,19 @@ public class SnsGatewayTests
     }
 
     [Fact]
-    public void PublishTestNullSnsObjectThrows()
+    public async Task PublishTestNullSnsObjectThrows()
     {
         Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(null, _topic, _group).ConfigureAwait(false);
-        func.Should().Throw<ArgumentNullException>();
+        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(false);
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void PublishTestNullTopicArnThrows(string topic)
+    public async Task PublishTestNullTopicArnThrows(string topic)
     {
         Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(_message, topic, _group).ConfigureAwait(false);
-        func.Should().Throw<ArgumentNullException>();
+        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(false);
     }
 
     [Theory]
