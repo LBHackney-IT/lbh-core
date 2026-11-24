@@ -14,10 +14,9 @@ public static class SnsInitilisationExtensions
     /// <returns>The service collection</returns>
     public static IServiceCollection ConfigureSns(this IServiceCollection services)
     {
-        if (services is null) throw new ArgumentNullException(nameof(services));
+        ArgumentNullException.ThrowIfNull(services);
 
-        bool localMode = false;
-        _ = bool.TryParse(Environment.GetEnvironmentVariable("Sns_LocalMode"), out localMode);
+        _ = bool.TryParse(Environment.GetEnvironmentVariable("Sns_LocalMode"), out var localMode);
 
         if (localMode)
         {

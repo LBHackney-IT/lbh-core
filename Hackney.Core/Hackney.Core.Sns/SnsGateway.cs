@@ -23,13 +23,12 @@ public class SnsGateway : ISnsGateway
 
     private static JsonSerializerOptions CreateJsonOptions()
     {
-        var options = new JsonSerializerOptions
+        return new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() }
         };
-        options.Converters.Add(new JsonStringEnumConverter());
-        return options;
     }
 
     /// <summary>
@@ -43,7 +42,7 @@ public class SnsGateway : ISnsGateway
     /// <exception cref="System.ArgumentNullException">If snsMessage is null or the topicArn is null or empty.</exception>
     public async Task Publish<T>(T snsMessage, string topicArn, string messageGroupId = "fake") where T : class
     {
-        if (snsMessage is null) throw new ArgumentNullException(nameof(snsMessage));
+        ArgumentNullException.ThrowIfNull(snsMessage);
         if (string.IsNullOrEmpty(topicArn)) throw new ArgumentNullException(nameof(topicArn));
 
         string message = JsonSerializer.Serialize(snsMessage, _jsonOptions);

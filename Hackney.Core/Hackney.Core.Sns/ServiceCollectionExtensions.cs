@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection</returns>
     public static IServiceCollection AddSnsGateway(this IServiceCollection serviceCollection)
     {
-        if (serviceCollection is null) throw new ArgumentNullException(nameof(serviceCollection));
+        ArgumentNullException.ThrowIfNull(serviceCollection);
 
         serviceCollection.TryAddScoped<ISnsGateway, SnsGateway>();
         return serviceCollection;

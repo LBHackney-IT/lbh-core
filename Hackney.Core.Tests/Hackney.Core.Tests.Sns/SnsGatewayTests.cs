@@ -33,13 +33,12 @@ public class SnsGatewayTests
 
     private static JsonSerializerOptions CreateJsonOptions()
     {
-        var options = new JsonSerializerOptions
+        return new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() }
         };
-        options.Converters.Add(new JsonStringEnumConverter());
-        return options;
     }
 
     private static bool VerifyPublishRequest(PublishRequest actual, string expectedMsgJson, string expectedTopic, string expectedGroup)
