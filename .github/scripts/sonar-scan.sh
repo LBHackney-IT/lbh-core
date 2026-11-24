@@ -6,6 +6,7 @@ set -euo pipefail
 project_root=${1:-}
 pack_project=${2:-}
 package_name=${3:-}
+dotnet_version=${4:-8.0.x}
 
 if [ -z "$project_root" ] || [ -z "$pack_project" ] || [ -z "$package_name" ]; then
   echo "All 3 inputs: <project_root> <pack_project> <package_name> are required" >&2
@@ -19,12 +20,12 @@ fi
 
 workspace="${GITHUB_WORKSPACE:-$(pwd)}"
 
-# stick to dotnet8 regardless of what runner is on.
-# can be bumped to v10 once dotnet10 migrations are completed
-cat > global.json <<'EOF'
+# Pin the SDK the workflow installed. "10.0.x" becomes 10.0.100.
+sdk_version="${dotnet_version%.x}.100"
+cat > global.json <<EOF
 {
   "sdk": {
-    "version": "8.0.100",
+    "version": "${sdk_version}",
     "rollForward": "latestFeature"
   }
 }
