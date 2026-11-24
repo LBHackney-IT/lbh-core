@@ -12,14 +12,6 @@
     <Description>Common library to support usage of the AWS Simple Notification Service in LBH Web API services.</Description>
   </PropertyGroup>
 
-  <PropertyGroup Label="Compilation">
-    <!--
-      S1066 Mergeable "if" statements should be combined
-      S4457 Parameter validation in "async" methods should be wrapped
-    -->
-    <NoWarn>S1066;S4457</NoWarn>
-  </PropertyGroup>
-
   <PropertyGroup Label="Packaging">
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>

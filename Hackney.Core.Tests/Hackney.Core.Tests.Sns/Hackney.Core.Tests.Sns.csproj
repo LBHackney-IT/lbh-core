@@ -6,11 +6,6 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Compilation">
-    <!--
-      CA1303, CA1305 and CA1307 are globalization warnings that do not apply to these tests.
-      CA1001 and CA1062 are not enforced on test fixtures.
-    -->
-    <NoWarn>CA1303;CA1305;CA1001;CA1062;CA1307</NoWarn>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>

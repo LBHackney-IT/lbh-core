@@ -49,20 +49,44 @@ public class SnsGatewayTests
         return true;
     }
 
+    // two pairs of the same tests. one is to show that the error does not get
+    // swallowed by the async task and gets thrown despite the call not being
+    // awaited. the other pair shows that the error throws as expected when the
+    // call is awaited. This fixes the old-standing sonar warning.
     [Fact]
-    public async Task PublishTestNullSnsObjectThrows()
+    public void PublishTestNullSnsObjectThrows()
     {
-        Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(null, _topic, _group).ConfigureAwait(false);
-        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(true);
+        Action act = () => _sut.Publish<SnsTestMessage>(null, _topic, _group);
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public async Task PublishTestNullTopicArnThrows(string topic)
+    public void PublishTestNullTopicArnThrows(string topic)
     {
-        Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(_message, topic, _group).ConfigureAwait(false);
+        Action act = () => _sut.Publish<SnsTestMessage>(_message, topic, _group);
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task PublishTestNullSnsObjectThrowsWhenAwaited()
+    {
+        Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(null, _topic, _group).ConfigureAwait(true);
+
         await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(true);
+        _mockAwsSns.Verify(x => x.PublishAsync(It.IsAny<PublishRequest>(), default), Times.Never);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task PublishTestNullTopicArnThrowsWhenAwaited(string topic)
+    {
+        Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(_message, topic, _group).ConfigureAwait(true);
+
+        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(true);
+        _mockAwsSns.Verify(x => x.PublishAsync(It.IsAny<PublishRequest>(), default), Times.Never);
     }
 
     [Theory]

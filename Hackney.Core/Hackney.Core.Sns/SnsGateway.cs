@@ -40,11 +40,16 @@ public class SnsGateway : ISnsGateway
     /// <param name="messageGroupId">Optional message group id</param>
     /// <returns>Task</returns>
     /// <exception cref="System.ArgumentNullException">If snsMessage is null or the topicArn is null or empty.</exception>
-    public async Task Publish<T>(T snsMessage, string topicArn, string messageGroupId = "fake") where T : class
+    public Task Publish<T>(T snsMessage, string topicArn, string messageGroupId = "fake") where T : class
     {
         ArgumentNullException.ThrowIfNull(snsMessage);
         if (string.IsNullOrEmpty(topicArn)) throw new ArgumentNullException(nameof(topicArn));
 
+        return PublishMessage(snsMessage, topicArn, messageGroupId);
+    }
+
+    private async Task PublishMessage<T>(T snsMessage, string topicArn, string messageGroupId) where T : class
+    {
         string message = JsonSerializer.Serialize(snsMessage, _jsonOptions);
         var request = new PublishRequest
         {
