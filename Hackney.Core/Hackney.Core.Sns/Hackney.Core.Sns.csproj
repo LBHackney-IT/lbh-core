@@ -1,19 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+  <PropertyGroup Label="Targeting">
     <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
     <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
     <Authors>London Borough of Hackney Council</Authors>
     <Company>London Borough of Hackney Council</Company>
     <Copyright>2021</Copyright>
     <Description>Common library to support usage of the AWS Simple Notification Service in LBH Web API services.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compilation">
+    <!--
+      S1066 Mergeable "if" statements should be combined
+      S4457 Parameter validation in "async" methods should be wrapped
+    -->
     <NoWarn>S1066;S4457</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <ItemGroup>
-	 <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.100.26" />
-	 <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
+  <ItemGroup Label="Nuget Dependencies">
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.100.26" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
