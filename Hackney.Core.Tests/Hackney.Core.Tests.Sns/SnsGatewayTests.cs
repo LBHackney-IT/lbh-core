@@ -53,7 +53,7 @@ public class SnsGatewayTests
     public async Task PublishTestNullSnsObjectThrows()
     {
         Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(null, _topic, _group).ConfigureAwait(false);
-        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(false);
+        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(true);
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class SnsGatewayTests
     public async Task PublishTestNullTopicArnThrows(string topic)
     {
         Func<Task> func = async () => await _sut.Publish<SnsTestMessage>(_message, topic, _group).ConfigureAwait(false);
-        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(false);
+        await func.Should().ThrowAsync<ArgumentNullException>().ConfigureAwait(true);
     }
 
     [Theory]
@@ -72,7 +72,7 @@ public class SnsGatewayTests
     public async Task PublishTestPublishesMessageToTopic(string group)
     {
         var msgJson = JsonSerializer.Serialize(_message, _jsonOptions);
-        await _sut.Publish<SnsTestMessage>(_message, _topic, group).ConfigureAwait(false);
+        await _sut.Publish<SnsTestMessage>(_message, _topic, group).ConfigureAwait(true);
 
         _mockAwsSns.Verify(x => x.PublishAsync(It.Is<PublishRequest>(y => VerifyPublishRequest(y, msgJson, _topic, group)), default), Times.Once);
     }
