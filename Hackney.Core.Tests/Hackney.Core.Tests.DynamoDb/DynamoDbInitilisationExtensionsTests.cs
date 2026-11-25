@@ -7,54 +7,53 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace Hackney.Core.Tests.DynamoDb
+namespace Hackney.Core.Tests.DynamoDb;
+
+public class DynamoDbInitilisationExtensionsTests
 {
-    public class DynamoDbInitilisationExtensionsTests
+    [Theory]
+    [InlineData(null)]
+    [InlineData("false")]
+    [InlineData("true")]
+    public void ConfigureDynamoDBTestNoLocalModeEnvVarUsesAWSService(string localModeEnvVar)
     {
-        [Theory]
-        [InlineData(null)]
-        [InlineData("false")]
-        [InlineData("true")]
-        public void ConfigureDynamoDBTestNoLocalModeEnvVarUsesAWSService(string localModeEnvVar)
-        {
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", localModeEnvVar);
+        Environment.SetEnvironmentVariable("DynamoDb_LocalMode", localModeEnvVar);
 
-            ServiceCollection services = new ServiceCollection();
-            services.ConfigureDynamoDB();
+        ServiceCollection services = new ServiceCollection();
+        services.ConfigureDynamoDB();
 
-            services.Any(x => x.ServiceType == typeof(IAmazonDynamoDB)).Should().BeTrue();
-            var sd = services.First(x => x.ServiceType == typeof(IAmazonDynamoDB));
-            sd.Lifetime.Should().Be(ServiceLifetime.Singleton);
-            sd.ImplementationFactory.Should().NotBeNull();
+        services.Any(x => x.ServiceType == typeof(IAmazonDynamoDB)).Should().BeTrue();
+        var sd = services.First(x => x.ServiceType == typeof(IAmazonDynamoDB));
+        sd.Lifetime.Should().Be(ServiceLifetime.Singleton);
+        sd.ImplementationFactory.Should().NotBeNull();
 
-            services.Any(x => x.ServiceType == typeof(IDynamoDBContext)).Should().BeTrue();
-            sd = services.First(x => x.ServiceType == typeof(IDynamoDBContext));
-            sd.Lifetime.Should().Be(ServiceLifetime.Scoped);
-            sd.ImplementationFactory.Should().NotBeNull();
+        services.Any(x => x.ServiceType == typeof(IDynamoDBContext)).Should().BeTrue();
+        sd = services.First(x => x.ServiceType == typeof(IDynamoDBContext));
+        sd.Lifetime.Should().Be(ServiceLifetime.Scoped);
+        sd.ImplementationFactory.Should().NotBeNull();
 
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
-        }
+        Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
+    }
 
-        [Fact]
-        public void ConfigureDynamoDBTestRegistersServices()
-        {
-            string url = "http://localhost:8000/";
-            Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", url);
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", "true");
+    [Fact]
+    public void ConfigureDynamoDBTestRegistersServices()
+    {
+        string url = "http://localhost:8000/";
+        Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", url);
+        Environment.SetEnvironmentVariable("DynamoDb_LocalMode", "true");
 
-            ServiceCollection services = new ServiceCollection();
-            services.ConfigureDynamoDB();
-            var serviceProvider = services.BuildServiceProvider();
+        ServiceCollection services = new ServiceCollection();
+        services.ConfigureDynamoDB();
+        var serviceProvider = services.BuildServiceProvider();
 
-            var amazonDynamoDB = serviceProvider.GetService<IAmazonDynamoDB>();
-            amazonDynamoDB.Should().NotBeNull();
-            amazonDynamoDB.Config.ServiceURL.Should().Be(url);
+        var amazonDynamoDB = serviceProvider.GetService<IAmazonDynamoDB>();
+        amazonDynamoDB.Should().NotBeNull();
+        amazonDynamoDB.Config.ServiceURL.Should().Be(url);
 
-            var dynamoDBContext = serviceProvider.GetService<IDynamoDBContext>();
-            dynamoDBContext.Should().NotBeNull();
+        var dynamoDBContext = serviceProvider.GetService<IDynamoDBContext>();
+        dynamoDBContext.Should().NotBeNull();
 
-            Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", null);
-            Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
-        }
+        Environment.SetEnvironmentVariable("DynamoDb_LocalServiceUrl", null);
+        Environment.SetEnvironmentVariable("DynamoDb_LocalMode", null);
     }
 }
