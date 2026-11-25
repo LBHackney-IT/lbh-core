@@ -85,10 +85,10 @@ Please refer to [our documentation](https://docs.google.com/document/d/1aJzhNxmS
 The following features are implemented within this package (Alphabetical Order):
 
 - [Authorisation](/Hackney.Core/Hackney.Core.Authorization/README.md)
-- [DynamoDb](#DynamoDb)
-  - [Converters](#Converters)
-  - [Health check](#DynamoDb-Health-check)
-  - [Paged results](#Paged-results)
+- [DynamoDb](/Hackney.Core/Hackney.Core.DynamoDb/README.md)
+  - [Converters](/Hackney.Core/Hackney.Core.DynamoDb/README.md#converters)
+  - [Health check](/Hackney.Core/Hackney.Core.DynamoDb/README.md#dynamodb-health-check)
+  - [Paged results](/Hackney.Core/Hackney.Core.DynamoDb/README.md#paged-results)
 - [ElasticSearch](/Hackney.Core/Hackney.Core.ElasticSearch/README.md)
 - [Enums](/Hackney.Core/Hackney.Core.Enums/README.md)
 - [Health check helpers](#Health-check-helpers)
