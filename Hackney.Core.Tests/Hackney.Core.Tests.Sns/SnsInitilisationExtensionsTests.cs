@@ -14,7 +14,7 @@ public class SnsInitilisationExtensionsTests
     public void ConfigureSnsTestNullServicesThrows()
     {
         IServiceCollection services = null;
-        Action act = () => SnsInitilisationExtensions.ConfigureSns(services);
+        Action act = () => ServiceCollectionExtensions.AddSnsGatewayAndClient(services);
         act.Should().Throw<ArgumentNullException>();
     }
 
@@ -27,7 +27,7 @@ public class SnsInitilisationExtensionsTests
         Environment.SetEnvironmentVariable("Sns_LocalMode", localModeEnvVar);
 
         ServiceCollection services = new ServiceCollection();
-        services.ConfigureSns();
+        services.AddSnsGatewayAndClient();
 
         services.Any(x => x.ServiceType == typeof(IAmazonSimpleNotificationService)).Should().BeTrue();
         var sd = services.First(x => x.ServiceType == typeof(IAmazonSimpleNotificationService));
@@ -45,7 +45,7 @@ public class SnsInitilisationExtensionsTests
         Environment.SetEnvironmentVariable("Sns_LocalMode", "true");
 
         ServiceCollection services = new ServiceCollection();
-        services.ConfigureSns();
+        services.AddSnsGatewayAndClient();
         var serviceProvider = services.BuildServiceProvider();
 
         var amazonSns = serviceProvider.GetService<IAmazonSimpleNotificationService>();

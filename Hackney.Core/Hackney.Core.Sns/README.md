@@ -4,8 +4,8 @@
 
 The package does two jobs:
 
-- It registers an SNS client. `ConfigureSns` uses AWS when `Sns_LocalMode` is not true, and a Localstack URL when it is.
-- It registers `ISnsGateway`. `Publish` checks the message and the topic, serializes the message, and sends it.
+- `AddSnsGatewayAndClient` registers the SNS client and `ISnsGateway`. The client uses AWS when `Sns_LocalMode` is not true, and a Localstack URL when it is.
+- `Publish` checks the message and the topic, serializes the message, and sends it.
 
 A null message, or a null or empty topic, is rejected with `ArgumentNullException` at the call. The send itself is asynchronous.
 
@@ -15,9 +15,8 @@ The package is built for Hackney APIs on .NET 10 that already run in AWS, or aga
 
 - The host has an AWS region available when it is not in local mode. The client is the parameterless `AmazonSimpleNotificationServiceClient`, so the region comes from the SDK's usual configuration, such as `AWS_REGION`.
 - Local mode is explicit. `Sns_LocalMode` must parse as `true`. `false`, an empty value, and a missing variable all mean AWS.
-- In local mode the topic endpoint is `Localstack_SnsServiceUrl`. `ConfigureSns` still returns if that variable is missing. The first publish then fails inside the SDK, because the client has no region and no service URL.
-- `ConfigureSns` and `AddSnsGateway` are separate. The gateway needs an `IAmazonSimpleNotificationService`. Registering only the gateway does not register the client.
-- Both registrations use `TryAdd`. A client or gateway already in the container is left as it is. A second call does not replace it.
+- In local mode the topic endpoint is `Localstack_SnsServiceUrl`. `AddSnsGatewayAndClient` still returns if that variable is missing. The first publish then fails inside the SDK, because the client has no region and no service URL.
+- Registration uses `TryAdd`. A client or gateway already in the container is left as it is. A second call does not replace it.
 - The message is JSON. Property names are camel case, enums are strings, and the JSON is indented. A listener that deserializes `EntityEventSns` with the same options reads the same shape.
 - Every publish sets `MessageGroupId`. When the caller omits it, the value is `"fake"`. A caller that passes `null` sends `null`. FIFO topics use this field to group messages.
 
@@ -28,8 +27,7 @@ Register the client and the gateway during startup.
 ```csharp
 using Hackney.Core.Sns;
 
-builder.Services.ConfigureSns();
-builder.Services.AddSnsGateway();
+builder.Services.AddSnsGatewayAndClient();
 ```
 
 For Localstack, set both variables. `true` is case-insensitive. Any other value selects AWS.
@@ -66,13 +64,13 @@ await _sns.Publish(tenureEvent, topicArn, tenureEvent.EntityId.ToString());
 
 ## Public interface
 
-### `ConfigureSns`
+### `AddSnsGatewayAndClient`
 
 ```csharp
-public static IServiceCollection ConfigureSns(this IServiceCollection services)
+public static IServiceCollection AddSnsGatewayAndClient(this IServiceCollection services)
 ```
 
-Registers `IAmazonSimpleNotificationService`.
+Registers `IAmazonSimpleNotificationService` and a scoped `ISnsGateway`.
 
 | Mode | Lifetime | Client |
 | --- | --- | --- |
@@ -80,14 +78,6 @@ Registers `IAmazonSimpleNotificationService`.
 | Otherwise | Scoped | The SDK resolves the region itself |
 
 `ArgumentNullException` when `services` is null. `ParamName` is `services`.
-
-### `AddSnsGateway`
-
-```csharp
-public static IServiceCollection AddSnsGateway(this IServiceCollection serviceCollection)
-```
-
-Registers `ISnsGateway` as a scoped `SnsGateway`. `ArgumentNullException` when `serviceCollection` is null. `ParamName` is `serviceCollection`.
 
 ### `ISnsGateway.Publish`
 

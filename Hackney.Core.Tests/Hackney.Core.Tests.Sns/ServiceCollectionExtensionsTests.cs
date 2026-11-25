@@ -13,7 +13,7 @@ public class ServiceCollectionExtensionsTests
     public void AddSnsGatewayTestNullServicesThrows()
     {
         IServiceCollection services = null;
-        Action act = () => Hackney.Core.Sns.ServiceCollectionExtensions.AddSnsGateway(services);
+        Action act = () => Hackney.Core.Sns.ServiceCollectionExtensions.AddSnsGatewayAndClient(services);
         act.Should().Throw<ArgumentNullException>();
     }
 
@@ -21,7 +21,7 @@ public class ServiceCollectionExtensionsTests
     public void AddSnsGatewayTestAddsRequiredTypes()
     {
         var services = new ServiceCollection();
-        services.AddSnsGateway();
+        services.AddSnsGatewayAndClient();
         services.IsServiceRegistered<ISnsGateway, SnsGateway>().Should().BeTrue();
     }
 }

@@ -77,7 +77,7 @@ namespace SomeApplication.Tests
                 .UseStartup<Startup>();
             builder.ConfigureServices(services =>
             {
-                services.ConfigureSns();
+                services.AddSnsGatewayAndClient();
                 services.ConfigureSnsFixture();
 
                 var serviceProvider = services.BuildServiceProvider();
@@ -161,7 +161,7 @@ namespace SomeApplication.Tests
            .ConfigureServices((hostContext, services) =>
            {
                // Configures the conneciton
-               services.ConfigureSns();
+               services.AddSnsGatewayAndClient();
                services.ConfigureSnsFixture();
 
                var serviceProvider = services.BuildServiceProvider();

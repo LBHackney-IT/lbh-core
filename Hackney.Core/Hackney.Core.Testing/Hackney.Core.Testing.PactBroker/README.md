@@ -297,7 +297,7 @@ namespace SomeEntityApi.Tests.PactBroker
             services.ConfigureDynamoDB();
             services.ConfigureDynamoDbFixture();
 
-            services.ConfigureSns();
+            services.AddSnsGatewayAndClient();
             services.ConfigureSnsFixture();
 
             // Required to make sure the AWSXRayRecorder does not bomb out when using "local" resources
