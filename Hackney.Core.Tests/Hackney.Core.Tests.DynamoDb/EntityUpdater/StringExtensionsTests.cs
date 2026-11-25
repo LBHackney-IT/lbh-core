@@ -9,7 +9,7 @@ public class StringExtensionsTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void ToCamelCaseNullOrEmptyReturnsTheInput(string input)
+    public void ToCamelCase_NullOrEmpty_ReturnsTheInput(string input)
     {
         // arrange
         var value = input;
@@ -22,7 +22,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void ToCamelCaseSingleCharacterIsLowercased()
+    public void ToCamelCase_SingleCharacter_IsLowercased()
     {
         // arrange
         var value = "A";
@@ -35,7 +35,7 @@ public class StringExtensionsTests
     }
 
     [Fact]
-    public void ToCamelCaseLowercasesOnlyTheFirstCharacter()
+    public void ToCamelCase_LowercasesOnly_TheFirstCharacter()
     {
         // arrange
         var value = "OrangeCat";
