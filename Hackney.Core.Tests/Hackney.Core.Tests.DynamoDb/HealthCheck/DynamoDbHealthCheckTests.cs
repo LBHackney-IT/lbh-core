@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb.HealthCheck;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;

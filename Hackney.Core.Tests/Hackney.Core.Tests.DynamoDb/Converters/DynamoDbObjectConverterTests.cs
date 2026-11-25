@@ -1,6 +1,6 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb.Converters;
 using System;
 using System.Text.Json;

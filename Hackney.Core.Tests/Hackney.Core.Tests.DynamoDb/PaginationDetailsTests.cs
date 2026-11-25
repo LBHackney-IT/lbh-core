@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Hackney.Core.DynamoDb;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;

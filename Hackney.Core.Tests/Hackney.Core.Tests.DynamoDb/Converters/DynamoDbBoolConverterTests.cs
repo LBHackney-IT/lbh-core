@@ -1,5 +1,5 @@
 using Amazon.DynamoDBv2.DocumentModel;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb.Converters;
 using System;
 using Xunit;

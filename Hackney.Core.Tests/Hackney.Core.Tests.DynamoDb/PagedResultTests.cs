@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb;
 using System.Linq;
 using Xunit;

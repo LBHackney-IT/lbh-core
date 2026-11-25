@@ -1,5 +1,5 @@
 using Amazon.DynamoDBv2.DocumentModel;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb.Converters;
 using System;
 using Xunit;
@@ -47,7 +47,7 @@ public class DynamoDbDateTimeConverterTests
         DateTime now = DateTime.UtcNow;
         DynamoDBEntry dbEntry = new Primitive { Value = now.ToString(DynamoDbDateTimeConverter.DATEFORMAT) };
 
-        ((DateTime)_sut.FromEntry(dbEntry)).Should().BeCloseTo(now);
+        ((DateTime)_sut.FromEntry(dbEntry)).Should().BeCloseTo(now, TimeSpan.FromMilliseconds(20));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class DynamoDbDateTimeConverterTests
         DateTime now = DateTime.UtcNow;
         DynamoDBEntry dbEntry = new Primitive { Value = now.Date.ToString() };
 
-        ((DateTime)_sut.FromEntry(dbEntry)).Should().BeCloseTo(now.Date);
+        ((DateTime)_sut.FromEntry(dbEntry)).Should().BeCloseTo(now.Date, TimeSpan.FromMilliseconds(20));
     }
 
     [Fact]
