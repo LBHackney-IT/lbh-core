@@ -26,6 +26,10 @@ on:
         required: false
         type: boolean
         default: false
+      dotnet_version:
+        required: false
+        type: string
+        default: "8.0.x"
     secrets:
       SONAR_TOKEN:
         required: true
@@ -37,6 +41,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
       - name: Install dotnet format
         run: |
           cd ${{ inputs.format_root }}
@@ -89,10 +97,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Setup .NET 8
+      - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: ${{ inputs.dotnet_version }}
       - name: Download coverage
         if: inputs.docker_service != '' && inputs.skip_tests == false
         uses: actions/download-artifact@v8
@@ -100,7 +108,7 @@ jobs:
           name: coverage
           path: coverage
       - name: Sonar scan
-        run: ./.github/scripts/sonar-scan.sh "${{ inputs.project_root }}" "${{ inputs.pack_project }}" "${{ inputs.package_name }}"
+        run: ./.github/scripts/sonar-scan.sh "${{ inputs.project_root }}" "${{ inputs.pack_project }}" "${{ inputs.package_name }}" "${{ inputs.dotnet_version }}"
 
   calculate-version:
     name: Calculate Version
@@ -138,6 +146,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
       - name: Build the Package
         run: |
           cd ${{ inputs.project_root }}

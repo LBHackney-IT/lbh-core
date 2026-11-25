@@ -10,6 +10,7 @@ on:
       - '**'
     paths:
       - 'Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/**'
+      - '!Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.Sns/**/*.md'
 
 jobs:
   call:

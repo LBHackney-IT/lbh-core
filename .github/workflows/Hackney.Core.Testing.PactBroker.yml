@@ -10,6 +10,7 @@ on:
       - '**'
     paths:
       - 'Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/**'
+      - '!Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.PactBroker/**/*.md'
 
 jobs:
   call:

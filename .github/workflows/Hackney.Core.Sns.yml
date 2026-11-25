@@ -23,5 +23,6 @@ jobs:
       docker_service: hackney-core-sns-test
       format_root: Hackney.Core
       skip_tests: false
+      dotnet_version: 10.0.x
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
