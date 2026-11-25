@@ -11,7 +11,7 @@ public class PagedResult<T> where T : class
     /// <summary>
     /// The list of query results
     /// </summary>
-    public List<T> Results { get; set; } = new List<T>();
+    public List<T> Results { get; set; } = [];
 
     /// <summary>
     /// The pagination details
@@ -19,13 +19,15 @@ public class PagedResult<T> where T : class
     public PaginationDetails PaginationDetails { get; set; } = new PaginationDetails();
 
     public PagedResult() { }
+
     public PagedResult(IEnumerable<T> results)
     {
-        if (null != results) Results.AddRange(results);
+        if (null != results) Results = [.. results];
     }
+
     public PagedResult(IEnumerable<T> results, PaginationDetails paginationDetails)
     {
-        if (null != results) Results.AddRange(results);
+        if (null != results) Results = [.. results];
         PaginationDetails = paginationDetails;
     }
 }

@@ -24,7 +24,7 @@ public static class DynamoDBContextExtensions
     public static async Task<PagedResult<TEntity>> GetPagedQueryResultsAsync<TEntity>(
         this IDynamoDBContext dynamoDbContext, QueryOperationConfig queryConfig) where TEntity : class
     {
-        var dbResults = new List<TEntity>();
+        List<TEntity> dbResults = [];
         var table = dynamoDbContext.GetTargetTable<TEntity>();
 
         var search = table.Query(queryConfig);
