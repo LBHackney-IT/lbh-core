@@ -11,18 +11,39 @@ public class StringExtensionsTests
     [InlineData("")]
     public void ToCamelCaseNullOrEmptyReturnsTheInput(string input)
     {
-        input.ToCamelCase().Should().Be(input);
+        // arrange
+        var value = input;
+
+        // act
+        var result = value.ToCamelCase();
+
+        // assert
+        result.Should().Be(input);
     }
 
     [Fact]
     public void ToCamelCaseSingleCharacterIsLowercased()
     {
-        "A".ToCamelCase().Should().Be("a");
+        // arrange
+        var value = "A";
+
+        // act
+        var result = value.ToCamelCase();
+
+        // assert
+        result.Should().Be("a");
     }
 
     [Fact]
     public void ToCamelCaseLowercasesOnlyTheFirstCharacter()
     {
-        "OrangeCat".ToCamelCase().Should().Be("orangeCat");
+        // arrange
+        var value = "OrangeCat";
+
+        // act
+        var result = value.ToCamelCase();
+
+        // assert
+        result.Should().Be("orangeCat");
     }
 }
