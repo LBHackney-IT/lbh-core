@@ -11,7 +11,7 @@ public class DynamoDbBoolConverter : IPropertyConverter
 {
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
         return new DynamoDBBool((bool)value);
     }

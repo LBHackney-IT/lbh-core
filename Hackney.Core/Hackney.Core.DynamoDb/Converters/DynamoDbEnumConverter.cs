@@ -11,18 +11,18 @@ public class DynamoDbEnumConverter<TEnum> : IPropertyConverter where TEnum : Enu
 {
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
         return new Primitive(Enum.GetName(typeof(TEnum), value));
     }
 
     public object FromEntry(DynamoDBEntry entry)
     {
-        Primitive primitive = entry as Primitive;
-        var entryStringValue = primitive?.AsString();
+        if (entry is not Primitive primitive) return default(TEnum);
+
+        var entryStringValue = primitive.AsString();
         if (string.IsNullOrEmpty(entryStringValue)) return default(TEnum);
 
-        TEnum valueAsEnum = (TEnum)Enum.Parse(typeof(TEnum), entryStringValue);
-        return valueAsEnum;
+        return (TEnum)Enum.Parse(typeof(TEnum), entryStringValue);
     }
 }

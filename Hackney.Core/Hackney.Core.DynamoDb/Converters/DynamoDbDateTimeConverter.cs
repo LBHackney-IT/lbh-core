@@ -14,15 +14,14 @@ public class DynamoDbDateTimeConverter : IPropertyConverter
 
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
         return new Primitive { Value = ((DateTime)value).ToUniversalTime().ToString(DATEFORMAT) };
     }
 
     public object FromEntry(DynamoDBEntry entry)
     {
-        Primitive primitive = entry as Primitive;
-        if (null == primitive) return (DateTime?)null;
+        if (entry is not Primitive primitive) return (DateTime?)null;
 
         var dtString = primitive.Value.ToString();
         return DateTime.Parse(dtString, null, System.Globalization.DateTimeStyles.RoundtripKind);

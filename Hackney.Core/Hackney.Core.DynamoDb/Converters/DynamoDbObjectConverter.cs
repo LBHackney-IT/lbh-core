@@ -27,19 +27,18 @@ public class DynamoDbObjectConverter<T> : IPropertyConverter
 
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
         return Document.FromJson(JsonSerializer.Serialize(value, CreateJsonOptions()));
     }
 
     public object FromEntry(DynamoDBEntry entry)
     {
-        if ((null == entry) || (null != entry.AsDynamoDBNull())) return null;
+        if (entry is null || entry is DynamoDBNull) return null;
 
-        var doc = entry.AsDocument();
-        if (null == doc)
+        if (entry is not Document document)
             throw new ArgumentException("Field value is not a Document. This attribute has been used on a property that is not a custom object.");
 
-        return JsonSerializer.Deserialize<T>(doc.ToJson(), CreateJsonOptions());
+        return JsonSerializer.Deserialize<T>(document.ToJson(), CreateJsonOptions());
     }
 }

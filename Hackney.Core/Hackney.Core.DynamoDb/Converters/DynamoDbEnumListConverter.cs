@@ -13,10 +13,9 @@ public class DynamoDbEnumListConverter<TEnum> : IPropertyConverter where TEnum :
 {
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
-        var list = value as IEnumerable<TEnum>;
-        if (null == list)
+        if (value is not IEnumerable<TEnum> list)
             throw new ArgumentException($"Field value is not a list of {typeof(TEnum).Name}. This attribute has been used on a property that is not a list of enum values.");
 
         return new DynamoDBList(list.Select(x => new Primitive(Enum.GetName(typeof(TEnum), x))));
@@ -24,10 +23,9 @@ public class DynamoDbEnumListConverter<TEnum> : IPropertyConverter where TEnum :
 
     public object FromEntry(DynamoDBEntry entry)
     {
-        if ((null == entry) || (null != entry.AsDynamoDBNull())) return null;
+        if (entry is null || entry is DynamoDBNull) return null;
 
-        var list = entry.AsDynamoDBList();
-        if (null == list)
+        if (entry is not DynamoDBList list)
             throw new ArgumentException("Field value is not a DynamoDBList. This attribute has been used on a property that is not a list of enum values.");
 
         return list.AsListOfDynamoDBEntry().Select(x =>

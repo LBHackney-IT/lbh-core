@@ -28,10 +28,9 @@ public class DynamoDbObjectListConverter<T> : IPropertyConverter
 
     public DynamoDBEntry ToEntry(object value)
     {
-        if (null == value) return new DynamoDBNull();
+        if (value is null) return new DynamoDBNull();
 
-        var list = value as IEnumerable<T>;
-        if (null == list)
+        if (value is not IEnumerable<T> list)
             throw new ArgumentException($"Field value is not a list of {typeof(T).Name}. This attribute has been used on a property that is not a list of custom objects.");
 
         return new DynamoDBList(list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions()))));
@@ -39,10 +38,9 @@ public class DynamoDbObjectListConverter<T> : IPropertyConverter
 
     public object FromEntry(DynamoDBEntry entry)
     {
-        if ((null == entry) || (null != entry.AsDynamoDBNull())) return null;
+        if (entry is null || entry is DynamoDBNull) return null;
 
-        var list = entry.AsDynamoDBList();
-        if (null == list)
+        if (entry is not DynamoDBList list)
             throw new ArgumentException("Field value is not a DynamoDBList. This attribute has been used on a property that is not a list of custom objects.");
 
         return list.AsListOfDocument().Select(x => JsonSerializer.Deserialize<T>(x.ToJson(), CreateJsonOptions())).ToList();
