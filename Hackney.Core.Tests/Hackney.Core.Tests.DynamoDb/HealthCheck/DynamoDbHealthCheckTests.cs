@@ -5,6 +5,7 @@ using Hackney.Core.DynamoDb.HealthCheck;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -35,10 +36,10 @@ public class DynamoDbHealthCheckTests
     [Fact]
     public async Task CheckHealthAsyncTestSucceeds()
     {
-        _mockClient.Setup(x => x.DescribeTableAsync("Models", default)).ReturnsAsync(new DescribeTableResponse());
+        _mockClient.Setup(x => x.DescribeTableAsync("Models", It.IsAny<CancellationToken>())).ReturnsAsync(new DescribeTableResponse());
 
         var sut = new DynamoDbHealthCheck<TestModelDb>(_mockClient.Object);
-        var result = await sut.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
+        var result = await sut.CheckHealthAsync(new HealthCheckContext(), TestContext.Current.CancellationToken).ConfigureAwait(true);
         result.Status.Should().Be(HealthStatus.Healthy);
     }
 
@@ -46,10 +47,10 @@ public class DynamoDbHealthCheckTests
     public async Task CheckHealthAsyncTestFails()
     {
         var ex = new Exception("Something bad happened");
-        _mockClient.Setup(x => x.DescribeTableAsync("Models", default)).ThrowsAsync(ex);
+        _mockClient.Setup(x => x.DescribeTableAsync("Models", It.IsAny<CancellationToken>())).ThrowsAsync(ex);
 
         var sut = new DynamoDbHealthCheck<TestModelDb>(_mockClient.Object);
-        var result = await sut.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
+        var result = await sut.CheckHealthAsync(new HealthCheckContext(), TestContext.Current.CancellationToken).ConfigureAwait(true);
         result.Status.Should().Be(HealthStatus.Unhealthy);
         result.Exception.Should().Be(ex);
     }
