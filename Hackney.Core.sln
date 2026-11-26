@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Enums", "Hackn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Enums", "Hackney.Core.Tests\Hackney.Core.Tests.Enums\Hackney.Core.Tests.Enums.csproj", "{D85147FB-F891-4B25-9198-DC96F4F798B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hackney.Core.Tests.Testing.DynamoDb", "Hackney.Core.Tests\Hackney.Core.Tests.Testing.DynamoDb\Hackney.Core.Tests.Testing.DynamoDb.csproj", "{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -449,6 +451,18 @@ Global
 		{D85147FB-F891-4B25-9198-DC96F4F798B4}.Release|x64.Build.0 = Release|Any CPU
 		{D85147FB-F891-4B25-9198-DC96F4F798B4}.Release|x86.ActiveCfg = Release|Any CPU
 		{D85147FB-F891-4B25-9198-DC96F4F798B4}.Release|x86.Build.0 = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|x64.Build.0 = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -485,6 +499,7 @@ Global
 		{1A53447E-8A8E-44E6-86A0-54E95230EC78} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
 		{FD7A7D18-752E-4AEE-BB57-50D1F30C975C} = {35802D10-49D1-4885-8A51-A6D8AC05C309}
 		{D85147FB-F891-4B25-9198-DC96F4F798B4} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
+		{F9830F33-7BC1-4CC1-B250-A9743F1B64F7} = {3A7040F6-28B3-4F54-9EE1-6CBD35273C4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28557208-834D-4975-A0B9-DD03E1F44255}
