@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using AwesomeAssertions;
@@ -23,6 +24,7 @@ public class DynamoDbInitilisationExtensionsTests : IDisposable
     {
         Environment.SetEnvironmentVariable(LocalModeVariable, null);
         Environment.SetEnvironmentVariable(LocalServiceUrlVariable, null);
+        AWSConfigs.InitializeCollections = false;
     }
 
     private static void EnableLocalMode(string serviceUrl = LocalServiceUrl)
@@ -136,5 +138,18 @@ public class DynamoDbInitilisationExtensionsTests : IDisposable
 
         // assert
         config.DisableFetchingTableMetadata.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ConfigureDynamoDB_EnablesInitializeCollections()
+    {
+        // arrange
+        AWSConfigs.InitializeCollections = false;
+
+        // act
+        _services.ConfigureDynamoDB();
+
+        // assert
+        AWSConfigs.InitializeCollections.Should().BeTrue();
     }
 }

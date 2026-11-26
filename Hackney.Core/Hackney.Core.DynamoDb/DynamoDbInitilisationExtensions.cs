@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,11 @@ public static class DynamoDbInitilisationExtensions
     public static IServiceCollection ConfigureDynamoDB(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
+
+        // TODO: AWS SDK v4 defaults InitializeCollections to false, so empty response collections
+        // are null. Some consumers still iterate those lists without a null check. Restore the v3
+        // empty-collection behaviour for now and remove this once those callers are updated.
+        AWSConfigs.InitializeCollections = true;
 
         bool localMode = false;
         _ = bool.TryParse(Environment.GetEnvironmentVariable("DynamoDb_LocalMode"), out localMode);
