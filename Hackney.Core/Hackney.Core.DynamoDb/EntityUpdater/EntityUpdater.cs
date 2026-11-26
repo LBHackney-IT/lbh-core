@@ -8,15 +8,8 @@ using System.Text.Json.Serialization;
 
 namespace Hackney.Core.DynamoDb.EntityUpdater;
 
-public class EntityUpdater : IEntityUpdater
+public class EntityUpdater(ILogger<EntityUpdater> logger) : IEntityUpdater
 {
-    private readonly ILogger<EntityUpdater> _logger;
-
-    public EntityUpdater(ILogger<EntityUpdater> logger)
-    {
-        _logger = logger;
-    }
-
     private static JsonSerializerOptions CreateJsonOptions()
     {
         var options = new JsonSerializerOptions
@@ -96,7 +89,7 @@ public class EntityUpdater : IEntityUpdater
             {
                 // Received a property on the request Json that's not on the entity at all
                 // So we log a warning, ignore it and carry on.
-                _logger.LogWarning($"Entity object (type: {entityType.Name}) does not contain a property called {propName}. Ignoring {propName} value...");
+                logger.LogWarning($"Entity object (type: {entityType.Name}) does not contain a property called {propName}. Ignoring {propName} value...");
                 result.IgnoredProperties.Add(propName);
                 continue;
             }
@@ -106,7 +99,7 @@ public class EntityUpdater : IEntityUpdater
             {
                 // Received a property on the request Json we weren't expecting (it's not on the request object)
                 // So we log a warning, ignore it and carry on.
-                _logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
+                logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
                 result.IgnoredProperties.Add(propName);
                 continue;
             }

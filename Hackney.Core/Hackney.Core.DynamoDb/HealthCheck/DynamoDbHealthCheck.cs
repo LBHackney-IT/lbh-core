@@ -13,22 +13,15 @@ namespace Hackney.Core.DynamoDb.HealthCheck;
 /// a DescribeTable call the table associate with the supplied model class.
 /// </summary>
 /// <typeparam name="T">The database model class</typeparam>
-public class DynamoDbHealthCheck<T> : IHealthCheck where T : class
+public class DynamoDbHealthCheck<T>(IAmazonDynamoDB client) : IHealthCheck where T : class
 {
-    private readonly IAmazonDynamoDB _client;
-    private readonly string _tableName;
-
-    public DynamoDbHealthCheck(IAmazonDynamoDB client)
-    {
-        _client = client;
-        _tableName = GetTableName();
-    }
+    private readonly string _tableName = GetTableName();
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
-            await _client.DescribeTableAsync(_tableName, cancellationToken).ConfigureAwait(false);
+            await client.DescribeTableAsync(_tableName, cancellationToken).ConfigureAwait(false);
             return HealthCheckResult.Healthy($"Can successfully access the {_tableName} table details in the DynamoDb instance");
         }
         catch (Exception ex)
