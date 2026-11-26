@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace Hackney.Core.DynamoDb;
@@ -13,18 +14,21 @@ public static class DynamoDbInitilisationExtensions
     /// DynamoDb_LocalServiceUrl environment variable to determine the instance address.
     /// If the environment variable DynamoDb_LocalMode is set to false then it  assumes that the 
     /// application's exectuion context will have the necessary connection information available.
+    /// An existing client or context registration is left in place.
     /// </summary>
     /// <param name="services">A service collection</param>
     /// <returns>The service collection</returns>
     public static IServiceCollection ConfigureDynamoDB(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         bool localMode = false;
         _ = bool.TryParse(Environment.GetEnvironmentVariable("DynamoDb_LocalMode"), out localMode);
 
         if (localMode)
         {
             var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
-            services.AddSingleton<IAmazonDynamoDB>(sp =>
+            services.TryAddSingleton<IAmazonDynamoDB>(_ =>
             {
                 var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
                 return new AmazonDynamoDBClient(clientConfig);
@@ -32,10 +36,10 @@ public static class DynamoDbInitilisationExtensions
         }
         else
         {
-            services.AddAWSService<IAmazonDynamoDB>();
+            services.TryAddAWSService<IAmazonDynamoDB>();
         }
 
-        services.AddScoped<IDynamoDBContext>(sp =>
+        services.TryAddScoped<IDynamoDBContext>(sp =>
         {
             var db = sp.GetService<IAmazonDynamoDB>();
             return new DynamoDBContextBuilder()
