@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using System;
+using System.Globalization;
 
 namespace Hackney.Core.DynamoDb.Converters;
 
@@ -16,14 +17,17 @@ public class DynamoDbDateTimeConverter : IPropertyConverter
     {
         if (value is null) return new DynamoDBNull();
 
-        return new Primitive { Value = ((DateTime)value).ToUniversalTime().ToString(DATEFORMAT) };
+        return new Primitive
+        {
+            Value = ((DateTime)value).ToUniversalTime().ToString(DATEFORMAT, CultureInfo.InvariantCulture)
+        };
     }
 
     public object FromEntry(DynamoDBEntry entry)
     {
         if (entry is not Primitive primitive) return (DateTime?)null;
 
-        var dtString = primitive.Value.ToString();
-        return DateTime.Parse(dtString, null, System.Globalization.DateTimeStyles.RoundtripKind);
+        var dtString = Convert.ToString(primitive.Value, CultureInfo.CurrentCulture);
+        return DateTime.Parse(dtString, CultureInfo.CurrentCulture, DateTimeStyles.RoundtripKind);
     }
 }

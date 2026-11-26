@@ -71,8 +71,8 @@ public class EntityUpdater(ILogger<EntityUpdater> logger) : IEntityUpdater
         where TEntity : class
         where TUpdateObject : class
     {
-        if (entityToUpdate is null) throw new ArgumentNullException(nameof(entityToUpdate));
-        if (updateObject is null) throw new ArgumentNullException(nameof(updateObject));
+        ArgumentNullException.ThrowIfNull(entityToUpdate);
+        ArgumentNullException.ThrowIfNull(updateObject);
 
         var result = new UpdateEntityResult<TEntity>() { UpdatedEntity = entityToUpdate };
         if (string.IsNullOrEmpty(updateJson)) return result;
@@ -89,7 +89,11 @@ public class EntityUpdater(ILogger<EntityUpdater> logger) : IEntityUpdater
             {
                 // Received a property on the request Json that's not on the entity at all
                 // So we log a warning, ignore it and carry on.
-                logger.LogWarning($"Entity object (type: {entityType.Name}) does not contain a property called {propName}. Ignoring {propName} value...");
+                logger.LogWarning(
+                    "Entity object (type: {EntityTypeName}) does not contain a property called {PropertyName}. Ignoring {IgnoredPropertyName} value...",
+                    entityType.Name,
+                    propName,
+                    propName);
                 result.IgnoredProperties.Add(propName);
                 continue;
             }
@@ -99,7 +103,12 @@ public class EntityUpdater(ILogger<EntityUpdater> logger) : IEntityUpdater
             {
                 // Received a property on the request Json we weren't expecting (it's not on the request object)
                 // So we log a warning, ignore it and carry on.
-                logger.LogWarning($"Request object (type: {updateObjectType.Name}) does not contain a property called {prop.Name} that is on the entity type ({entityType.Name}). Ignoring {prop.Name} value...");
+                logger.LogWarning(
+                    "Request object (type: {RequestTypeName}) does not contain a property called {PropertyName} that is on the entity type ({EntityTypeName}). Ignoring {IgnoredPropertyName} value...",
+                    updateObjectType.Name,
+                    prop.Name,
+                    entityType.Name,
+                    prop.Name);
                 result.IgnoredProperties.Add(propName);
                 continue;
             }

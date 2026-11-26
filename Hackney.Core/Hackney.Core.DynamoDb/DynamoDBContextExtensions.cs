@@ -1,8 +1,8 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Hackney.Core.DynamoDb;
@@ -24,13 +24,16 @@ public static class DynamoDBContextExtensions
     public static async Task<PagedResult<TEntity>> GetPagedQueryResultsAsync<TEntity>(
         this IDynamoDBContext dynamoDbContext, QueryOperationConfig queryConfig) where TEntity : class
     {
+        ArgumentNullException.ThrowIfNull(dynamoDbContext);
+        ArgumentNullException.ThrowIfNull(queryConfig);
+
         List<TEntity> dbResults = [];
         var table = dynamoDbContext.GetTargetTable<TEntity>();
 
         var search = table.Query(queryConfig);
         var resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
         var paginationToken = search.PaginationToken;
-        if (resultsSet.Any())
+        if (resultsSet?.Count > 0)
         {
             dbResults.AddRange(dynamoDbContext.FromDocuments<TEntity>(resultsSet));
 
@@ -41,7 +44,7 @@ public static class DynamoDBContextExtensions
                 queryConfig.Limit = 1;
                 search = table.Query(queryConfig);
                 resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
-                if (!resultsSet.Any())
+                if (resultsSet is null || resultsSet.Count == 0)
                     paginationToken = null;
             }
         }

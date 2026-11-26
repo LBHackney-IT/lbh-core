@@ -16,8 +16,15 @@
     <!--
       S1066 Mergeable "if" statements should be combined
       S4457 Parameter validation in "async" methods should be wrapped
+      CA1002 / CA2227 Changing public collection property types or removing setters may break consumers - needs more investigation
+      CA1031 Health checks must catch any failure and return Unhealthy
+      CA1724 EntityUpdater type name matches its namespace; renaming either is a breaking change
+      CA1848 LoggerMessage source-generated delegates are optional here; structured templates are enough
     -->
-    <NoWarn>S1066;S4457</NoWarn>
+    <NoWarn>S1066;S4457;CA1002;CA1031;CA1724;CA1848;CA2227</NoWarn>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging">
