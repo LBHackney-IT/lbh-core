@@ -38,7 +38,19 @@ public static class DynamoDbInitilisationExtensions
         services.AddScoped<IDynamoDBContext>(sp =>
         {
             var db = sp.GetService<IAmazonDynamoDB>();
-            return new DynamoDBContext(db);
+            return new DynamoDBContextBuilder()
+                .WithDynamoDBClient(() => db)
+                .ConfigureContext(config =>
+                {
+                    // DynamoDBContextBuilder sets DisableFetchingTableMetadata to true. That stops
+                    // the context from calling DescribeTable, so it only knows about keys and indexes
+                    // that are declared as attributes on the .NET class. Applications that use
+                    // ConfigureDynamoDB query secondary indexes by name, and those indexes are not
+                    // declared on their entity classes. Setting this back to false keeps the
+                    // DescribeTable call, so the context can still read the index keys from the table.
+                    config.DisableFetchingTableMetadata = false;
+                })
+                .Build();
         });
 
         return services;
