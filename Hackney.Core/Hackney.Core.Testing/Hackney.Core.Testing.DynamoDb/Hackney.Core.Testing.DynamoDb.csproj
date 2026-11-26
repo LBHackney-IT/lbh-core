@@ -1,18 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
- 
- <PropertyGroup>
-   <TargetFramework>netstandard2.1</TargetFramework>
-   <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
-   <Authors>London Borough of Hackney Council</Authors>
-   <Company>London Borough of Hackney Council</Company>
-   <Copyright>2021</Copyright>
-   <Description>Test Helpers for HackIT projects using DynamoDB</Description>
-   <NoWarn>S1066;S4457</NoWarn>
-   <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
- </PropertyGroup>
- 
-  <ItemGroup>
+
+  <PropertyGroup Label="Targeting">
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+    <Authors>London Borough of Hackney Council</Authors>
+    <Company>London Borough of Hackney Council</Company>
+    <Copyright>2021</Copyright>
+    <Description>Test Helpers for HackIT projects using DynamoDB</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compilation">
+    <NoWarn>S1066;S4457</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup Label="Nuget Dependencies">
     <PackageReference Include="Hackney.Core.DynamoDb" Version="1.30.0" />
   </ItemGroup>
-	
+
 </Project>

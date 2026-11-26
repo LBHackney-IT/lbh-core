@@ -22,5 +22,6 @@ jobs:
       docker_service: ""
       format_root: Hackney.Core/Hackney.Core.Testing
       skip_tests: true
+      dotnet_version: 10.0.x
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
