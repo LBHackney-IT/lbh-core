@@ -1,53 +1,83 @@
 ﻿using AutoFixture;
-using FluentAssertions;
+using AwesomeAssertions;
 using Hackney.Core.DynamoDb;
 using System.Linq;
 using Xunit;
-namespace Hackney.Core.Tests.DynamoDb
+
+namespace Hackney.Core.Tests.DynamoDb;
+
+public class PagedResultTests
 {
-    public class PagedResultTests
+    private readonly Fixture _fixture = new Fixture();
+
+    [Fact]
+    public void PagedResult_DefaultConstructor_HasEmptyResultsAndDefaultPagination()
     {
-        private readonly Fixture _fixture = new Fixture();
+        // act
+        var sut = new PagedResult<string>();
 
-        [Fact]
-        public void PagedResultDefaultConstructorTest()
-        {
-            var sut = new PagedResult<string>();
-            sut.Results.Should().BeEmpty();
-            sut.PaginationDetails.Should().BeEquivalentTo(new PaginationDetails());
-        }
+        // assert
+        sut.Results.Should().BeEmpty();
+        sut.PaginationDetails.Should().BeEquivalentTo(new PaginationDetails());
+    }
 
-        [Fact]
-        public void PagedResultConstructorNullResultsIsEmpty()
-        {
-            var sut = new PagedResult<string>(null, null);
-            sut.Results.Should().BeEmpty();
-        }
+    [Fact]
+    public void PagedResult_NullResults_IsEmpty()
+    {
+        // act
+        var sut = new PagedResult<string>(null);
 
-        [Fact]
-        public void PagedResultConstructorEmptyResultsIsEmpty()
-        {
-            var sut = new PagedResult<string>(Enumerable.Empty<string>(), null);
-            sut.Results.Should().BeEmpty();
-        }
+        // assert
+        sut.Results.Should().BeEmpty();
+        sut.PaginationDetails.Should().BeEquivalentTo(new PaginationDetails());
+    }
 
-        [Fact]
-        public void PagedResultConstructorSetResults()
-        {
-            var list = _fixture.CreateMany<string>(10);
-            var sut = new PagedResult<string>(list);
-            sut.Results.Should().BeEquivalentTo(list);
-            sut.PaginationDetails.Should().BeEquivalentTo(new PaginationDetails());
-        }
+    [Fact]
+    public void PagedResult_NullResultsAndPagination_IsEmpty()
+    {
+        // act
+        var sut = new PagedResult<string>(null, null);
 
-        [Fact]
-        public void PagedResultConstructorSetPaginationToken()
-        {
-            var list = _fixture.CreateMany<string>(10);
-            var paginationDetails = new PaginationDetails();
-            var sut = new PagedResult<string>(list, paginationDetails);
-            sut.Results.Should().BeEquivalentTo(list);
-            sut.PaginationDetails.Should().Be(paginationDetails);
-        }
+        // assert
+        sut.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void PagedResult_EmptyResults_IsEmpty()
+    {
+        // act
+        var sut = new PagedResult<string>(Enumerable.Empty<string>(), null);
+
+        // assert
+        sut.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void PagedResult_WithResults_SetsResults()
+    {
+        // arrange
+        var list = _fixture.CreateMany<string>(10);
+
+        // act
+        var sut = new PagedResult<string>(list);
+
+        // assert
+        sut.Results.Should().BeEquivalentTo(list);
+        sut.PaginationDetails.Should().BeEquivalentTo(new PaginationDetails());
+    }
+
+    [Fact]
+    public void PagedResult_WithResultsAndPagination_SetsBoth()
+    {
+        // arrange
+        var list = _fixture.CreateMany<string>(10);
+        var paginationDetails = new PaginationDetails();
+
+        // act
+        var sut = new PagedResult<string>(list, paginationDetails);
+
+        // assert
+        sut.Results.Should().BeEquivalentTo(list);
+        sut.PaginationDetails.Should().Be(paginationDetails);
     }
 }

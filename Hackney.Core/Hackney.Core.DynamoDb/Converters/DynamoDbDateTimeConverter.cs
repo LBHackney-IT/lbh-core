@@ -1,31 +1,33 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using System;
+using System.Globalization;
 
-namespace Hackney.Core.DynamoDb.Converters
+namespace Hackney.Core.DynamoDb.Converters;
+
+/// <summary>
+/// Converter for DateTime objects because the default handling expects the data time string to alays be in a very specific
+/// format and will throw an exception if not.
+/// </summary>
+public class DynamoDbDateTimeConverter : IPropertyConverter
 {
-    /// <summary>
-    /// Converter for DateTime objects because the default handling expects the data time string to alays be in a very specific
-    /// format and will throw an exception if not.
-    /// </summary>
-    public class DynamoDbDateTimeConverter : IPropertyConverter
+    public static readonly string DATEFORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffZ";
+
+    public DynamoDBEntry ToEntry(object value)
     {
-        public static readonly string DATEFORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffZ";
+        if (value is null) return new DynamoDBNull();
 
-        public DynamoDBEntry ToEntry(object value)
+        return new Primitive
         {
-            if (null == value) return new DynamoDBNull();
+            Value = ((DateTime)value).ToUniversalTime().ToString(DATEFORMAT, CultureInfo.InvariantCulture)
+        };
+    }
 
-            return new Primitive { Value = ((DateTime)value).ToUniversalTime().ToString(DATEFORMAT) };
-        }
+    public object FromEntry(DynamoDBEntry entry)
+    {
+        if (entry is not Primitive primitive) return (DateTime?)null;
 
-        public object FromEntry(DynamoDBEntry entry)
-        {
-            Primitive primitive = entry as Primitive;
-            if (null == primitive) return (DateTime?)null;
-
-            var dtString = primitive.Value.ToString();
-            return DateTime.Parse(dtString, null, System.Globalization.DateTimeStyles.RoundtripKind);
-        }
+        var dtString = Convert.ToString(primitive.Value, CultureInfo.CurrentCulture);
+        return DateTime.Parse(dtString, CultureInfo.CurrentCulture, DateTimeStyles.RoundtripKind);
     }
 }
