@@ -14,11 +14,10 @@
 
   <PropertyGroup Label="Compilation">
     <!--
-      S1066 Mergeable "if" statements should be combined
-      S4457 Parameter validation in "async" methods should be wrapped
-      CA1002 / CA2227 Changing public collection property types or removing setters may break consumers
+      CA1002 TableDef exposes List&lt;T&gt; for LSI/GSI to match AWS SDK model types and consumer initializer style;
+      Collection&lt;T&gt; would be worse DX here.
     -->
-    <NoWarn>S1066;S4457;CA1002;CA2227</NoWarn>
+    <NoWarn>CA1002</NoWarn>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>All</AnalysisMode>

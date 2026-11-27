@@ -158,7 +158,7 @@ public class DynamoDbFixtureTests
                 KeyType = ScalarAttributeType.S,
                 RangeKeyName = "id",
                 RangeKeyType = ScalarAttributeType.S,
-                LocalSecondaryIndexes = [localIndex]
+                LocalSecondaryIndexes = { localIndex }
             }
         ]);
 
@@ -199,7 +199,7 @@ public class DynamoDbFixtureTests
                 Name = "Things",
                 KeyName = "id",
                 KeyType = ScalarAttributeType.S,
-                GlobalSecondaryIndexes = [globalIndex]
+                GlobalSecondaryIndexes = { globalIndex }
             }
         ]);
 

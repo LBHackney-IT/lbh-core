@@ -254,8 +254,8 @@ Each definition should match how the table is created by the project's terraform
 | `KeyType`                | Partition key `ScalarAttributeType` (e.g. `S`, `N`).                                      |
 | `RangeKeyName`           | Optional sort (RANGE) key attribute name. Leave null/empty for partition-key-only tables. |
 | `RangeKeyType`           | Sort key `ScalarAttributeType` when `RangeKeyName` is set.                                |
-| `LocalSecondaryIndexes`  | Optional list of `LocalSecondaryIndex` definitions.                                       |
-| `GlobalSecondaryIndexes` | Optional list of `GlobalSecondaryIndex` definitions.                                      |
+| `LocalSecondaryIndexes`  | Get-only list of `LocalSecondaryIndex` definitions (mutate via `.Add` or a nested collection initializer). |
+| `GlobalSecondaryIndexes` | Get-only list of `GlobalSecondaryIndex` definitions (mutate via `.Add` or a nested collection initializer). |
 
 ###### Usage
 

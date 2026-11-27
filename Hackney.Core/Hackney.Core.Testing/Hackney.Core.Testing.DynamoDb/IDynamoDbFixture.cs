@@ -26,8 +26,8 @@ namespace Hackney.Core.Testing.DynamoDb
         /// Uses the configured DynamoDb instance to created the required table(s).
         /// If the table already exists then the ResourceInUseException is *not* rethrown.
         /// </summary>
-        /// <param name="tables">List of table definitions to create</param>
-        void EnsureTablesExist(List<TableDef> tables);
+        /// <param name="tables">Table definitions to create</param>
+        void EnsureTablesExist(IEnumerable<TableDef> tables);
 
         /// <summary>
         /// Saves the supplied entity to the configured DynamoDb instance.
