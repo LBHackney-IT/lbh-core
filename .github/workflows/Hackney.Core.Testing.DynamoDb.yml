@@ -10,6 +10,7 @@ on:
       - '**'
     paths:
       - 'Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/**'
+      - 'Hackney.Core.Tests/Hackney.Core.Tests.Testing.DynamoDb/**'
 
 jobs:
   call:
@@ -19,9 +20,9 @@ jobs:
       pack_project: Hackney.Core.Testing.DynamoDb
       package_name: Hackney.Core.Testing.DynamoDb
       publish_dir: Hackney.Core/Hackney.Core.Testing/Hackney.Core.Testing.DynamoDb/bin/Release
-      docker_service: ""
+      docker_service: hackney-core-testing-dynamodb-test
       format_root: Hackney.Core/Hackney.Core.Testing
-      skip_tests: true
+      skip_tests: false
       dotnet_version: 10.0.x
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
