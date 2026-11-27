@@ -13,7 +13,15 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Compilation">
-    <NoWarn>S1066;S4457</NoWarn>
+    <!--
+      S1066 Mergeable "if" statements should be combined
+      S4457 Parameter validation in "async" methods should be wrapped
+      CA1002 / CA2227 Changing public collection property types or removing setters may break consumers
+    -->
+    <NoWarn>S1066;S4457;CA1002;CA2227</NoWarn>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>
   </PropertyGroup>
 
   <PropertyGroup Label="Packaging">

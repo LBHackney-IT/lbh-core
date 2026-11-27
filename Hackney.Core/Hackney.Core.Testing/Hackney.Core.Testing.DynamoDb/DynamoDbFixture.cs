@@ -12,7 +12,7 @@ namespace Hackney.Core.Testing.DynamoDb
     /// DynamoDb fixture class to be used to set up a local database instance for use in tests where a
     /// "real" instance is required.
     /// </summary>
-    public class DynamoDbFixture(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB dynamoDb) : IDynamoDbFixture
+    public sealed class DynamoDbFixture(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB dynamoDb) : IDynamoDbFixture
     {
         /// <summary>
         /// A IDynamoDBContext reference
@@ -34,6 +34,7 @@ namespace Hackney.Core.Testing.DynamoDb
         public void Dispose()
         {
             DisposeAsync().AsTask().GetAwaiter().GetResult();
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -59,6 +60,8 @@ namespace Hackney.Core.Testing.DynamoDb
         /// <param name="tables">List of table definitions to create</param>
         public void EnsureTablesExist(List<TableDef> tables)
         {
+            ArgumentNullException.ThrowIfNull(tables);
+
             foreach (var table in tables)
             {
                 try
