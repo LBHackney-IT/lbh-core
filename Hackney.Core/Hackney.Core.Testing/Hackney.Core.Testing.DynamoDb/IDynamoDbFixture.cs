@@ -10,7 +10,7 @@ namespace Hackney.Core.Testing.DynamoDb
     /// DynamoDb fixture interface to be used to set up a local database instance for use in tests where a 
     /// "real" instance is required.
     /// </summary>
-    public interface IDynamoDbFixture : IDisposable
+    public interface IDynamoDbFixture : IAsyncDisposable, IDisposable
     {
         /// <summary>
         /// A IDynamoDBContext reference
@@ -31,7 +31,7 @@ namespace Hackney.Core.Testing.DynamoDb
 
         /// <summary>
         /// Saves the supplied entity to the configured DynamoDb instance. 
-        /// Also amtains a reference to the save entity and will remove it from the database automatically when disposed.
+        /// Also retains a reference to the saved entity and will remove it from the database automatically when the fixture is disposed.
         /// </summary>
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="entity">The entity instance</param>

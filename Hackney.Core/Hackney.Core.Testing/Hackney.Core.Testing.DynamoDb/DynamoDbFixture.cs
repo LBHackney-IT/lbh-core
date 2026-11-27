@@ -24,7 +24,8 @@ namespace Hackney.Core.Testing.DynamoDb
         /// </summary>
         public IAmazonDynamoDB DynamoDb { get; private set; }
 
-        private static List<Action> _cleanup = new List<Action>();
+        private readonly List<Func<Task>> _cleanup = new List<Func<Task>>();
+        private bool _disposed;
 
         public DynamoDbFixture(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB dynamoDb)
         {
@@ -32,22 +33,29 @@ namespace Hackney.Core.Testing.DynamoDb
             DynamoDbContext = dynamoDbContext;
         }
 
+        /// <summary>
+        /// Deletes entities registered by <see cref="SaveEntityAsync{T}"/>.
+        /// Prefer <see cref="DisposeAsync"/> when the caller can await; this sync path waits for the same cleanup.
+        /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
         }
 
-        private bool _disposed;
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Deletes entities registered by <see cref="SaveEntityAsync{T}"/> and awaits those deletes.
+        /// </summary>
+        public async ValueTask DisposeAsync()
         {
-            if (disposing && !_disposed)
-            {
-                foreach (var act in _cleanup)
-                    act();
+            if (_disposed)
+                return;
 
-                _disposed = true;
-            }
+            foreach (var cleanup in _cleanup)
+                await cleanup().ConfigureAwait(false);
+
+            _cleanup.Clear();
+            _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -104,7 +112,7 @@ namespace Hackney.Core.Testing.DynamoDb
 
         /// <summary>
         /// Saves the supplied entity to the configured DynamoDb instance. 
-        /// Also amtains a reference to the save entity and will remove it from the database automatically when disposed.
+        /// Also retains a reference to the saved entity and will remove it from the database automatically when the fixture is disposed.
         /// </summary>
         /// <typeparam name="T">The entity type</typeparam>
         /// <param name="entity">The entity instance</param>

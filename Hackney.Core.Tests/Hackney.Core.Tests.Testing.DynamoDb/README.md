@@ -21,7 +21,7 @@ Regressions of that kind still compile, then break consumer test hosts first. Th
 | Class | What the tests protect |
 |---|---|
 | `ServiceCollectionExtensions` | `ConfigureDynamoDbFixture`: null guard, singleton `IDynamoDbFixture` → `DynamoDbFixture` registration, idempotent `TryAdd`, fluent return, resolve with injected client/context |
-| `DynamoDbFixture` | Constructor exposes `DynamoDb` / `DynamoDbContext`; `EnsureTablesExist` (hash/range keys, LSI/GSI attribute inference, multi-table, empty list, `ResourceInUseException` vs other errors); `SaveEntityAsync` + dispose cleanup (including conditional-check failures and double dispose) |
+| `DynamoDbFixture` | Constructor exposes `DynamoDb` / `DynamoDbContext`; `EnsureTablesExist` (hash/range keys, LSI/GSI attribute inference, multi-table, empty list, `ResourceInUseException` vs other errors); `SaveEntityAsync` + per-instance dispose cleanup via `Dispose` / `DisposeAsync` (including conditional-check failures, double dispose, and isolation between fixture instances) |
 | `TableDef` | Not tested alone; exercised as the public input model to `EnsureTablesExist` |
 | `IDynamoDbFixture` | Interface only; covered through DI resolution and `DynamoDbFixture` behaviour |
 

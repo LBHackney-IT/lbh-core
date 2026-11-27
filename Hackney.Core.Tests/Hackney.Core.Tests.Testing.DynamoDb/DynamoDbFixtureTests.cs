@@ -5,15 +5,13 @@ using AwesomeAssertions;
 using Hackney.Core.Testing.DynamoDb;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Hackney.Core.Tests.Testing.DynamoDb;
 
-public class DynamoDbFixtureTests : IDisposable
+public class DynamoDbFixtureTests
 {
     private readonly Mock<IAmazonDynamoDB> _mockDynamoDb = new();
     private readonly Mock<IDynamoDBContext> _mockContext = new();
@@ -21,19 +19,7 @@ public class DynamoDbFixtureTests : IDisposable
 
     public DynamoDbFixtureTests()
     {
-        ClearStaticCleanup();
         _dynamoDbFixture = new DynamoDbFixture(_mockContext.Object, _mockDynamoDb.Object);
-    }
-
-    public void Dispose()
-    {
-        ClearStaticCleanup();
-    }
-
-    private static void ClearStaticCleanup()
-    {
-        var field = typeof(DynamoDbFixture).GetField("_cleanup", BindingFlags.NonPublic | BindingFlags.Static)!;
-        ((List<Action>)field.GetValue(null)!).Clear();
     }
 
     // Stubs CreateTableAsync and records the last request so tests can assert on its shape.
@@ -415,12 +401,10 @@ public class DynamoDbFixtureTests : IDisposable
     }
 
     [Fact]
-    public async Task Dispose_GivenPriorFixtureSavedEntity_WhenNewFixtureDisposed_RerunsPriorCleanup()
+    public async Task Dispose_GivenPriorFixtureSavedEntity_WhenNewFixtureDisposed_DoesNotRerunPriorCleanup()
     {
         // arrange
-        // Characterisation of current behaviour: cleanup actions live on a static list and are not
-        // cleared after dispose, so a later fixture Dispose re-runs earlier deletes. Update this
-        // expectation when that shared-static cleanup bug is fixed.
+        // Cleanup is per fixture instance; disposing another fixture must not replay earlier deletes.
         var entity = new TestEntity { Id = "shared" };
         var firstContext = new Mock<IDynamoDBContext>();
         var secondContext = new Mock<IDynamoDBContext>();
@@ -445,8 +429,31 @@ public class DynamoDbFixtureTests : IDisposable
         secondFixture.Dispose();
 
         // assert
-        firstContext.Verify(x => x.DeleteAsync(entity, It.IsAny<CancellationToken>()), Times.Exactly(2));
+        firstContext.Verify(x => x.DeleteAsync(entity, It.IsAny<CancellationToken>()), Times.Once);
         secondContext.Verify(x => x.DeleteAsync(It.IsAny<TestEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DisposeAsync_GivenSavedEntity_DeletesEntity()
+    {
+        // arrange
+        var entity = new TestEntity { Id = "1" };
+
+        _mockContext
+            .Setup(x => x.SaveAsync(entity, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _mockContext
+            .Setup(x => x.DeleteAsync(entity, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        await _dynamoDbFixture.SaveEntityAsync(entity);
+
+        // act
+        await _dynamoDbFixture.DisposeAsync();
+
+        // assert
+        _mockContext.Verify(x => x.DeleteAsync(entity, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     private sealed class TestEntity
