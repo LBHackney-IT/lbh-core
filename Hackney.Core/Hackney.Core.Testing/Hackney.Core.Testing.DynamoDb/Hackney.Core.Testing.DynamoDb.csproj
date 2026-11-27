@@ -1,18 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
- 
- <PropertyGroup>
-   <TargetFramework>netstandard2.1</TargetFramework>
-   <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
-   <Authors>London Borough of Hackney Council</Authors>
-   <Company>London Borough of Hackney Council</Company>
-   <Copyright>2021</Copyright>
-   <Description>Test Helpers for HackIT projects using DynamoDB</Description>
-   <NoWarn>S1066;S4457</NoWarn>
-   <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
- </PropertyGroup>
- 
-  <ItemGroup>
-    <PackageReference Include="Hackney.Core.DynamoDb" Version="1.30.0" />
+
+  <PropertyGroup Label="Targeting">
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package Metadata">
+    <RepositoryUrl>https://github.com/LBHackney-IT/lbh-core</RepositoryUrl>
+    <Authors>London Borough of Hackney Council</Authors>
+    <Company>London Borough of Hackney Council</Company>
+    <Copyright>2021</Copyright>
+    <Description>Test Helpers for HackIT projects using DynamoDB</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compilation">
+    <!--
+      CA1002 TableDef exposes List&lt;T&gt; for LSI/GSI to match AWS SDK model types and consumer initializer style;
+      Collection&lt;T&gt; would be worse DX here.
+    -->
+    <NoWarn>CA1002</NoWarn>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="Nuget Dependencies">
+    <PackageReference Include="Hackney.Core.DynamoDb" Version="2.0.0" />
   </ItemGroup>
-	
+
+  <ItemGroup Label="Packaging">
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>

@@ -3,22 +3,44 @@
 This package is designed to assist with testing services that use DynamoDb.
 It contains a fixture that can be used to set up a local DynamoDb instance so that it will be used by code under test.
 
-* [Configuring the DynamoDb fixture](#Configuring-the-DynamoDb-fixture)
-* [IDynamoDbFixture](#IDynamoDbFixture)
+It depends on [`Hackney.Core.DynamoDb`](../../Hackney.Core.DynamoDb/README.md) for DynamoDb client setup (`ConfigureDynamoDB()`). See that package's README for converters, paging helpers, and production configuration details.
+
+- [Prerequisites](#Prerequisites)
+- [Configuring the DynamoDb fixture](#Configuring-the-DynamoDb-fixture)
+- [TableDef](#TableDef)
+- [IDynamoDbFixture](#IDynamoDbFixture)
+
+## Prerequisites
+
+- A local DynamoDb instance must be running (typically at `http://localhost:8000`).
+- The test host must call `ConfigureDynamoDB()` from `Hackney.Core.DynamoDb` before `ConfigureDynamoDbFixture()`.
+- Local mode is enabled via environment variables (or equivalent appsettings). The factory examples set:
+
+| Name                       | Typical value           |
+| :------------------------- | :---------------------- |
+| `DynamoDb_LocalMode`       | `true`                  |
+| `DynamoDb_LocalServiceUrl` | `http://localhost:8000` |
+
+These match the Local mode settings documented in the `Hackney.Core.DynamoDb` README.
 
 ## Configuring the DynamoDb fixture
-As a concept, the fixture is a class that ensures that a local DynamoDb instance is set up and accessibly by both the 
+
+As a concept, the fixture is a class that ensures that a local DynamoDb instance is set up and accessibly by both the
 code under test and the tests themselves.
 
-The test project may well contain such a class if there is existing local code that configures a local database instance, 
-however with this common implementation, the order of creation of the application factory and fixture has been inverted. 
-I.e. Here it is the application factory that is set on the xunit collection, and then the factory constructs and 
+The test project may well contain such a class if there is existing local code that configures a local database instance,
+however with this common implementation, the order of creation of the application factory and fixture has been inverted.
+I.e. Here it is the application factory that is set on the xunit collection, and then the factory constructs and
 configures the fixture when xunit creates it.
 
+Calling `ConfigureDynamoDbFixture()` registers `IDynamoDbFixture` → `DynamoDbFixture` as a singleton in the DI container.
+
 ### Api projects
+
 #### 1. Create / modify the mock web application factory
-This should contain definitions of all the DynamoDb tables(s) that need to be created. 
-The definition of each should be exactly how it is created by the project's terraform configuration. 
+
+This should contain definitions of all the DynamoDb tables(s) that need to be created.
+The definition of each should be exactly how it is created by the project's terraform configuration.
 The table definition(s) are then passed to the the fixture's `EnsureTablesExist()` method.
 
 ```csharp
@@ -87,6 +109,7 @@ namespace SomeApplication.Tests
 ```
 
 #### 2. Create an xunit collection
+
 The mock application factory is specified on the collection declaration.
 
 ```csharp
@@ -105,11 +128,13 @@ namespace SomeApplication.Tests
 ```
 
 ### Non-Api projects
+
 Non-Api projects construct the `IHostBuilder` slightly differently to that for Api projects.
 
 #### 1. Create / modify the mock application factory
-This should contain definitions of all the DynamoDb tables(s) that need to be created. 
-The definition of each should be exactly how it is created by the project's terraform configuration. 
+
+This should contain definitions of all the DynamoDb tables(s) that need to be created.
+The definition of each should be exactly how it is created by the project's terraform configuration.
 The table definition(s) are then passed to the the fixture's `EnsureTablesExist()` method.
 
 ```csharp
@@ -163,8 +188,8 @@ namespace SomeApplication.Tests
 }
 ```
 
-
 #### 2. Create an xunit collection
+
 The mock application factory is specified on the collection declaration.
 
 ```csharp
@@ -183,9 +208,11 @@ namespace SomeApplication.Tests
 ```
 
 ### Using the xunit collection
+
 To use the xunit collection:
-* Adorn the class declaration of the test class that will be testing DynamoDb access.
-* The mock application factory will be passed to the test class constructor, and the `IDynamoDbFixture` reference is accesible from it.
+
+- Adorn the class declaration of the test class that will be testing DynamoDb access.
+- The mock application factory will be passed to the test class constructor, and the `IDynamoDbFixture` reference is accesible from it.
 
 ```csharp
 using FluentAssertions;
@@ -215,17 +242,169 @@ namespace SomeApplication.Tests.V1.Gateways
 }
 ```
 
+## TableDef
+
+Class representing a DynamoDb table definition. Used by `IDynamoDbFixture.EnsureTablesExist`.
+Each definition should match how the table is created by the project's terraform configuration.
+
+| Property                 | Description                                                                               |
+| :----------------------- | :---------------------------------------------------------------------------------------- |
+| `Name`                   | Table name.                                                                               |
+| `KeyName`                | Partition (HASH) key attribute name.                                                      |
+| `KeyType`                | Partition key `ScalarAttributeType` (e.g. `S`, `N`).                                      |
+| `RangeKeyName`           | Optional sort (RANGE) key attribute name. Leave null/empty for partition-key-only tables. |
+| `RangeKeyType`           | Sort key `ScalarAttributeType` when `RangeKeyName` is set.                                |
+| `LocalSecondaryIndexes`  | Get-only list of `LocalSecondaryIndex` definitions (mutate via `.Add` or a nested collection initializer). |
+| `GlobalSecondaryIndexes` | Get-only list of `GlobalSecondaryIndex` definitions (mutate via `.Add` or a nested collection initializer). |
+
+###### Usage
+
+Partition key only:
+
+```csharp
+new TableDef
+{
+    Name = "Things",
+    KeyName = "id",
+    KeyType = ScalarAttributeType.S
+}
+```
+
+Partition and sort key:
+
+```csharp
+new TableDef
+{
+    Name = "Notes",
+    KeyName = "targetId",
+    KeyType = ScalarAttributeType.S,
+    RangeKeyName = "id",
+    RangeKeyType = ScalarAttributeType.S
+}
+```
+
+##### Local / global secondary indexes
+
+`LocalSecondaryIndexes` and `GlobalSecondaryIndexes` are get-only lists that start empty.
+Populate them by adding into the existing list — do **not** assign a new `List<>`.
+
+```csharp
+// Correct — adds into the existing list
+LocalSecondaryIndexes = { localIndex }
+GlobalSecondaryIndexes = { globalIndex }
+
+// Also fine after construction
+table.LocalSecondaryIndexes.Add(localIndex);
+
+// Incorrect — requires a setter and will not compile
+LocalSecondaryIndexes = new List<LocalSecondaryIndex>(new[] { localIndex })
+```
+
+With a local secondary index:
+
+```csharp
+new TableDef
+{
+    Name = "Notes",
+    KeyName = "targetId",
+    KeyType = ScalarAttributeType.S,
+    RangeKeyName = "id",
+    RangeKeyType = ScalarAttributeType.S,
+    LocalSecondaryIndexes =
+    {
+        new LocalSecondaryIndex
+        {
+            IndexName = "NotesByCreated",
+            KeySchema =
+            {
+                new KeySchemaElement("targetId", KeyType.HASH),
+                new KeySchemaElement("createdAt", KeyType.RANGE)
+            },
+            Projection = new Projection { ProjectionType = ProjectionType.ALL }
+        }
+    }
+}
+```
+
+With a global secondary index:
+
+```csharp
+new TableDef
+{
+    Name = "Things",
+    KeyName = "id",
+    KeyType = ScalarAttributeType.S,
+    GlobalSecondaryIndexes =
+    {
+        new GlobalSecondaryIndex
+        {
+            IndexName = "status_dx",
+            KeySchema =
+            {
+                new KeySchemaElement("status", KeyType.HASH)
+            },
+            Projection = new Projection { ProjectionType = ProjectionType.ALL },
+            ProvisionedThroughput = new ProvisionedThroughput(3, 3)
+        }
+    }
+}
+```
+
 ## IDynamoDbFixture
-This is the object that is injected into the mock application factory when the xunit collection is created and 
-allows the tests to access the database to set up any required data and retrieve records to perform verifications.
+
+This is the object that is injected into the mock application factory when the xunit collection is created and
+allows the tests to access the database to set up any data and retrieve records to perform verifications.
 
 It contains the following:
+
 #### Properties
-* `DynamoDbContext` property - A high-level `IDynamoDbContext` reference for accessing the database.
-* `DynamoDb` property - A lower-level `IAmazonDynamoDB` reference for accessing the database.
+
+| Property          | Description                                                         |
+| :---------------- | :------------------------------------------------------------------ |
+| `DynamoDbContext` | High-level `IDynamoDBContext` reference for accessing the database. |
+| `DynamoDb`        | Lower-level `IAmazonDynamoDB` reference for accessing the database. |
 
 #### Methods
-* `EnsureTablesExist` - Called within the mock application factory's startup to ensure all the required tables exist 
-before any tests are run.
-* `SaveEntityAsync` - A method that can be used by tests to set up any data in the database that will be required to 
-actually execute a test. This data will automatically be removed from the database when the test is over.
+
+| Method                     | Description                                                                                                            |
+| :------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `EnsureTablesExist`        | Called within the mock application factory's startup to ensure all the required tables exist before any tests are run. |
+| `SaveEntityAsync`          | Saves an entity and registers it for cleanup on **this** fixture instance when disposed.                               |
+| `Dispose` / `DisposeAsync` | Deletes entities registered by `SaveEntityAsync`. Prefer async when the caller can await.                              |
+
+##### SaveEntityAsync
+
+Use this from tests to seed data required for the act/assert steps. Each saved entity is deleted when the fixture is disposed.
+
+###### Usage
+
+```csharp
+[Fact]
+public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
+{
+    var entity = new ThingDb { Id = Guid.NewGuid(), Name = "Example" };
+    await _dbFixture.SaveEntityAsync(entity);
+
+    var result = await _classUnderTest.GetByIdAsync(entity.Id);
+
+    result.Should().BeEquivalentTo(entity);
+}
+```
+
+#### Disposing the fixture
+
+Entities seeded with `SaveEntityAsync` are deleted when the fixture is disposed. Cleanup is per fixture instance.
+
+- Prefer `DisposeAsync` (or `await using`) when the caller can await, so deletes complete on an async path:
+
+```csharp
+await DynamoDbFixture.DisposeAsync();
+```
+
+- Existing test factories that call sync `Dispose()` remain supported. That path runs the same cleanup and waits for the deletes to finish, so current `MockWebApplicationFactory` / `MockApplicationFactory` dispose overrides do not need to change.
+
+```csharp
+DynamoDbFixture?.Dispose();
+```
+
+Dispose (sync or async) is idempotent: a second call does not re-run cleanup.
