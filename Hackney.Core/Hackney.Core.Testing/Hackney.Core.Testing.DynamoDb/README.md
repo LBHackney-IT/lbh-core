@@ -283,6 +283,49 @@ new TableDef
 }
 ```
 
+##### Local / global secondary indexes
+
+`LocalSecondaryIndexes` and `GlobalSecondaryIndexes` are get-only lists that start empty.
+Populate them by adding into the existing list — do **not** assign a new `List<>`.
+
+```csharp
+// Correct — adds into the existing list
+LocalSecondaryIndexes = { localIndex }
+GlobalSecondaryIndexes = { globalIndex }
+
+// Also fine after construction
+table.LocalSecondaryIndexes.Add(localIndex);
+
+// Incorrect — requires a setter and will not compile
+LocalSecondaryIndexes = new List<LocalSecondaryIndex>(new[] { localIndex })
+```
+
+With a local secondary index:
+
+```csharp
+new TableDef
+{
+    Name = "Notes",
+    KeyName = "targetId",
+    KeyType = ScalarAttributeType.S,
+    RangeKeyName = "id",
+    RangeKeyType = ScalarAttributeType.S,
+    LocalSecondaryIndexes =
+    {
+        new LocalSecondaryIndex
+        {
+            IndexName = "NotesByCreated",
+            KeySchema =
+            {
+                new KeySchemaElement("targetId", KeyType.HASH),
+                new KeySchemaElement("createdAt", KeyType.RANGE)
+            },
+            Projection = new Projection { ProjectionType = ProjectionType.ALL }
+        }
+    }
+}
+```
+
 With a global secondary index:
 
 ```csharp
